@@ -457,7 +457,6 @@ ggplot(summary_tables$bin_summary_1, aes(x = Income, y = Annualized_Per_10_M)) +
 
 summary_tables$race_and_income <- 
   fatal_enc$joined |> 
-  na.omit() |> 
   count(Majority, income_quintiles) |> 
   rename(Killings = n)
 
