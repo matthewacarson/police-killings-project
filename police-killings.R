@@ -85,7 +85,7 @@ all_tracts$income_population_quintiles_2020 <-
     # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
   ))
 
-### Divide into 200 groups ####
+### Divide into 200 quantiles ####
 all_tracts$two_hundred <- quantile(
   all_tracts$income_population_quintiles_2020$IncomeE, 
   probs = seq(0, 1, by = 1/200), na.rm = TRUE
@@ -98,6 +98,22 @@ all_tracts$income_population_quintiles_2020 <-
     breaks = all_tracts$two_hundred, # 201 points create 200 bins
     include.lowest = TRUE,
     labels = seq(1,200)
+    # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
+  ))
+
+# Divide into 100 quantiles
+all_tracts$one_hundred <- quantile(
+  all_tracts$income_population_quintiles_2020$IncomeE, 
+  probs = seq(0, 1, by = 1/100), na.rm = TRUE
+)
+
+all_tracts$income_population_quintiles_2020 <- 
+  all_tracts$income_population_quintiles_2020 |> 
+  mutate(income_bins_100 = cut(
+    IncomeE,
+    breaks = all_tracts$one_hundred, 
+    include.lowest = TRUE,
+    labels = seq(1,100)
     # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
   ))
 
@@ -361,7 +377,6 @@ summary_tables$majority_summary_1 |>
   ) +
   coord_flip()
 
-# Trying to add race of victim as another factor
 
 # Tables for 200 bins ####
 summary_tables$bin_table_1 <-  fatal_enc$joined |> 
@@ -400,13 +415,13 @@ summary_tables$bin_summary_1$Income <- as.numeric(summary_tables$bin_summary_1$I
 
 # Regression with binned data ####
 
-lm_200 <- summary_tables$bin_summary_1 |> lm(
-  Annualized_Per_10_M ~ Income,
-  data = _
-)
+# lm_200 <- summary_tables$bin_summary_1 |> lm(
+#   Annualized_Per_10_M ~ Income,
+#   data = _
+# )
 
-summary(lm_200)
-cor(x = summary_tables$bin_summary_1$Income, y = summary_tables$bin_summary_1$Annualized_Per_10_M)
+# summary(lm_200)
+# cor(x = summary_tables$bin_summary_1$Income, y = summary_tables$bin_summary_1$Annualized_Per_10_M)
 
 ggplot(summary_tables$bin_summary_1, aes(x = Income, y = Annualized_Per_10_M)) +
   geom_point() +  
@@ -537,3 +552,12 @@ ggplot(
     axis.text.x = element_text(color = "black"),
     panel.grid.major.x = element_blank()
   )
+
+# ################################### #
+# Plots using race of the victim ####
+# ################################### #
+
+## ######################## #
+## Using 200 quantiles ####
+## ######################## #
+
