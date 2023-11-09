@@ -6,8 +6,8 @@
 # Load Libraries ####
 
 # library(tidycensus)
-library(sf)
-library(tidyverse)
+# library(sf)
+# library(tidyverse)
 
 # Download and clean tract income ####
 
@@ -55,9 +55,9 @@ library(tidyverse)
 
 # Filter tracts with NA income values ####
 
-all_tracts$income_population_quintiles_2020 <- st_drop_geometry(all_tracts$population_income2020)
+# all_tracts$income_population_quintiles_2020 <- st_drop_geometry(all_tracts$population_income2020)
 
-all_tracts$income_population_quintiles_2020 <- all_tracts$income_population_quintiles_2020[!is.na(all_tracts$income_population_quintiles_2020$IncomeE),]
+# all_tracts$income_population_quintiles_2020 <- all_tracts$income_population_quintiles_2020[!is.na(all_tracts$income_population_quintiles_2020$IncomeE),]
 
 ## Add quantile data to all_tracts ####
 
@@ -235,7 +235,6 @@ fatal_enc$initial_clean$race_imputed <- ifelse(
 )
 
 ## Adding sf object to fatal_enc (combined lat/long) ####
-library(sf)
 fatal_enc$initial_clean <- 
   fatal_enc$initial_clean %>% 
   st_as_sf(coords = c('longitude', 'latitude'), crs = "NAD83")
@@ -253,7 +252,7 @@ fatal_enc$initial_clean_geoid <-
 
 fatal_enc$initial_clean_geoid <- st_drop_geometry(fatal_enc$initial_clean_geoid)
 
-# Remove duplicated rows
+# Remove duplicated rows (unique ids that appear twice)
 fatal_enc$initial_clean_geoid <- 
   fatal_enc$initial_clean_geoid[
     !duplicated(fatal_enc$initial_clean_geoid$unique_id) | 
@@ -304,6 +303,7 @@ summary_tables$summary_1 <- summary_tables$summary_1 |>
 # library(ggplot2)
 
 # Create quintile bar plot ####
+plot_income_quintiles_only <- 
 summary_tables$summary_1 |> 
   ggplot(
     data = _, 
@@ -358,7 +358,7 @@ summary_tables$majority_summary_1 <-
   )
 
 # Majority Race Plot ####
-
+plot_majority_race_only <- 
 summary_tables$majority_summary_1 |> 
   ggplot(
     data = _, 
@@ -401,9 +401,7 @@ summary_tables$bin_pop_table_1 <- tapply(
 
 # Median income of each bin
 
-fatal_enc$joined |>  aggregate(IncomeE ~ Majority + income_bins, FUN = median)
-
-
+# fatal_enc$joined |>  aggregate(IncomeE ~ Majority + income_bins, FUN = median)
 
 summary_tables$bin_summary_1 <- 
   left_join(
@@ -429,7 +427,7 @@ summary_tables$bin_summary_1$Income <- as.numeric(summary_tables$bin_summary_1$I
 
 # summary(lm_200)
 # cor(x = summary_tables$bin_summary_1$Income, y = summary_tables$bin_summary_1$Annualized_Per_10_M)
-
+plot_200_all <- 
 ggplot(summary_tables$bin_summary_1, aes(x = Income, y = Annualized_Per_10_M)) +
   geom_point() +  
   geom_smooth(method = "loess", formula = y ~ x, color = "blue", se = TRUE) + 
@@ -442,7 +440,7 @@ ggplot(summary_tables$bin_summary_1, aes(x = Income, y = Annualized_Per_10_M)) +
   theme(
     # axis.text.x = element_blank()
   )
-
+plot_bar_200_all <- 
 ggplot(summary_tables$bin_summary_1, aes(x = Income, y = Annualized_Per_10_M)) +
   geom_bar(stat = 'identity', fill = 'lightblue3', width = .7) +
   geom_smooth(method = "loess", formula = y ~ x, color = "blue", se = TRUE) +
@@ -459,7 +457,7 @@ ggplot(summary_tables$bin_summary_1, aes(x = Income, y = Annualized_Per_10_M)) +
 # Grouped by Race/Ethnicity
 # #################################
 
-table(fatal_enc$joined$Majority, fatal_enc$joined$income_quintiles)
+# table(fatal_enc$joined$Majority, fatal_enc$joined$income_quintiles)
 
 summary_tables$race_and_income <- 
   fatal_enc$joined |> 
@@ -495,6 +493,7 @@ summary_tables$race_and_income_summary <-
       select(-Killings_Per_Yr)
   )
 
+plot_quintile_by_race <- 
 ggplot(
   summary_tables$race_and_income_summary
   ,aes(x = Majority, y = Annualized_Per_10_M, fill = Income)) +
@@ -529,7 +528,8 @@ ggplot(
 # #################################
 # Grouped by Income Quintile
 # #################################
-ggplot(
+plot_race_by_quintile <- 
+  ggplot(
   summary_tables$race_and_income_summary, 
   aes(x = Income, y = Annualized_Per_10_M, fill = Majority)) +
   geom_hline(
@@ -617,5 +617,34 @@ race_100_plot <- ggplot(
   scale_color_brewer(palette = "Dark2") +
   theme()
 
-race_100_plot
+summary_tables$bin_table_race <-  
+  fatal_enc$joined |> 
+  filter(
+    !is.na(income_bins_100) &
+      race_imputed %in% c(
+        "African-American/Black", 
+        "European-American/White", 
+        "Hispanic/Latino")) |> 
+  count(Income = income_bins_100, race_imputed) |> 
+  rename(Killings = n) |> 
+  mutate(Killings_Per_Yr = Killings / 6)
 
+summary_tables$bin_table_race$Income <- as.numeric(summary_tables$bin_table_race$Income)
+
+race_100_plot <- ggplot(
+  summary_tables$bin_table_race, 
+  aes(x = Income, y = Killings_Per_Yr, color = race_imputed)
+) +
+  geom_point() +  
+  geom_smooth(method = "loess", formula = y ~ x, se = F) + 
+  labs(
+    x = "Median Household Income in Census Tracts\n100 Quantiles", 
+    y = "Annualized Rate", 
+    title = "Lethal Uses of Force",
+    color = "Race"
+  ) + scale_x_continuous(breaks = seq(0, 100 , by = 5)) + 
+  theme_light() +
+  scale_color_brewer(palette = "Dark2") +
+  theme()
+
+race_100_plot

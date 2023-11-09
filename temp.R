@@ -153,13 +153,21 @@ fatal_enc$median_income <- median(
   na.rm = T
 )
 
+# Fatal encounters: remove duplicated GEOIDs
+# This is create a data frame that will include every tract that has had
+# at least one incident, rather than every incident.
+# This will make a better comparison between tracts with any incidents 
+# (regardless of how many) vs. tracts without any incidents
+fatal_enc$fatal_enc_unique_id <- 
+fatal_enc$joined[
+  !is.na(fatal_enc$joined$IncomeE) & !duplicated(fatal_enc$joined$GEOID),
+]
 alpha <- 0.5
 
-hist <- 
+hist_unique <- 
   ggplot() +
   geom_histogram(
-    data = fatal_enc$joined |> 
-      filter(!is.na(IncomeE)),
+    data = fatal_enc$fatal_enc_unique_id,
     aes(
       x = IncomeE,
       y = after_stat(density),
@@ -184,14 +192,14 @@ hist <-
       xintercept = fatal_enc$no_fuof_median_income, 
       color = "No Lethal UOF"
     ), 
-    linetype = "dashed", size = 1
+    linetype = "dashed", linewidth = 1
   ) +
   geom_vline(
     aes(
       xintercept = fatal_enc$median_income, 
       color = "Lethal UOF"
     ), 
-    linetype = "solid", size = 1) +
+    linetype = "solid", linewidth = 1) +
   labs(
     # title = "Income",
     x = "Income",
@@ -207,5 +215,5 @@ hist <-
   scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 
-hist
+
 
