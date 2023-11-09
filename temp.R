@@ -1,3 +1,49 @@
+# Plot quintiles of number of race of victim and quintile of census tract ####
+# they were killed in
+# 
+
+summary_tables$quiniles_race_victim <-  
+  fatal_enc$joined |> 
+  filter(
+    !is.na(income_quintiles) &
+      race_imputed %in% c(
+        "African-American/Black", 
+        "European-American/White", 
+        "Hispanic/Latino")) |> 
+  count(Income = income_quintiles, race_imputed) |> 
+  rename(Killings = n) |>
+  mutate(Killings_Per_Yr = Killings / 6) |> 
+  select(-Killings)
+
+
+summary_tables$quintile_race_proportion <- 
+  left_join(
+    x = fatal_enc$joined |> 
+      filter(
+        !is.na(income_quintiles) &
+          race_imputed %in% c(
+            "African-American/Black", 
+            "European-American/White", 
+            "Hispanic/Latino")) |> 
+      count(Income = income_quintiles, race_imputed) |> 
+      rename(Killings_by_Quintile_and_Race = n),
+    y = fatal_enc$joined |> 
+      filter(
+        !is.na(income_quintiles) &
+          race_imputed %in% c(
+            "African-American/Black", 
+            "European-American/White", 
+            "Hispanic/Latino")) |> 
+      count(race_imputed) |> 
+      rename(Killings_Race_Total = n),
+    by = "race_imputed"
+  ) |> 
+  mutate(
+    Proportion = Killings_by_Quintile_and_Race / Killings_Race_Total
+  )
+
+# SUmmary table for perentile bins by race ####
+
 summary_tables$bin_table_race <-  
   fatal_enc$joined |> 
   filter(
@@ -9,9 +55,6 @@ summary_tables$bin_table_race <-
   count(Income = income_bins_100, race_imputed) |> 
   rename(Killings = n) |>
   mutate(Killings_Per_Yr = Killings / 6)
-
-
-
 
 # summary_tables$bin_pop_table_race <- tapply(
 #   all_tracts$income_population_quintiles_2020$Total_popE, 
@@ -42,9 +85,9 @@ plot_race_100 <- ggplot(
   geom_smooth(method = "loess", formula = y ~ x, se = F) + 
   labs(
     x = "Median Household Income in Census Tracts\n100 Quantiles", 
-    y = "Annualized Rate", 
+    y = "Number of Persons Killed", 
     title = "Lethal Uses of Force",
-    color = "Race"
+    color = "Race of Victim"
   ) + scale_x_continuous(breaks = seq(0, 100 , by = 5)) + 
   theme_light() +
   scale_color_brewer(palette = "Dark2") +
@@ -95,9 +138,10 @@ plot_race_100_proportion <- ggplot(
   geom_smooth(method = "loess", formula = y ~ x, se = F) + 
   labs(
     x = "Median Household Income in Census Tracts\n100 Quantiles", 
-    y = "Distribution within racial groups", 
+    y = "Proportion of Persons Killed", 
     title = "Lethal Uses of Force",
-    color = "Race"
+    subtitle = "Distribution within racial groups",
+    color = "Race of Victim"
   ) + scale_x_continuous(breaks = seq(0, 100 , by = 5)) + 
   theme_light() +
   scale_color_brewer(palette = "Dark2") +
@@ -153,6 +197,12 @@ fatal_enc$median_income <- median(
   na.rm = T
 )
 
+fatal_enc$median_no_dupes <- 
+  median(
+    fatal_enc$fatal_enc_unique_id$IncomeE,
+    na.rm = T
+  )
+
 # Fatal encounters: remove duplicated GEOIDs
 # This is create a data frame that will include every tract that has had
 # at least one incident, rather than every incident.
@@ -196,7 +246,7 @@ hist_unique <-
   ) +
   geom_vline(
     aes(
-      xintercept = fatal_enc$median_income, 
+      xintercept = fatal_enc$median_no_dupes, 
       color = "Lethal UOF"
     ), 
     linetype = "solid", linewidth = 1) +
@@ -214,6 +264,83 @@ hist_unique <-
   scale_fill_brewer(palette = "Set1") +
   scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+## ######################## #
+## Not using plots below ####
+## ####################### #
+
+# Overall histogram
+#
+# fatal_enc_hist <- 
+#   fatal_enc$joined |> 
+#   filter(!is.na(IncomeE)) |> 
+#   ggplot(
+#     data = _,
+#     aes(x = IncomeE)) +
+#   geom_histogram(fill = 'red', col = 'black')
+
+# Histogram for all tracts
+
+# hist_all_tracts <- 
+#   all_tracts$population_income2020 |> 
+#   filter(!is.na(IncomeE)) |> 
+#   ggplot(
+#     data = _,
+#     aes(x = IncomeE)) +
+#   geom_histogram(fill = 'blue', col = 'black')
+
+# hist_all_fatal <- 
+#   ggplot() +
+#   geom_histogram(
+#     data = all_tracts$population_income2020 |> 
+#       filter(!is.na(IncomeE)),
+#     aes(
+#       x = IncomeE, 
+#       y = after_stat(density),
+#       fill = "All Tracts"
+#     ),
+#     alpha = alpha,
+#     bins = 30
+#   ) + 
+#   geom_histogram(
+#     data = fatal_enc$joined,
+#     aes(
+#       x = IncomeE,
+#       y = after_stat(density),
+#       fill = "Lethal UOF"
+#     ),
+#     alpha = alpha,
+#     bins = 30
+#   ) +
+#   geom_vline(
+#     aes(
+#       xintercept = all_tracts$median_income, 
+#       color = "All Tracts"
+#     ), 
+#     linetype = "dashed", linewidth = 1
+#   ) +
+#   geom_vline(
+#     aes(
+#       xintercept = fatal_enc$median_income, 
+#       color = "Lethal UOF"
+#     ), 
+#     linetype = "solid", linewidth = 1) +
+#   labs(
+#     # title = "Income",
+#     x = "Income",
+#     y = "Density",
+#     fill = "Distributions") +
+#   scale_color_manual(
+#     name = "Medians", 
+#     values = c("Lethal UOF" = "blue3", "All Tracts" = "red3"),
+#     guide = guide_legend(override.aes = list(linetype = c("dashed", "solid")))
+#   ) +
+#   theme_light() +
+#   scale_fill_brewer(palette = "Set1") +
+#   scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
+#   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+
 
 
 
