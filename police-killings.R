@@ -110,10 +110,10 @@ all_tracts$income_population_quintiles_2020 <- all_tracts$income_population_quin
     NH_AsianP = NH_AsianE / Total_popE,
     Hisp_LatinoP = Hisp_LatinoE / Total_popE,
     Majority = case_when(
-      NH_WhiteP > 0.5 ~ 'W',
-      NH_BlackP > 0.5 ~ 'B',
+      NH_WhiteP > 0.5 ~ 'White',
+      NH_BlackP > 0.5 ~ 'Black',
       # NH_AsianP > 0.5 ~ 'A',
-      Hisp_LatinoP > 0.5 ~ 'H'))
+      Hisp_LatinoP > 0.5 ~ 'Hispanic/Latino'))
 
 ## Identifying majority race/ethnicity with 2019 data. ####
 
@@ -124,10 +124,10 @@ all_tracts$income_population_quintiles_2019 <- all_tracts$population_income2019 
     NH_AsianP = NH_AsianE / Total_popE,
     Hisp_LatinoP = Hisp_LatinoE / Total_popE,
     Majority = case_when(
-      NH_WhiteP > 0.5 ~ 'W',
-      NH_BlackP > 0.5 ~ 'B',
+      NH_WhiteP > 0.5 ~ 'White',
+      NH_BlackP > 0.5 ~ 'Black',
       # NH_AsianP > 0.5 ~ 'A',
-      Hisp_LatinoP > 0.5 ~ 'H'))
+      Hisp_LatinoP > 0.5 ~ 'Hispanic/Latino'))
 
 all_tracts$income_population_quintiles_2020 <- all_tracts$income_population_quintiles_2020 %>% 
   mutate(
@@ -433,8 +433,9 @@ ggplot(summary_tables$bin_summary_1, aes(x = Income, y = Annualized_Per_10_M)) +
     axis.text.x = element_blank()
   )
 
-# GGplot race and income
-#
+# #################################
+# Grouped by Race/Ethnicity
+# #################################
 
 table(fatal_enc$joined$Majority, fatal_enc$joined$income_quintiles)
 
@@ -495,7 +496,44 @@ ggplot(
        y = "Per 10 Million Population Per Year",
        x = "Majority (> 50%)",#"Based on Median Household Income in Census Tracts Where a Lethal Use of Force Occurred",
        fill = "Median Household\nIncome in\nCensus Tract") +
-  theme_minimal() + theme(axis.text.x = element_text(color = "black"))
+  theme_minimal() + 
+  theme(
+    axis.text.x = element_text(color = "black"),
+    panel.grid.major.x = element_blank(),
+    # panel.grid.minor.x = element_blank()
+  )
 
-summary(object = all_tracts$income_population_quintiles_2019)
 
+# #################################
+# Grouped by Income Quintile
+# #################################
+ggplot(
+  summary_tables$race_and_income_summary, 
+  aes(x = Income, y = Annualized_Per_10_M, fill = Majority)) +
+  geom_hline(
+    yintercept = seq(0,70, by = 10), 
+    color = "gray", 
+    linetype = "dashed", 
+    linewidth = 0.5
+  ) +
+  geom_bar(
+    stat = "identity", 
+    position = "dodge", 
+    color = 'black', 
+    linewidth = 0.01
+  ) +
+  geom_text(
+    aes(label = round(Annualized_Per_10_M, 1)),
+    position = position_dodge(width = 0.9),
+    vjust = -0.5, color = "black"
+  ) +
+  labs(title = "Rate of Police Lethal Uses of Force",
+       subtitle = "Years: [2015-2020]",
+       y = "Per 10 Million Population Per Year",
+       x = "Median Household Income in Census Tract",
+       fill = "Majority\n(> 50%)") +
+  theme_minimal() + 
+  theme(
+    axis.text.x = element_text(color = "black"),
+    panel.grid.major.x = element_blank()
+  )
