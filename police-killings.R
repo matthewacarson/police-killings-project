@@ -226,6 +226,13 @@ fatal_enc$initial_clean$date <- as.Date(fatal_enc$initial_clean$date, format = "
 fatal_enc$initial_clean <- fatal_enc$initial_clean |> 
   filter(year(date) >= 2015 & year(date) <= 2020)
 
+# Fix Hispanic/Latino (uppercase "I")
+# 
+fatal_enc$initial_clean$race_imputed <- ifelse(
+  fatal_enc$initial_clean$race_imputed == "HIspanic/Latino",
+  "Hispanic/Latino", 
+  fatal_enc$initial_clean$race_imputed
+)
 
 ## Adding sf object to fatal_enc (combined lat/long) ####
 library(sf)
