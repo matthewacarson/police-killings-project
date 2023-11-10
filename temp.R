@@ -15,7 +15,6 @@ summary_tables$quiniles_race_victim <-
   mutate(Killings_Per_Yr = Killings / 6) |> 
   select(-Killings)
 
-
 summary_tables$quintile_race_proportion <- 
   left_join(
     x = fatal_enc$joined |> 
@@ -210,7 +209,8 @@ fatal_enc$median_no_dupes <-
 # (regardless of how many) vs. tracts without any incidents
 fatal_enc$fatal_enc_unique_id <- 
 fatal_enc$joined[
-  !is.na(fatal_enc$joined$IncomeE) & !duplicated(fatal_enc$joined$GEOID),
+  !is.na(fatal_enc$joined$IncomeE) & 
+    !duplicated(fatal_enc$joined$GEOID),
 ]
 alpha <- 0.5
 
@@ -271,76 +271,21 @@ hist_unique <-
 
 # Overall histogram
 #
-# fatal_enc_hist <- 
-#   fatal_enc$joined |> 
-#   filter(!is.na(IncomeE)) |> 
-#   ggplot(
-#     data = _,
-#     aes(x = IncomeE)) +
-#   geom_histogram(fill = 'red', col = 'black')
+# fatal_enc_hist <-
+  # fatal_enc$joined |>
+  # filter(!is.na(IncomeE)) |>
+  # ggplot(
+  #   data = _,
+  #   aes(x = IncomeE)) +
+  # geom_histogram(fill = 'red', col = 'black')
 
 # Histogram for all tracts
 
 # hist_all_tracts <- 
-#   all_tracts$population_income2020 |> 
-#   filter(!is.na(IncomeE)) |> 
-#   ggplot(
-#     data = _,
-#     aes(x = IncomeE)) +
-#   geom_histogram(fill = 'blue', col = 'black')
-
-# hist_all_fatal <- 
-#   ggplot() +
-#   geom_histogram(
-#     data = all_tracts$population_income2020 |> 
-#       filter(!is.na(IncomeE)),
-#     aes(
-#       x = IncomeE, 
-#       y = after_stat(density),
-#       fill = "All Tracts"
-#     ),
-#     alpha = alpha,
-#     bins = 30
-#   ) + 
-#   geom_histogram(
-#     data = fatal_enc$joined,
-#     aes(
-#       x = IncomeE,
-#       y = after_stat(density),
-#       fill = "Lethal UOF"
-#     ),
-#     alpha = alpha,
-#     bins = 30
-#   ) +
-#   geom_vline(
-#     aes(
-#       xintercept = all_tracts$median_income, 
-#       color = "All Tracts"
-#     ), 
-#     linetype = "dashed", linewidth = 1
-#   ) +
-#   geom_vline(
-#     aes(
-#       xintercept = fatal_enc$median_income, 
-#       color = "Lethal UOF"
-#     ), 
-#     linetype = "solid", linewidth = 1) +
-#   labs(
-#     # title = "Income",
-#     x = "Income",
-#     y = "Density",
-#     fill = "Distributions") +
-#   scale_color_manual(
-#     name = "Medians", 
-#     values = c("Lethal UOF" = "blue3", "All Tracts" = "red3"),
-#     guide = guide_legend(override.aes = list(linetype = c("dashed", "solid")))
-#   ) +
-#   theme_light() +
-#   scale_fill_brewer(palette = "Set1") +
-#   scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
-#   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
-
-
-
-
+  # all_tracts$population_income2020 |>
+  # filter(!is.na(IncomeE)) |>
+  # ggplot(
+  #   data = _,
+  #   aes(x = IncomeE)) +
+  # geom_histogram(fill = 'blue', col = 'black')
 

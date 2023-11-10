@@ -1,4 +1,7 @@
 
+
+# Note: Instead of running from the top (many operations take too long, start at 3_Summary Tables)
+
 # setwd(
 #   "C:/Users/madou/OneDrive - UCLA IT Services/PS-Honors/police-killings-github")
 # 1_all_tracts ####
@@ -153,30 +156,30 @@ all_tracts$income_population_quintiles_2020 <- all_tracts$income_population_quin
 # 2_fatal_enc ####
 
 # fatal_enc <- list()
-fatal_enc$backup_not_clean <- read_csv(
-  "https://docs.google.com/spreadsheets/d/1dKmaV_JiWcG8XBoRgP8b4e9Eopkpgt7FL7nyspvzAsE/export?format=csv", 
-  col_types = cols(
-    `Date of injury resulting in death (month/day/year)` = col_date(format = "%m/%d/%Y"),
-    Name = col_skip(),
-    Age = col_skip(),
-    Gender = col_skip(),
-    `URL of image (PLS NO HOTLINKS)` = col_skip(),
-    `Location of injury (address)` = col_skip(),
-    `Full Address` = col_skip(),
-    `UID Temporary` = col_skip(),
-    `Name Temporary` = col_skip(),
-    `Description Temp` = col_skip(),
-    `URL Temp` = col_skip(),
-    `Brief description` = col_skip(),
-    `Dispositions/Exclusions INTERNAL USE, NOT FOR ANALYSIS` = col_skip(),
-    `Supporting document link` = col_skip(),
-    `Foreknowledge of mental illness? INTERNAL USE, NOT FOR ANALYSIS` = col_skip(),
-    ...33 = col_skip(),
-    ...34 = col_skip(),
-    `Unique ID formula` = col_skip(),
-    `Unique identifier (redundant)` = col_skip()
-  )
-)
+# fatal_enc$backup_not_clean <- read_csv(
+#   "https://docs.google.com/spreadsheets/d/1dKmaV_JiWcG8XBoRgP8b4e9Eopkpgt7FL7nyspvzAsE/export?format=csv", 
+#   col_types = cols(
+#     `Date of injury resulting in death (month/day/year)` = col_date(format = "%m/%d/%Y"),
+#     Name = col_skip(),
+#     Age = col_skip(),
+#     Gender = col_skip(),
+#     `URL of image (PLS NO HOTLINKS)` = col_skip(),
+#     `Location of injury (address)` = col_skip(),
+#     `Full Address` = col_skip(),
+#     `UID Temporary` = col_skip(),
+#     `Name Temporary` = col_skip(),
+#     `Description Temp` = col_skip(),
+#     `URL Temp` = col_skip(),
+#     `Brief description` = col_skip(),
+#     `Dispositions/Exclusions INTERNAL USE, NOT FOR ANALYSIS` = col_skip(),
+#     `Supporting document link` = col_skip(),
+#     `Foreknowledge of mental illness? INTERNAL USE, NOT FOR ANALYSIS` = col_skip(),
+#     ...33 = col_skip(),
+#     ...34 = col_skip(),
+#     `Unique ID formula` = col_skip(),
+#     `Unique identifier (redundant)` = col_skip()
+#   )
+# )
 
 ## Initial Cleaning ####
 fatal_enc$initial_clean <-
@@ -266,6 +269,8 @@ fatal_enc$joined <-
     by = "GEOID"
   )
 
+
+
 # 3_Summary Tables ####
 summary_tables <- list()
 
@@ -294,9 +299,10 @@ summary_tables$summary_1 <- summary_tables$summary_1 |>
       Killings_Per_Yr / Population * 10000000
   )
 
+plot <- list()
 # Income Quintiles only ####
 ## Create quintile bar plot ####
-plot_income_quintiles_only <- 
+plot$income_quintiles_only <- 
 summary_tables$summary_1 |> 
   ggplot(
     data = _, 
@@ -323,7 +329,7 @@ summary_tables$summary_1 |>
     # plot.title = element_text(size = 30),
     # plot.subtitle = element_text(size = 20)
   )
-# plot_income_quintiles_only
+# plot$income_quintiles_only
 
 # Majority Race ####
 
@@ -352,7 +358,7 @@ summary_tables$majority_summary_1 <-
   )
 
 # Majority Race Plot ####
-plot_majority_race_only <- 
+plot$majority_race_only <- 
 summary_tables$majority_summary_1 |> 
   ggplot(
     data = _, 
@@ -377,7 +383,7 @@ summary_tables$majority_summary_1 |>
     labels = c("Black", "Hispanic/Latino", "White"),
   ) +
   coord_flip()
-# plot_majority_race_only
+# plot$majority_race_only
 
 # Tables for 200 bins ####
 summary_tables$bin_table_1 <-  fatal_enc$joined |> 
@@ -394,7 +400,6 @@ summary_tables$bin_pop_table_1 <- tapply(
 
 
 # Median income of each bin
-
 # fatal_enc$joined |>  aggregate(IncomeE ~ Majority + income_bins, FUN = median)
 
 summary_tables$bin_summary_1 <- 
@@ -421,7 +426,7 @@ summary_tables$bin_summary_1$Income <- as.numeric(summary_tables$bin_summary_1$I
 
 # summary(lm_200)
 # cor(x = summary_tables$bin_summary_1$Income, y = summary_tables$bin_summary_1$Annualized_Per_10_M)
-plot_200_all <- 
+plot$all_200 <- 
 ggplot(summary_tables$bin_summary_1, aes(x = Income, y = Annualized_Per_10_M)) +
   geom_point() +  
   geom_smooth(method = "loess", formula = y ~ x, color = "blue", se = TRUE) + 
@@ -434,8 +439,8 @@ ggplot(summary_tables$bin_summary_1, aes(x = Income, y = Annualized_Per_10_M)) +
   theme(
     # axis.text.x = element_blank()
   )
-# plot_200_all
-plot_bar_200_all <- 
+
+plot$bar_200_all <- 
 ggplot(summary_tables$bin_summary_1, aes(x = Income, y = Annualized_Per_10_M)) +
   geom_bar(stat = 'identity', fill = 'lightblue3', width = .7) +
   geom_smooth(method = "loess", formula = y ~ x, color = "blue", se = TRUE) +
@@ -447,7 +452,7 @@ ggplot(summary_tables$bin_summary_1, aes(x = Income, y = Annualized_Per_10_M)) +
   theme(
     axis.text.x = element_blank()
   )
-# plot_bar_200_all
+# plot$bar_200_all
 
 # #################################
 # Grouped by Race/Ethnicity
@@ -488,7 +493,7 @@ summary_tables$race_and_income_summary <-
       select(-Killings_Per_Yr)
   ) |> na.omit()
 
-plot_quintile_by_race <- 
+plot$quintile_by_race <- 
 ggplot(
   summary_tables$race_and_income_summary
   ,aes(x = Majority, y = Annualized_Per_10_M, fill = Income)) +
@@ -518,12 +523,13 @@ ggplot(
     panel.grid.major.x = element_blank(),
     # panel.grid.minor.x = element_blank()
   )
-# plot_quintile_by_race
+
+# plot$quintile_by_race
 
 # #################################
 # Grouped by Income Quintile
 # #################################
-plot_race_by_quintile <- 
+plot$race_by_quintile <- 
   ggplot(
   summary_tables$race_and_income_summary, 
   aes(x = Income, y = Annualized_Per_10_M, fill = Majority)) +
@@ -554,7 +560,7 @@ plot_race_by_quintile <-
     axis.text.x = element_text(color = "black"),
     panel.grid.major.x = element_blank()
   )
-# plot_race_by_quintile
+# plot$race_by_quintile
 
 # ################################### #
 # Plots using race of the victim ####
@@ -597,7 +603,7 @@ summary_tables$quiniles_race_victim <-
 
 # Summary table for perentile bins by race ####
 
-plot_race_100 <- ggplot(
+plot$race_100 <- ggplot(
   summary_tables$bin_table_race, 
   aes(x = Income, y = Killings_Per_Yr, color = race_imputed)
 ) +
@@ -613,7 +619,7 @@ plot_race_100 <- ggplot(
   scale_color_brewer(palette = "Dark2") +
   theme()
 
-# plot_race_100
+# plot$race_100
 
 summary_tables$quintile_race_proportion <- 
   left_join(
@@ -675,7 +681,7 @@ summary_tables$bin_table_race_proportion$Income <- as.numeric(summary_tables$bin
 
 # Make plot
 #
-plot_race_100_proportion <- ggplot(
+plot$race_100_proportion <- ggplot(
   summary_tables$bin_table_race_proportion, 
   aes(x = Income, y = Proportion, color = race_imputed)
 ) +
@@ -822,7 +828,7 @@ summary_tables$quiniles_race_victim$Race <-
     summary_tables$quiniles_race_victim$Race, 
     levels = c("All", "African-American/Black",
                "European-American/White", "Hispanic/Latino"))
-
+plot$inc_and_race_victim <- 
 ggplot(
   data = summary_tables$quiniles_race_victim,
   aes(x = Race, y = Prop, fill = Income)) +
@@ -838,3 +844,99 @@ ggplot(
   theme(
     axis.text.x = element_text(color = "black"),
     panel.grid.major.x = element_blank())
+
+###
+### Histograms #### 
+### 
+
+summary_tables$quiniles_race_victim <-  
+  fatal_enc$joined |> 
+  filter(
+    !is.na(income_quintiles) &
+      race_imputed %in% c(
+        "African-American/Black", 
+        "European-American/White", 
+        "Hispanic/Latino")) |> 
+  count(Income = income_quintiles, race_imputed) |> 
+  rename(Killings = n) |>
+  mutate(Killings_Per_Yr = Killings / 6) |> 
+  select(-Killings)
+
+summary_tables$quintile_race_proportion <- 
+  left_join(
+    x = fatal_enc$joined |> 
+      filter(
+        !is.na(income_quintiles) &
+          race_imputed %in% c(
+            "African-American/Black", 
+            "European-American/White", 
+            "Hispanic/Latino")) |> 
+      count(Income = income_quintiles, race_imputed) |> 
+      rename(Killings_by_Quintile_and_Race = n),
+    y = fatal_enc$joined |> 
+      filter(
+        !is.na(income_quintiles) &
+          race_imputed %in% c(
+            "African-American/Black", 
+            "European-American/White", 
+            "Hispanic/Latino")) |> 
+      count(race_imputed) |> 
+      rename(Killings_Race_Total = n),
+    by = "race_imputed"
+  ) |> 
+  mutate(
+    Proportion = Killings_by_Quintile_and_Race / Killings_Race_Total
+  )
+
+# SUmmary table for perentile bins by race ####
+
+summary_tables$bin_table_race <-  
+  fatal_enc$joined |> 
+  filter(
+    !is.na(income_bins_100) &
+      race_imputed %in% c(
+        "African-American/Black", 
+        "European-American/White", 
+        "Hispanic/Latino")) |> 
+  count(Income = income_bins_100, race_imputed) |> 
+  rename(Killings = n) |>
+  mutate(Killings_Per_Yr = Killings / 6)
+
+summary_tables$bin_table_race$Income <- as.numeric(summary_tables$bin_table_race$Income)
+
+hist_all_fatal <-
+  ggplot() +
+  geom_histogram(
+    data = all_tracts$population_income2020 |>
+      filter(!is.na(IncomeE)),
+    aes(x = IncomeE, y = after_stat(density), fill = "All Tracts"),
+    alpha = alpha,
+    bins = 30
+  ) +
+  geom_histogram(
+    data = fatal_enc$joined,
+    aes(x = IncomeE, y = after_stat(density), fill = "Lethal UOF"),
+    alpha = alpha,
+    bins = 30
+  ) +
+  geom_vline(
+    aes(xintercept = all_tracts$median_income, color = "All Tracts"),
+    linetype = "dashed", linewidth = 1
+  ) +
+  geom_vline(
+    aes(xintercept = fatal_enc$median_income, color = "Lethal UOF"),
+    linetype = "solid", linewidth = 1) +
+  labs(
+    # title = "Income",
+    x = "Income",
+    y = "Density",
+    fill = "Distributions") +
+  scale_color_manual(
+    name = "Medians",
+    values = c("Lethal UOF" = "blue3", "All Tracts" = "red3"),
+    guide = guide_legend(override.aes = list(linetype = c("dashed", "solid")))
+  ) +
+  theme_light() +
+  scale_fill_brewer(palette = "Set1") +
+  scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
