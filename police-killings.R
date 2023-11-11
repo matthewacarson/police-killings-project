@@ -329,7 +329,7 @@ summary_tables$summary_1 |>
     # plot.title = element_text(size = 30),
     # plot.subtitle = element_text(size = 20)
   )
-# plot$income_quintiles_only
+plot$income_quintiles_only
 
 # Majority Race ####
 
@@ -657,9 +657,7 @@ summary_tables$bin_table_race_proportion <-
             "European-American/White", 
             "Hispanic/Latino")) |> 
       count(Income = income_bins_100, race_imputed) |> 
-      rename(Killings = n) |> 
-      mutate(Killings_Per_Yr = Killings / 6) |> 
-      select(-Killings),
+      rename(Killings_inc_race = n),
     y = fatal_enc$joined |> 
       filter(
         !is.na(income_bins_100) &
@@ -668,13 +666,11 @@ summary_tables$bin_table_race_proportion <-
             "European-American/White", 
             "Hispanic/Latino")) |> 
       count(race_imputed) |> 
-      rename(Killings = n) |> 
-      mutate(Killings_Per_Yr = Killings / 6) |> 
-      select(-Killings),
+      rename(Killings_race_only = n),
     by = "race_imputed"
   ) |> 
   mutate(
-    Proportion = Killings_Per_Yr.x / Killings_Per_Yr.y
+    Proportion = Killings_inc_race / Killings_race_only
   )
 
 summary_tables$bin_table_race_proportion$Income <- as.numeric(summary_tables$bin_table_race_proportion$Income)
@@ -689,7 +685,7 @@ plot$race_100_proportion <- ggplot(
   geom_smooth(method = "loess", formula = y ~ x, se = F) + 
   labs(
     x = "Median Household Income in Census Tracts\n100 Quantiles", 
-    y = "Proportion of Persons Killed", 
+    y = "Proportion of Persons Killed Within Each Racial Group", 
     title = "Lethal Uses of Force",
     subtitle = "Distribution within racial groups",
     color = "Race of Victim"
@@ -697,6 +693,7 @@ plot$race_100_proportion <- ggplot(
   theme_light() +
   scale_color_brewer(palette = "Dark2") +
   theme()
+# plot$race_100_proportion
 # ########################################################## #
 ## Creating a data frame for tracts without fatal encounters ####
 # ########################################################## #
@@ -927,7 +924,8 @@ hist_all_fatal <-
     aes(xintercept = fatal_enc$median_income, color = "Lethal UOF"),
     linetype = "solid", linewidth = 1) +
   labs(
-    # title = "Income",
+    title = "Census Tract Median Household Income",
+    subtitle = "Lethal Uses of Force vs. All Tracts in the US",
     x = "Income",
     y = "Density",
     fill = "Distributions") +
@@ -940,3 +938,4 @@ hist_all_fatal <-
   scale_fill_brewer(palette = "Set1") +
   scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+hist_all_fatal
