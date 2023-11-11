@@ -869,87 +869,90 @@ fatal_enc$median_no_dupes <-
   median(
     fatal_enc$fatal_enc_unique_id$IncomeE,
     na.rm = T)
+
+# Not using the unique histogram
+
 # Fatal encounters: remove duplicated GEOIDs
 # This is create a data frame that will include every tract that has had
 # at least one incident, rather than every incident.
 # This will make a better comparison between tracts with any incidents 
 # (regardless of how many) vs. tracts without any incidents
-fatal_enc$fatal_enc_unique_id <- 
-  fatal_enc$joined[
-    !is.na(fatal_enc$joined$IncomeE) & !duplicated(fatal_enc$joined$GEOID),
-  ]
-alpha <- 0.5
-
-hist_unique <- 
-  ggplot() +
-  geom_histogram(
-    data = fatal_enc$fatal_enc_unique_id,
-    aes(
-      x = IncomeE,
-      y = after_stat(density),
-      fill = "Lethal UOF"
-    ),
-    alpha = alpha,
-    bins = 30
-  ) +
-  geom_histogram(
-    data = fatal_enc$no_fatal_enc |> 
-      filter(!is.na(IncomeE)),
-    aes(
-      x = IncomeE, 
-      y = after_stat(density),
-      fill = "No Lethal UOF"
-    ),
-    alpha = alpha,
-    bins = 30
-  ) + 
-  geom_vline(
-    aes(
-      xintercept = fatal_enc$no_fuof_median_income, 
-      color = "No Lethal UOF"
-    ), 
-    linetype = "dashed", linewidth = 1
-  ) +
-  geom_vline(
-    aes(
-      xintercept = fatal_enc$median_no_dupes, 
-      color = "Lethal UOF"
-    ), 
-    linetype = "solid", linewidth = 1) +
-  labs(
-    # title = "Income",
-    x = "Income",
-    y = "Density",
-    fill = "Distributions") +
-  scale_color_manual(
-    name = "Medians", 
-    values = c("No Lethal UOF" = "blue3", "Lethal UOF" = "red3"),
-    guide = guide_legend(override.aes = list(linetype = c("dashed", "solid")))
-  ) +
-  theme_light() +
-  scale_fill_brewer(palette = "Set1") +
-  scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, color = 'black'))
-
-ggsave(
-  filename = "hist_unique.png",
-  plot = plot$hist_unique,
-  width = 1650 * 2,
-  height = 780 * 2,
-  units = "px",
-  dpi = 320,
-  # scale = 1
-)
-
-ggsave(
-  filename = "hist_unique.pdf",
-  plot = plot$hist_unique,
-  # width = 2300,
-  # height = 2000,
-  # units = "px",
-  # dpi = 320,
-  scale = 1.84
-)
+# fatal_enc$fatal_enc_unique_id <- 
+#   fatal_enc$joined[
+#     !is.na(fatal_enc$joined$IncomeE) & !duplicated(fatal_enc$joined$GEOID),
+#   ]
+# alpha <- 0.5
+# 
+# hist_unique <- 
+#   ggplot() +
+#   geom_histogram(
+#     data = fatal_enc$fatal_enc_unique_id,
+#     aes(
+#       x = IncomeE,
+#       y = after_stat(density),
+#       fill = "Lethal UOF"
+#     ),
+#     alpha = alpha,
+#     bins = 30
+#   ) +
+#   geom_histogram(
+#     data = fatal_enc$no_fatal_enc |> 
+#       filter(!is.na(IncomeE)),
+#     aes(
+#       x = IncomeE, 
+#       y = after_stat(density),
+#       fill = "No Lethal UOF"
+#     ),
+#     alpha = alpha,
+#     bins = 30
+#   ) + 
+#   geom_vline(
+#     aes(
+#       xintercept = fatal_enc$no_fuof_median_income, 
+#       color = "No Lethal UOF"
+#     ), 
+#     linetype = "dashed", linewidth = 1
+#   ) +
+#   geom_vline(
+#     aes(
+#       xintercept = fatal_enc$median_no_dupes, 
+#       color = "Lethal UOF"
+#     ), 
+#     linetype = "solid", linewidth = 1) +
+#   labs(
+#     # title = "Income",
+#     x = "Income",
+#     y = "Density",
+#     fill = "Distributions") +
+#   scale_color_manual(
+#     name = "Medians", 
+#     values = c("No Lethal UOF" = "blue3", "Lethal UOF" = "red3"),
+#     guide = guide_legend(override.aes = list(linetype = c("dashed", "solid")))
+#   ) +
+#   theme_light() +
+#   scale_fill_brewer(palette = "Set1") +
+#   scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
+#   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, color = 'black'))
+# 
+# ggsave(
+#   filename = "hist_unique.png",
+#   plot = plot$hist_unique,
+#   width = 1650 * 2,
+#   height = 780 * 2,
+#   units = "px",
+#   dpi = 320,
+#   # scale = 1
+# )
+# 
+# ggsave(
+#   filename = "hist_unique.pdf",
+#   plot = plot$hist_unique,
+#   # width = 2300,
+#   # height = 2000,
+#   # units = "px",
+#   # dpi = 320,
+#   scale = 1.84
+# )
 
 summary_tables$quiniles_race_victim <- 
   left_join(
@@ -1125,7 +1128,26 @@ hist_all_fatal <-
   scale_fill_brewer(palette = "Set1") +
   scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
-hist_all_fatal
+
+ggsave(
+  filename = "hist_all_fatal.png",
+  plot = plot$hist_all_fatal,
+  width = 1650 * 2,
+  height = 780 * 2,
+  units = "px",
+  dpi = 320,
+  # scale = 1
+)
+
+ggsave(
+  filename = "hist_all_fatal.pdf",
+  plot = plot$hist_all_fatal,
+  # width = 2300,
+  # height = 2000,
+  # units = "px",
+  # dpi = 320,
+  scale = 1.84
+)
 
 # Plot quintiles of number of race of victim and quintile of census tract ####
 # they were killed in
@@ -1181,47 +1203,47 @@ summary_tables$quiniles_race_victim <-
 
 ### Reordering Race factors ####
 ###
-summary_tables$quiniles_race_victim$Race <- 
-  factor(
-    summary_tables$quiniles_race_victim$Race, 
-    levels = c("All", "African-American/Black",
-               "European-American/White", "Hispanic/Latino"))
-
-ggplot(
-  data = summary_tables$quiniles_race_victim,
-  aes(x = Race, y = Prop, fill = Income)) +
-  geom_bar(
-    stat = "identity", 
-    position = "dodge", 
-    color = 'black', 
-    linewidth = 0.01) +
-  labs(title = "Police Lethal Uses of Force",
-       subtitle = "Race of Victim. Years: [2015-2020]",
-       y = "Proportion of Racial Group",
-       x = "Race of Victim") +
-  theme_light() + 
-  theme(
-    axis.text.x = element_text(color = "black"),
-    panel.grid.major.x = element_blank()
-  )
+# summary_tables$quiniles_race_victim$Race <- 
+#   factor(
+#     summary_tables$quiniles_race_victim$Race, 
+#     levels = c("All", "African-American/Black",
+#                "European-American/White", "Hispanic/Latino"))
+# 
+# ggplot(
+#   data = summary_tables$quiniles_race_victim,
+#   aes(x = Race, y = Prop, fill = Income)) +
+#   geom_bar(
+#     stat = "identity", 
+#     position = "dodge", 
+#     color = 'black', 
+#     linewidth = 0.01) +
+#   labs(title = "Police Lethal Uses of Force",
+#        subtitle = "Race of Victim. Years: [2015-2020]",
+#        y = "Proportion of Racial Group",
+#        x = "Race of Victim") +
+#   theme_light() + 
+#   theme(
+#     axis.text.x = element_text(color = "black"),
+#     panel.grid.major.x = element_blank()
+#   )
 
 ### Plot: proportion of income quintile  ####
-ggplot(
-  data = summary_tables$quiniles_race_victim,
-  aes(x = Income, y = Prop, fill = Race)) +
-  geom_bar(
-    stat = "identity", 
-    position = "dodge", 
-    color = 'black', 
-    linewidth = 0.01) +
-  labs(title = "Police Lethal Uses of Force",
-       subtitle = "Race of Victim. Years: [2015-2020]",
-       # y = "Proportion of Racial Group",
-       x = "Median Household Income") +
-  theme_classic() + 
-  theme(
-    axis.text.x = element_text(color = "black"),
-    panel.grid.major.x = element_blank())
+# ggplot(
+#   data = summary_tables$quiniles_race_victim,
+#   aes(x = Income, y = Prop, fill = Race)) +
+#   geom_bar(
+#     stat = "identity", 
+#     position = "dodge", 
+#     color = 'black', 
+#     linewidth = 0.01) +
+#   labs(title = "Police Lethal Uses of Force",
+#        subtitle = "Race of Victim. Years: [2015-2020]",
+#        # y = "Proportion of Racial Group",
+#        x = "Median Household Income") +
+#   theme_classic() + 
+#   theme(
+#     axis.text.x = element_text(color = "black"),
+#     panel.grid.major.x = element_blank())
 
 summary_tables$quiniles_race_victim <- 
   summary_tables$quiniles_race_victim |> 
@@ -1269,29 +1291,29 @@ summary_tables$quiniles_proportions_2 <-
       select(Income, Race, Prop)
   )
 
-ggplot(
-  data = summary_tables$quiniles_proportions_2,
-  aes(x = Income, y = Prop, fill = Race)) +
-  geom_bar(
-    stat = "identity", 
-    position = "dodge", 
-    color = 'black', 
-    linewidth = 0.01) +
-  labs(title = "Police Lethal Uses of Force",
-       subtitle = "Race of Victim. Years: [2015-2020]",
-       # y = "Proportion of Racial Group",
-       x = "Median Household Income") +
-  theme_classic() + 
-  theme(
-    axis.text.x = element_text(color = "black"),
-    panel.grid.major.x = element_blank())
-
-summary_tables$quiniles_race_victim <- 
-  summary_tables$quiniles_race_victim |> 
-  add_row(
-    summary_tables$summary_1 |> 
-      select(Income, Race = Majority,Killings_quintile = Killings) |> 
-      mutate(Total_Killed = sum(Killings_quintile)) |> 
-      mutate(Prop = Killings_quintile / Total_Killed) |> 
-      select(Income, Race, Prop)
-  )
+# ggplot(
+#   data = summary_tables$quiniles_proportions_2,
+#   aes(x = Income, y = Prop, fill = Race)) +
+#   geom_bar(
+#     stat = "identity", 
+#     position = "dodge", 
+#     color = 'black', 
+#     linewidth = 0.01) +
+#   labs(title = "Police Lethal Uses of Force",
+#        subtitle = "Race of Victim. Years: [2015-2020]",
+#        # y = "Proportion of Racial Group",
+#        x = "Median Household Income") +
+#   theme_classic() + 
+#   theme(
+#     axis.text.x = element_text(color = "black"),
+# #     panel.grid.major.x = element_blank())
+# 
+# summary_tables$quiniles_race_victim <- 
+#   summary_tables$quiniles_race_victim |> 
+#   add_row(
+#     summary_tables$summary_1 |> 
+#       select(Income, Race = Majority,Killings_quintile = Killings) |> 
+#       mutate(Total_Killed = sum(Killings_quintile)) |> 
+#       mutate(Prop = Killings_quintile / Total_Killed) |> 
+#       select(Income, Race, Prop)
+#   )
