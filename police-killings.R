@@ -616,6 +616,7 @@ ggplot(
   theme_classic() + 
   theme(
     axis.text.x = element_text(color = "black"),
+    axis.text.y = element_text(color = "black"),
     panel.grid.major.x = element_blank(),
     # panel.grid.minor.x = element_blank()
   )
@@ -671,7 +672,8 @@ plot$race_by_quintile <-
   theme_classic() + 
   theme(
     axis.text.x = element_text(color = "black"),
-    panel.grid.major.x = element_blank()
+    axis.text.y = element_text(color = "black")
+    # panel.grid.major.x = element_blank()
   )
 
 ggsave(
@@ -693,6 +695,8 @@ ggsave(
   # dpi = 320,
   scale = 1.84
 )
+
+
 
 # ################################### #
 # Plots using race of the victim ####
@@ -718,8 +722,6 @@ summary_tables$bin_table_race$Income <- as.numeric(summary_tables$bin_table_race
 
 # Plot quintiles of number of race of victim and quintile of census tract ####
 # they were killed in
-# 
-
 summary_tables$quiniles_race_victim <-  
   fatal_enc$joined |> 
   filter(
@@ -734,8 +736,6 @@ summary_tables$quiniles_race_victim <-
   select(-Killings)
 
 # Summary table for perentile bins by race ####
-
-
 # Not using this plot for now
 # plot$race_100 <- ggplot(
 #   summary_tables$bin_table_race, 
@@ -753,7 +753,7 @@ summary_tables$quiniles_race_victim <-
 #   scale_color_brewer(palette = "Dark2") +
 #   theme()
 
-# plot$race_100
+### plot$race_100 ####
 
 summary_tables$quintile_race_proportion <- 
   left_join(
