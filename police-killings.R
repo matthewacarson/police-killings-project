@@ -703,7 +703,7 @@ ggsave(
 # ################################### #
 
 ## ######################## #
-## Using 100 quantiles ####
+## Using 100 quantiles/percentiles ####
 ## ######################## #
 
 summary_tables$bin_table_race <-  
