@@ -64,6 +64,3 @@ plot$majority_race_100
     axis.text.x = element_text(color = 'black', vjust = 0.5),
     axis.text.y = element_text(color = 'black')
   )
-
-
-  
