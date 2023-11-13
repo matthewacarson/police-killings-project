@@ -262,14 +262,15 @@ fatal_enc$initial_clean_geoid <-
       duplicated(fatal_enc$initial_clean_geoid, fromLast = TRUE),
   ]
 
+fatal_enc$initial_clean_geoid$imputation_probability <- 
+  as.numeric(fatal_enc$initial_clean_geoid$imputation_probability)
+
 fatal_enc$joined <- 
   left_join(
     x = fatal_enc$initial_clean_geoid,
     y = all_tracts$income_population_quintiles_2020,
     by = "GEOID"
   )
-
-
 
 # 3_Summary Tables ####
 summary_tables <- list()
@@ -313,7 +314,7 @@ summary_tables$summary_1 |>
     aes(x = Annualized_Per_10_M, y = Income)
   ) +
   geom_bar(
-    stat = "identity", fill = "skyblue"
+    stat = "identity", fill = "skyblue", color = 'black'
   ) +
   labs(
     x = "Annual Rate Per 10 Million Population", 
@@ -380,7 +381,7 @@ summary_tables$majority_summary_1 |>
     aes(x = Annualized_Per_10_M, y = Majority)
   ) +
   geom_bar(
-    stat = "identity", fill = "skyblue"
+    stat = "identity", fill = "skyblue", color = 'black'
   ) +
   labs(
     x = "",
@@ -447,7 +448,7 @@ plot$income_quintiles_only_ind <-
     aes(x = Annualized_Per_10_M, y = Income)
   ) +
   geom_bar(
-    stat = "identity", fill = "skyblue"
+    stat = "identity", fill = "skyblue", color = 'black'
   ) +
   labs(
     x = "Annual Rate Per 10 Million Population", 
@@ -511,7 +512,7 @@ summary_tables$majority_summary_1 |>
     aes(x = Annualized_Per_10_M, y = Majority)
   ) +
   geom_bar(
-    stat = "identity", fill = "skyblue"
+    stat = "identity", fill = "skyblue", color = 'black'
   ) +
   labs(
     x = "",
@@ -642,7 +643,7 @@ ggsave(
 
 plot$bar_200_all <- 
 ggplot(summary_tables$bin_summary_1, aes(x = Income, y = Annualized_Per_10_M)) +
-  geom_bar(stat = 'identity', fill = 'lightblue3', width = .7) +
+  geom_bar(stat = 'identity', fill = 'lightblue3', width = .7, color = 'black') +
   geom_smooth(method = "loess", formula = y ~ x, color = "blue", se = TRUE) +
   labs(
     x = "Median Household Income in Census Tracts", 
@@ -1077,6 +1078,97 @@ fatal_enc$median_no_dupes <-
 #   scale = 1.84
 # )
 
+## Race of the victim only plot ####
+summary_tables$race_freq <- 
+  table(fatal_enc$joined$race_imputed) |> 
+    as.data.frame() |> 
+    rename(Race = Var1) |> 
+    filter(Race %in% c(
+        "African-American/Black",
+        "European-American/White",
+        "Hispanic/Latino")
+      ) |> mutate(
+        Prop = Freq / nrow(fatal_enc$joined),
+        Race =
+          case_when(
+            Race == "African-American/Black" ~ "Black",
+            Race == "European-American/White" ~ "White",
+            Race == "Hispanic/Latino" ~ "Latino"
+          )
+      )
+
+summary_tables$race_freq$Race <- factor(
+  x = summary_tables$race_freq$Race,
+  levels = c(
+    "White",
+    "Black",
+    "Latino"
+    )
+)
+
+write_csv(
+  x = summary_tables$race_freq,
+  file = "race_freq_table.csv")
+
+## Race only plot ####
+##
+plot$race_proportion_of_total <- 
+ggplot() +
+  geom_bar(
+    data = summary_tables$race_freq,
+    aes(
+      x = Race,
+      y = Prop,
+    ),
+    stat = 'identity',
+    width = 0.5,
+    fill = 'lightblue',
+    color = 'black'
+  ) + 
+  labs(
+    x = "", 
+    y = "Proportion of Total LUOFs",
+    title = "Police Lethal Uses of Force",
+    subtitle = "Race of Victim. Years: [2015-2020]"
+  ) + 
+  coord_flip() +
+  theme_light() +
+  theme(
+    axis.text.x = element_text(size = 12, color = "black"),
+    axis.text.y = element_text(size = 12, angle = 90, hjust = 0.5, color = 'black'),
+    axis.title.x = element_text(size = 13),
+    axis.title.y = element_text(size = 15),
+    plot.title = element_text(size = 18),
+    plot.subtitle = element_text(size = 14),
+    legend.key.size = unit(8, "mm"),
+    legend.title = element_text(size = 15),
+    legend.text = element_text(size = 12),
+    # plot.margin = unit(c(1, 1, 1, 0.5), "cm"),
+    # aspect.ratio = 0.75/2.5
+  ) + scale_y_continuous(breaks = seq(0, 0.5, 0.05))
+
+
+
+ggsave(
+  filename = "race_proportion_of_total.png",
+  plot = plot$race_proportion_of_total,
+  width = 1650 * 2,
+  height = 780 * 2,
+  units = "px",
+  dpi = 360,
+  # scale = 1
+)
+
+ggsave(
+  filename = "race_proportion_of_total.pdf",
+  plot = plot$race_proportion_of_total,
+  # width = 2300,
+  # height = 2000,
+  # units = "px",
+  # dpi = 320,
+  scale = 1.84
+)
+
 summary_tables$quiniles_race_victim <- 
   left_join(
     x = fatal_enc$joined |> 
@@ -1120,29 +1212,37 @@ summary_tables$quiniles_race_victim$Race <-
     summary_tables$quiniles_race_victim$Race, 
     levels = c("All", "African-American/Black",
                "European-American/White", "Hispanic/Latino"))
-plot$inc_and_race_victim <-  
+plot$inc_and_race_victim <- 
 ggplot(
   data = summary_tables$quiniles_race_victim,
   aes(x = Race, y = Prop, fill = Income)) +
   geom_bar(
     stat = "identity", 
-    position = "dodge", 
+    position = position_dodge(width = 0.9), 
     color = 'black', 
-    linewidth = 0.01) +
+    width = 0.8,
+    linewidth = 0.5) +
   labs(title = "Police Lethal Uses of Force",
        subtitle = "Years: [2015-2020]",
-       y = "Proportion of Racial Group",
+       y = "Proportion LUOF Within Each Racial Group",
        x = "Race of Victim") +
   theme_classic() + 
   theme(
-    axis.text.x = element_text(color = "black"),
-    panel.grid.major.x = element_blank())
-
+    axis.text.x = element_text(size = 12, color = "black"),
+    axis.text.y = element_text(size = 12, angle = 90, hjust = 0.5, color = 'black'),
+    axis.title.x = element_text(size = 15),
+    axis.title.y = element_text(size = 15),
+    plot.title = element_text(size = 18),
+    plot.subtitle = element_text(size = 14),
+    legend.key.size = unit(8, "mm"),
+    legend.title = element_text(size = 15),
+    legend.text = element_text(size = 12)
+  )
 ggsave(
   filename = "inc_and_race_victim.png",
   plot = plot$inc_and_race_victim,
-  width = 1650 * 2,
-  height = 780 * 2,
+  width = 1296 * 1.46,
+  height = 519 * 1.46,
   units = "px",
   dpi = 320,
   # scale = 1
@@ -1157,6 +1257,15 @@ ggsave(
   # dpi = 320,
   scale = 1.84
 )
+
+summary_tables$quiniles_race_victim[1:20,] |> 
+  mutate(Prop = round(Prop,digits = 3) * 100) |> 
+  pivot_wider(names_from = Race, values_from = Prop) |> 
+  mutate(
+    Income =
+      c("1st Quintile", "2nd Quintile", "3rd Quintile", 
+        "4th Quintile", "5th Quintile")
+    ) |> write_csv(file = "quiniles_race_victim.csv")
 ###
 ### Histograms #### 
 ### 
@@ -1269,7 +1378,7 @@ ggsave(
   # height = 2000,
   # units = "px",
   # dpi = 320,
-  scale = 1.84
+  # scale = 1.84
 )
 
 # Plot quintiles of number of race of victim and quintile of census tract ####
