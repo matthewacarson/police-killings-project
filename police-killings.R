@@ -71,11 +71,11 @@ all_tracts$quintiles_2020 <- quantile(
 )
 
 all_tracts$quintile_text <- c(
-  "1st Quintile\n(Lowest Income)",
+  "1st Quintile",
   "2nd Quintile",
   "3rd Quintile",
   "4th Quintile",
-  "5th Quintile\n(Highest Income)"
+  "5th Quintile"
 )
 
 all_tracts$income_population_quintiles_2020 <- 
@@ -1323,7 +1323,7 @@ summary_tables$bin_table_race <-
 
 summary_tables$bin_table_race$Income <- as.numeric(summary_tables$bin_table_race$Income)
 
-hist_all_fatal <-
+plot$hist_all_fatal <-
   ggplot() +
   geom_histogram(
     data = all_tracts$population_income2020 |>
@@ -1523,6 +1523,18 @@ summary_tables$quiniles_proportions_2 <-
       select(Income, Race, Prop)
   )
 
+all_tracts$income_population_LUOF_count$Income10k <- 
+  all_tracts$income_population_LUOF_count$IncomeE / 10000
+
+all_tracts$income_population_LUOF_count$Majority <-
+  ifelse(
+    is.na(all_tracts$income_population_LUOF_count$Majority),
+    "No Majority",
+    all_tracts$income_population_LUOF_count$Majority
+  )
+
+all_tracts$income_population_LUOF_count$Majority <- 
+  factor(all_tracts$income_population_LUOF_count$Majority, levels = c("White", "Hispanic/Latino", "Black", "No Majority"))
 # ggplot(
 #   data = summary_tables$quiniles_proportions_2,
 #   aes(x = Income, y = Prop, fill = Race)) +
@@ -1549,3 +1561,96 @@ summary_tables$quiniles_proportions_2 <-
 #       mutate(Prop = Killings_quintile / Total_Killed) |> 
 #       select(Income, Race, Prop)
 #   )
+
+
+# 5_Regression Models ####
+#
+
+
+## LUOF Frequency counts of each tract ####
+# Adding frequency of lethal use of force in each tract to
+# all_tracts
+
+all_tracts$income_population_LUOF_count <- 
+left_join(
+  x = all_tracts$income_population_quintiles_2020,
+  y = fatal_enc$joined |> 
+    count(GEOID) |> 
+    rename(LUOF_count = n),
+  by = "GEOID"
+) |> mutate(LUOF_count =
+  case_when(
+    is.na(LUOF_count) ~ 0,
+    TRUE ~ LUOF_count
+  )
+)
+
+all_tracts$income_population_LUOF_count$LUOF_logical <- as.logical(all_tracts$income_population_LUOF_count$LUOF_count)
+
+inc_in_LUOF_tracts <- 
+  all_tracts$income_population_LUOF_count$IncomeE[
+    all_tracts$income_population_LUOF_count$LUOF_logical
+]
+
+inc_in_nonLUOF_tracts <- 
+  all_tracts$income_population_LUOF_count$IncomeE[
+    !all_tracts$income_population_LUOF_count$LUOF_logical
+  ]
+
+qqnorm(inc_in_LUOF_tracts, pch = 16, col = 'dodgerblue')
+qqline(inc_in_LUOF_tracts, col = 'red', lwd = 2)
+
+qqnorm(inc_in_nonLUOF_tracts, pch = 16, col = 'green4')
+qqline(inc_in_nonLUOF_tracts, col = 'blue', lwd = 2)
+
+# t_test_inc <- 
+t.test(
+  inc_in_LUOF_tracts,
+  inc_in_nonLUOF_tracts
+)
+
+wilcox.test(
+  inc_in_LUOF_tracts,
+  inc_in_nonLUOF_tracts
+)
+
+# write_csv(x = all_tracts$income_population_LUOF_count, file = "income_population_LUOF_count.csv")
+
+lm_income <- 
+  lm(IncomeE ~ LUOF_logical,
+     data = all_tracts$income_population_LUOF_count)
+
+# plot(x = all_tracts$income_population_LUOF_count$IncomeE,
+#      y = all_tracts$income_population_LUOF_count$LUOF_logical)
+
+# abline(lm_income)
+summary(lm_income)
+# plot(lm_income)
+
+# Example assuming all_tracts$income_population_LUOF_count is your dataset
+poisson_model <- 
+  glm(LUOF_count ~ Income10k + Majority, 
+      data = all_tracts$income_population_LUOF_count, 
+      family = "poisson")
+
+# Display summary
+summary(poisson_model)
+
+logit_model <- 
+  glm(LUOF_logical ~ Income10k + Majority, 
+      data = all_tracts$income_population_LUOF_count, 
+      family = "binomial")
+
+summary(logit_model)
+# plot(logit_model)
+
+income_population_LUOF_deciles <- read_csv("C:/Users/madou/OneDrive - UCLA IT Services/PS-Honors/police-killings-github-project/income_population_LUOF_deciles.txt")
+income_population_LUOF_deciles |> 
+  group_by(Decile, Majority) |> 
+  summarise(prop = mean(LUOF_logical)) |> 
+  na.omit() |> 
+  pivot_wider(names_from = Majority, values_from = prop)
+
+
+
+
