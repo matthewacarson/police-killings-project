@@ -1888,10 +1888,13 @@ table(
   all_tracts$income_population_LUOF_count$LUOF_logical
 ))
 
-table(all_tracts$income_population_LUOF_count$Majority, all_tracts$income_population_LUOF_count$income_quartile)
 table(
-  all_tracts$income_population_LUOF_count$Majority,
   all_tracts$income_population_LUOF_count$income_quartile,
+  all_tracts$income_population_LUOF_count$Majority
+)
+table(
+  all_tracts$income_population_LUOF_count$income_quartile,
+  all_tracts$income_population_LUOF_count$Majority,
   all_tracts$income_population_LUOF_count$LUOF_logical, exclude = c(NA, FALSE)
 )
 
@@ -1899,7 +1902,7 @@ all_tracts$income_population_LUOF_count |>
   group_by(Majority, income_quartile) |> 
   count(LUOF_logical) |> 
   mutate(Proportion = n / sum(n)) |> 
-  filter(LUOF_logical) |> 
+  filter(LUOF_logical) |>
   select(-LUOF_logical, -n) |> 
   na.omit() |> 
   pivot_wider(names_from = Majority, 
@@ -1919,6 +1922,8 @@ income_population_LUOF_deciles |>
   na.omit() |> 
   pivot_wider(names_from = Majority, values_from = prop)
 
+
+
 ## Boxplots ####
 
 ggplot() + 
@@ -1927,8 +1932,28 @@ ggplot() +
     aes(x = LUOF_logical, y = IncomeE, color = Majority)) +
   coord_flip()
 
-ggplot() + 
-  geom_boxplot(
-    data = all_tracts$income_population_LUOF_count,
-    aes(x = Majority, y = IncomeE, color = LUOF_logical)) +
+ggplot(
+  data = all_tracts$income_population_LUOF_count,
+  aes(
+    x = Majority, 
+    y = IncomeE, 
+    # color = LUOF_logical,
+    fill = LUOF_logical
+  )) + 
+  geom_boxplot() +
   coord_flip()
+
+ggplot(
+  data = all_tracts$income_population_LUOF_count, 
+  aes(x = IncomeE, y = after_stat(density), fill = LUOF_logical)
+) +
+  geom_histogram(
+    alpha = 0.5,
+    position = "identity") +
+  facet_wrap(~Majority) +
+  theme_minimal()
+
+ggplot(data = all_tracts$income_population_LUOF_count, aes(x = IncomeE, fill = LUOF_logical, color = LUOF_logical)) +
+  geom_density(alpha = 0.5) +
+  facet_wrap(~Majority) +
+  theme_minimal()
