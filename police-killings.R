@@ -64,10 +64,40 @@
 
 ## Add quantile data to all_tracts ####
 
+### Tertiles ####
+all_tracts$tertiles_2020 <- quantile(
+  all_tracts$population_income2020$IncomeE, 
+  probs = seq(0, 1, by = (1/3)), na.rm = TRUE
+)
+all_tracts$income_population_quintiles_2020 <- 
+  all_tracts$income_population_quintiles_2020 |> 
+  mutate(income_tertile = cut(
+    IncomeE,
+    labels = 1:3,
+    breaks = all_tracts$tertiles_2020, 
+    include.lowest = TRUE,
+    # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
+  ))
+
+### Quartiles ####
+all_tracts$quartiles_2020 <- quantile(
+  all_tracts$population_income2020$IncomeE, 
+  probs = seq(0, 1, by = (1/4)), na.rm = TRUE
+)
+
+all_tracts$income_population_quintiles_2020 <- 
+  all_tracts$income_population_quintiles_2020 |> 
+  mutate(income_quartile = cut(
+    IncomeE,
+    labels = 1:4,
+    breaks = all_tracts$quartiles_2020, 
+    include.lowest = TRUE,
+    # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
+  ))
 ### Quintiles ####
 all_tracts$quintiles_2020 <- quantile(
   all_tracts$population_income2020$IncomeE, 
-  probs = seq(0, 1, by = 0.2), na.rm = TRUE
+  probs = seq(0, 1, by = (1/5)), na.rm = TRUE
 )
 
 all_tracts$quintile_text <- c(
@@ -88,6 +118,104 @@ all_tracts$income_population_quintiles_2020 <-
     # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
   ))
 
+
+all_tracts$sextile_2020 <- quantile(
+  all_tracts$population_income2020$IncomeE, 
+  probs = seq(0, 1, by = (1/6)), na.rm = TRUE
+)
+
+all_tracts$income_population_quintiles_2020 <- 
+  all_tracts$income_population_quintiles_2020 |> 
+  mutate(income_sextile = cut(
+    IncomeE,
+    labels = 1:6,
+    breaks = all_tracts$sextile_2020, 
+    include.lowest = TRUE,
+    # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
+  ))
+all_tracts$septile_2020 <- quantile(
+  all_tracts$population_income2020$IncomeE, 
+  probs = seq(0, 1, by = (1/7)), na.rm = TRUE
+)
+
+all_tracts$income_population_quintiles_2020 <- 
+  all_tracts$income_population_quintiles_2020 |> 
+  mutate(income_septile = cut(
+    IncomeE,
+    labels = 1:7,
+    breaks = all_tracts$septile_2020, 
+    include.lowest = TRUE,
+    # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
+  ))
+
+all_tracts$octile_2020 <- quantile(
+  all_tracts$population_income2020$IncomeE, 
+  probs = seq(0, 1, by = (1/8)), na.rm = TRUE
+)
+all_tracts$income_population_quintiles_2020 <- 
+  all_tracts$income_population_quintiles_2020 |> 
+  mutate(income_octile = cut(
+    IncomeE,
+    labels = 1:8,
+    breaks = all_tracts$octile_2020, 
+    include.lowest = TRUE,
+    # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
+  ))
+
+all_tracts$nonile_2020 <- quantile(
+  all_tracts$population_income2020$IncomeE, 
+  probs = seq(0, 1, by = (1/9)), na.rm = TRUE
+)
+all_tracts$income_population_quintiles_2020 <- 
+  all_tracts$income_population_quintiles_2020 |> 
+  mutate(income_nonile = cut(
+    IncomeE,
+    labels = 1:9,
+    breaks = all_tracts$nonile_2020, 
+    include.lowest = TRUE,
+    # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
+  ))
+
+all_tracts$decile_2020 <- quantile(
+  all_tracts$population_income2020$IncomeE, 
+  probs = seq(0, 1, by = (1/10)), na.rm = TRUE
+)
+all_tracts$income_population_quintiles_2020 <- 
+  all_tracts$income_population_quintiles_2020 |> 
+  mutate(income_decile = cut(
+    IncomeE,
+    labels = 1:10,
+    breaks = all_tracts$decile_2020, 
+    include.lowest = TRUE,
+    # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
+  ))
+all_tracts$ventile_2020 <- quantile(
+  all_tracts$population_income2020$IncomeE, 
+  probs = seq(0, 1, by = (1/20)), na.rm = TRUE
+)
+all_tracts$income_population_quintiles_2020 <- 
+  all_tracts$income_population_quintiles_2020 |> 
+  mutate(income_ventile = cut(
+    IncomeE,
+    labels = 1:20,
+    breaks = all_tracts$ventile_2020, 
+    include.lowest = TRUE,
+    # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
+  ))
+
+all_tracts$quantiles_50_2020 <- quantile(
+  all_tracts$population_income2020$IncomeE, 
+  probs = seq(0, 1, by = (1/50)), na.rm = TRUE
+)
+all_tracts$income_population_quintiles_2020 <- 
+  all_tracts$income_population_quintiles_2020 |> 
+  mutate(income_50_quantiles = cut(
+    IncomeE,
+    labels = 1:50,
+    breaks = all_tracts$quantiles_50_2020, 
+    include.lowest = TRUE,
+    # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
+  ))
 ### Divide into 200 quantiles ####
 all_tracts$two_hundred <- quantile(
   all_tracts$income_population_quintiles_2020$IncomeE, 
@@ -420,25 +548,25 @@ plot_grid(
   rel_heights = c(1, 1.25)
 )
 
-ggsave(
-  filename = "cp_race_income_separate.png",
-  plot = plot$cp_race_income_separate,
-  width = 2300*1.5,
-  height = 2000*1.5,
-  units = "px",
-  dpi = 320,
-  # scale = 1.5
-)
+# ggsave(
+#   filename = "cp_race_income_separate.png",
+#   plot = plot$cp_race_income_separate,
+#   width = 2300*1.5,
+#   height = 2000*1.5,
+#   units = "px",
+#   dpi = 320,
+#   # scale = 1.5
+# )
 
-ggsave(
-  filename = "cp_race_income_separate.pdf",
-  plot = plot$cp_race_income_separate,
-  width = 2300*1.5,
-  height = 2000*1.5,
-  units = "px",
-  # dpi = 320,
-  # scale = 1.5
-)
+# ggsave(
+#   filename = "cp_race_income_separate.pdf",
+#   plot = plot$cp_race_income_separate,
+#   width = 2300*1.5,
+#   height = 2000*1.5,
+#   units = "px",
+#   # dpi = 320,
+#   # scale = 1.5
+# )
 
 # Individual plot: Income Quintiles only ####
 plot$income_quintiles_only_ind <- 
@@ -484,25 +612,25 @@ plot$income_quintiles_only_ind <-
 # plot.title = element_text(size = 30),
 
 
-ggsave(
-  filename = "income_quintiles_only_ind.png",
-  plot = plot$income_quintiles_only_ind,
-  width = 2300*1.5,
-  height = 2000*1.5,
-  units = "px",
-  dpi = 320,
-  # scale = 1.5
-)
+# ggsave(
+#   filename = "income_quintiles_only_ind.png",
+#   plot = plot$income_quintiles_only_ind,
+#   width = 2300*1.5,
+#   height = 2000*1.5,
+#   units = "px",
+#   dpi = 320,
+#   # scale = 1.5
+# )
 
-ggsave(
-  filename = "income_quintiles_only_ind.pdf",
-  plot = plot$income_quintiles_only_ind,
-  width = 2300*1.5,
-  height = 2000*1.5,
-  units = "px",
-  # dpi = 320,
-  # scale = 1.5
-)
+# ggsave(
+#   filename = "income_quintiles_only_ind.pdf",
+#   plot = plot$income_quintiles_only_ind,
+#   width = 2300*1.5,
+#   height = 2000*1.5,
+#   units = "px",
+#   # dpi = 320,
+#   # scale = 1.5
+# )
 
 # Majority Race Plot (individual) ####
 plot$majority_race_only_ind <- 
@@ -541,25 +669,25 @@ summary_tables$majority_summary_1 |>
   # plot$majority_race_only
 
 
-ggsave(
-  filename = "majority_race_only_ind.png",
-  plot = plot$majority_race_only_ind,
-  width = 2300*1.5,
-  height = 2000*1.5,
-  units = "px",
-  dpi = 320,
-  # scale = 1.5
-)
+# ggsave(
+#   filename = "majority_race_only_ind.png",
+#   plot = plot$majority_race_only_ind,
+#   width = 2300*1.5,
+#   height = 2000*1.5,
+#   units = "px",
+#   dpi = 320,
+#   # scale = 1.5
+# )
 
-ggsave(
-  filename = "majority_race_only_ind.pdf",
-  plot = plot$majority_race_only_ind,
-  width = 2300*1.5,
-  height = 2000*1.5,
-  units = "px",
-  # dpi = 320,
-  # scale = 1.5
-)
+# ggsave(
+#   filename = "majority_race_only_ind.pdf",
+#   plot = plot$majority_race_only_ind,
+#   width = 2300*1.5,
+#   height = 2000*1.5,
+#   units = "px",
+#   # dpi = 320,
+#   # scale = 1.5
+# )
 
 
 
@@ -621,29 +749,29 @@ ggplot(summary_tables$bin_summary_1, aes(x = Income, y = Annualized_Per_10_M)) +
     axis.text.y = element_text(color = 'black')
   )
 
-ggsave(
-  filename = "all_200.png",
-  plot = plot$all_200,
-  width = 1650 * 2,
-  height = 780 * 2,
-  units = "px",
-  dpi = 320,
-  # scale = 1
-)
+# ggsave(
+#   filename = "all_200.png",
+#   plot = plot$all_200,
+#   width = 1650 * 2,
+#   height = 780 * 2,
+#   units = "px",
+#   dpi = 320,
+#   # scale = 1
+# )
 
-ggsave(
-  filename = "all_200.pdf",
-  plot = plot$all_200,
-  # width = 2300,
-  # height = 2000,
-  # units = "px",
-  # dpi = 320,
-  scale = 1.84
-)
+# ggsave(
+#   filename = "all_200.pdf",
+#   plot = plot$all_200,
+#   # width = 2300,
+#   # height = 2000,
+#   # units = "px",
+#   # dpi = 320,
+#   scale = 1.84
+# )
 
 plot$bar_200_all <- 
 ggplot(summary_tables$bin_summary_1, aes(x = Income, y = Annualized_Per_10_M)) +
-  geom_bar(stat = 'identity', fill = 'lightblue3', width = .7, color = 'black') +
+  geom_bar(stat = 'identity', fill = 'lightblue3', width = 1, color = 'black') +
   geom_smooth(method = "loess", formula = y ~ x, color = "blue", se = TRUE) +
   labs(
     x = "Median Household Income in Census Tracts", 
@@ -654,25 +782,25 @@ ggplot(summary_tables$bin_summary_1, aes(x = Income, y = Annualized_Per_10_M)) +
     axis.text.x = element_blank()
   )
 
-ggsave(
-  filename = "bar_200_all.png",
-  plot = plot$bar_200_all,
-  width = 1650 * 2,
-  height = 780 * 2,
-  units = "px",
-  dpi = 320,
-  # scale = 1
-)
+# ggsave(
+#   filename = "bar_200_all.png",
+#   plot = plot$bar_200_all,
+#   width = 1650 * 2,
+#   height = 780 * 2,
+#   units = "px",
+#   dpi = 320,
+#   # scale = 1
+# )
 
-ggsave(
-  filename = "bar_200_all.pdf",
-  plot = plot$bar_200_all,
-  # width = 2300,
-  # height = 2000,
-  # units = "px",
-  # dpi = 320,
-  scale = 1.84
-)
+# ggsave(
+#   filename = "bar_200_all.pdf",
+#   plot = plot$bar_200_all,
+#   # width = 2300,
+#   # height = 2000,
+#   # units = "px",
+#   # dpi = 320,
+#   scale = 1.84
+# )
 
 # ############################## #
 # Grouped by Race/Ethnicity ####
@@ -745,25 +873,25 @@ ggplot(
     # panel.grid.minor.x = element_blank()
   )
 
-ggsave(
-  filename = "quintile_by_race.png",
-  plot = plot$quintile_by_race,
-  width = 1650 * 2,
-  height = 780 * 2,
-  units = "px",
-  dpi = 320,
-  # scale = 1
-)
+# ggsave(
+#   filename = "quintile_by_race.png",
+#   plot = plot$quintile_by_race,
+#   width = 1650 * 2,
+#   height = 780 * 2,
+#   units = "px",
+#   dpi = 320,
+#   # scale = 1
+# )
 
-ggsave(
-  filename = "quintile_by_race.pdf",
-  plot = plot$quintile_by_race,
-  # width = 2300,
-  # height = 2000,
-  # units = "px",
-  # dpi = 320,
-  scale = 1.84
-)
+# ggsave(
+#   filename = "quintile_by_race.pdf",
+#   plot = plot$quintile_by_race,
+#   # width = 2300,
+#   # height = 2000,
+#   # units = "px",
+#   # dpi = 320,
+#   scale = 1.84
+# )
 
 # ############################### #
 # Grouped by Income Quintile ####
@@ -800,25 +928,25 @@ plot$race_by_quintile <-
     # panel.grid.major.x = element_blank()
   )
 
-ggsave(
-  filename = "race_by_quintile.png",
-  plot = plot$race_by_quintile,
-  width = 1650 * 2,
-  height = 780 * 2,
-  units = "px",
-  dpi = 320,
-  # scale = 1
-)
+# ggsave(
+#   filename = "race_by_quintile.png",
+#   plot = plot$race_by_quintile,
+#   width = 1650 * 2,
+#   height = 780 * 2,
+#   units = "px",
+#   dpi = 320,
+#   # scale = 1
+# )
 
-ggsave(
-  filename = "race_by_quintile.pdf",
-  plot = plot$race_by_quintile,
-  # width = 2300,
-  # height = 2000,
-  # units = "px",
-  # dpi = 320,
-  scale = 1.84
-)
+# ggsave(
+#   filename = "race_by_quintile.pdf",
+#   plot = plot$race_by_quintile,
+#   # width = 2300,
+#   # height = 2000,
+#   # units = "px",
+#   # dpi = 320,
+#   scale = 1.84
+# )
 
 
 
@@ -953,25 +1081,25 @@ plot$race_100_proportion <-
   scale_color_brewer(palette = "Dark2") +
   theme()
 
-ggsave(
-  filename = "race_100_proportion.png",
-  plot = plot$race_100_proportion,
-  width = 1650 * 2,
-  height = 780 * 2,
-  units = "px",
-  dpi = 320,
-  # scale = 1
-)
+# ggsave(
+#   filename = "race_100_proportion.png",
+#   plot = plot$race_100_proportion,
+#   width = 1650 * 2,
+#   height = 780 * 2,
+#   units = "px",
+#   dpi = 320,
+#   # scale = 1
+# )
 
-ggsave(
-  filename = "race_100_proportion.pdf",
-  plot = plot$race_100_proportion,
-  # width = 2300,
-  # height = 2000,
-  # units = "px",
-  # dpi = 320,
-  scale = 1.84
-)
+# ggsave(
+#   filename = "race_100_proportion.pdf",
+#   plot = plot$race_100_proportion,
+#   # width = 2300,
+#   # height = 2000,
+#   # units = "px",
+#   # dpi = 320,
+#   scale = 1.84
+# )
 
 # ########################################################## #
 ## Creating a data frame for tracts without fatal encounters ####
@@ -1149,25 +1277,25 @@ ggplot() +
 
 
 
-ggsave(
-  filename = "race_proportion_of_total.png",
-  plot = plot$race_proportion_of_total,
-  width = 1650 * 2,
-  height = 780 * 2,
-  units = "px",
-  dpi = 360,
+# ggsave(
+  # filename = "race_proportion_of_total.png",
+  # plot = plot$race_proportion_of_total,
+  # width = 1650 * 2,
+  # height = 780 * 2,
+  # units = "px",
+  # dpi = 360,
   # scale = 1
-)
+# )
 
-ggsave(
-  filename = "race_proportion_of_total.pdf",
-  plot = plot$race_proportion_of_total,
+# ggsave(
+  # filename = "race_proportion_of_total.pdf",
+  # plot = plot$race_proportion_of_total,
   # width = 2300,
   # height = 2000,
   # units = "px",
   # dpi = 320,
-  scale = 1.84
-)
+#   scale = 1.84
+# )
 
 summary_tables$quiniles_race_victim <- 
   left_join(
@@ -1238,25 +1366,25 @@ ggplot(
     legend.title = element_text(size = 15),
     legend.text = element_text(size = 12)
   )
-ggsave(
-  filename = "inc_and_race_victim.png",
-  plot = plot$inc_and_race_victim,
-  width = 1296 * 1.46,
-  height = 519 * 1.46,
-  units = "px",
-  dpi = 320,
+# ggsave(
+  # filename = "inc_and_race_victim.png",
+  # plot = plot$inc_and_race_victim,
+  # width = 1296 * 1.46,
+  # height = 519 * 1.46,
+  # units = "px",
+  # dpi = 320,
   # scale = 1
-)
+# )
 
-ggsave(
-  filename = "inc_and_race_victim.pdf",
-  plot = plot$inc_and_race_victim,
+# ggsave(
+  # filename = "inc_and_race_victim.pdf",
+  # plot = plot$inc_and_race_victim,
   # width = 2300,
   # height = 2000,
   # units = "px",
   # dpi = 320,
-  scale = 1.84
-)
+#   scale = 1.84
+# )
 
 summary_tables$quiniles_race_victim[1:20,] |> 
   mutate(Prop = round(Prop,digits = 3) * 100) |> 
@@ -1266,6 +1394,7 @@ summary_tables$quiniles_race_victim[1:20,] |>
       c("1st Quintile", "2nd Quintile", "3rd Quintile", 
         "4th Quintile", "5th Quintile")
     ) |> write_csv(file = "quiniles_race_victim.csv")
+
 ###
 ### Histograms #### 
 ### 
@@ -1361,25 +1490,72 @@ plot$hist_all_fatal <-
   scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 
-ggsave(
-  filename = "hist_all_fatal.png",
-  plot = plot$hist_all_fatal,
-  width = 1650 * 2,
-  height = 780 * 2,
-  units = "px",
-  dpi = 320,
+# ggsave(
+  # filename = "hist_all_fatal.png",
+  # plot = plot$hist_all_fatal,
+  # width = 1650 * 2,
+  # height = 780 * 2,
+  # units = "px",
+  # dpi = 320,
   # scale = 1
-)
+# )
 
-ggsave(
-  filename = "hist_all_fatal.pdf",
-  plot = plot$hist_all_fatal,
+# ggsave(
+  # filename = "hist_all_fatal.pdf",
+  # plot = plot$hist_all_fatal,
   # width = 2300,
   # height = 2000,
   # units = "px",
   # dpi = 320,
   # scale = 1.84
-)
+# )
+# 
+
+
+### Race Specific Histograms ####
+
+ggplot() +
+  geom_histogram(
+    data = all_tracts$income_population_quintiles_2020 |>
+      filter(!is.na(IncomeE) & Majority == "Black"),
+    aes(x = IncomeE, y = after_stat(density), fill = "All Tracts"),
+    alpha = alpha,
+    bins = 30
+  ) +
+  geom_histogram(
+    data = fatal_enc$joined |> filter(Majority == "Black"),
+    aes(x = IncomeE, y = after_stat(density), fill = "Lethal UOF"),
+    alpha = alpha,
+    bins = 30
+  )
+  # I need to fix so that it is median by race
+  # geom_vline(
+  #   aes(xintercept = all_tracts$median_income, color = "All Tracts"),
+  #   linetype = "dashed", linewidth = 1
+  # ) +
+  # geom_vline(
+  #   aes(xintercept = fatal_enc$median_income, color = "Lethal UOF"),
+  #   linetype = "solid", linewidth = 1) +
+  labs(
+    title = "Census Tract Median Household Income",
+    subtitle = "Lethal Uses of Force vs. All Tracts in the US",
+    x = "Income",
+    y = "Density",
+    fill = "Distributions") +
+  scale_color_manual(
+    name = "Medians",
+    values = c("Lethal UOF" = "blue3", "All Tracts" = "red3"),
+    guide = guide_legend(override.aes = list(linetype = c("dashed", "solid")))
+  ) +
+  theme_light() +
+  scale_fill_brewer(palette = "Set1") +
+  scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+
+
+
+
 
 # Plot quintiles of number of race of victim and quintile of census tract ####
 # they were killed in
@@ -1523,6 +1699,19 @@ summary_tables$quiniles_proportions_2 <-
       select(Income, Race, Prop)
   )
 
+all_tracts$income_population_LUOF_count <- 
+left_join(
+  x = all_tracts$income_population_quintiles_2020,
+  y = fatal_enc$joined |> 
+    count(GEOID) |> 
+    rename(LUOF_count = n),
+  by = "GEOID"
+) |> mutate(LUOF_count =
+  case_when(
+    is.na(LUOF_count) ~ 0,
+    TRUE ~ LUOF_count
+  )
+)
 all_tracts$income_population_LUOF_count$Income10k <- 
   all_tracts$income_population_LUOF_count$IncomeE / 10000
 
@@ -1571,21 +1760,9 @@ all_tracts$income_population_LUOF_count$Majority <-
 # Adding frequency of lethal use of force in each tract to
 # all_tracts
 
-all_tracts$income_population_LUOF_count <- 
-left_join(
-  x = all_tracts$income_population_quintiles_2020,
-  y = fatal_enc$joined |> 
-    count(GEOID) |> 
-    rename(LUOF_count = n),
-  by = "GEOID"
-) |> mutate(LUOF_count =
-  case_when(
-    is.na(LUOF_count) ~ 0,
-    TRUE ~ LUOF_count
-  )
-)
 
 all_tracts$income_population_LUOF_count$LUOF_logical <- as.logical(all_tracts$income_population_LUOF_count$LUOF_count)
+
 
 inc_in_LUOF_tracts <- 
   all_tracts$income_population_LUOF_count$IncomeE[
@@ -1597,11 +1774,12 @@ inc_in_nonLUOF_tracts <-
     !all_tracts$income_population_LUOF_count$LUOF_logical
   ]
 
-qqnorm(inc_in_LUOF_tracts, pch = 16, col = 'dodgerblue')
-qqline(inc_in_LUOF_tracts, col = 'red', lwd = 2)
 
-qqnorm(inc_in_nonLUOF_tracts, pch = 16, col = 'green4')
-qqline(inc_in_nonLUOF_tracts, col = 'blue', lwd = 2)
+# qqnorm(inc_in_LUOF_tracts, pch = 16, col = 'dodgerblue')
+# qqline(inc_in_LUOF_tracts, col = 'red', lwd = 2)
+# 
+# qqnorm(inc_in_nonLUOF_tracts, pch = 16, col = 'green4')
+# qqline(inc_in_nonLUOF_tracts, col = 'blue', lwd = 2)
 
 # t_test_inc <- 
 t.test(
@@ -1617,19 +1795,30 @@ wilcox.test(
 # write_csv(x = all_tracts$income_population_LUOF_count, file = "income_population_LUOF_count.csv")
 
 lm_income <- 
-  lm(IncomeE ~ LUOF_logical,
+  lm(IncomeE ~ LUOF_logical + LUOF_logical:Majority,
      data = all_tracts$income_population_LUOF_count)
-
 # plot(x = all_tracts$income_population_LUOF_count$IncomeE,
 #      y = all_tracts$income_population_LUOF_count$LUOF_logical)
 
 # abline(lm_income)
 summary(lm_income)
-# plot(lm_income)
+plot(lm_income)
+
+
+means_binary <- aggregate(IncomeE ~ LUOF_logical + Majority, data = all_tracts$income_population_LUOF_count, FUN = median) |> 
+  pivot_wider(names_from = Majority, values_from = IncomeE)
+
+means_binary_diff <- sapply(means_binary, function(x) x[2] - x[1])
+
+# Overall difference in medians
+overall_means_binary <- aggregate(IncomeE ~ LUOF_logical, data = all_tracts$income_population_LUOF_count, FUN = median)
+
+overall_means_binary_diff <- sapply(aggregate(IncomeE ~ LUOF_logical, data = all_tracts$income_population_LUOF_count, FUN = median), FUN = function(x) x[2] - x[1])
+
 
 # Example assuming all_tracts$income_population_LUOF_count is your dataset
 poisson_model <- 
-  glm(LUOF_count ~ Income10k + Majority, 
+  glm(LUOF_count ~ Income10k * Majority, 
       data = all_tracts$income_population_LUOF_count, 
       family = "poisson")
 
@@ -1637,20 +1826,109 @@ poisson_model <-
 summary(poisson_model)
 
 logit_model <- 
-  glm(LUOF_logical ~ Income10k + Majority, 
+  glm(LUOF_logical ~ income_quartile + income_quartile:Majority, 
       data = all_tracts$income_population_LUOF_count, 
       family = "binomial")
 
 summary(logit_model)
 # plot(logit_model)
 
+# predictions
+logit_prediction_df <- data.frame(
+  Majority = rep(levels(all_tracts$income_population_LUOF_count$Majority), each = 4),
+  income_quartile = as.factor(rep(seq(1, 4, by = 1), times = 4))
+  # Term = names(logit_model$coefficients)[-1]
+)
+
+logit_predictions <- data.frame(
+  logit_prediction_df,
+  Predicted_Probability = predict(
+    logit_model, 
+    newdata = logit_prediction_df,
+    type = 'response'
+  )
+)
+
+pivot_wider(logit_predictions, names_from = income_quartile, values_from = Predicted_Probability, names_prefix = "Income_Quartile")
+
+pivot_wider(logit_predictions, names_from = Majority, values_from = Predicted_Probability)
+
+odds_predictions <- data.frame(
+  logit_prediction_df,
+  Predicted_Odds = exp(predict(logit_model, newdata = logit_prediction_df, type = 'link'))
+)
+
+### Probability to odds ####
+
+prob_to_odds <- function(prob, log = FALSE) {
+  if (log) {
+    log(prob / (1 - prob))
+  } else {
+    prob / (1 - prob) 
+  }
+}
+
+odds_to_prob <- function(odds, log) {
+  if (!is.logical(log)) {
+    stop("Argument 'log' must be TRUE or FALSE")
+  }
+  if (log) {
+    odds <- exp(odds)
+    odds / (1 + odds)
+  } else {
+    odds / (1 + odds)
+  }
+}
+
+# Frequency/proportion tables ####
+prop.table(
+table(
+  all_tracts$income_population_LUOF_count$income_quartile,
+  all_tracts$income_population_LUOF_count$Majority,
+  all_tracts$income_population_LUOF_count$LUOF_logical
+))
+
+table(all_tracts$income_population_LUOF_count$Majority, all_tracts$income_population_LUOF_count$income_quartile)
+table(
+  all_tracts$income_population_LUOF_count$Majority,
+  all_tracts$income_population_LUOF_count$income_quartile,
+  all_tracts$income_population_LUOF_count$LUOF_logical, exclude = c(NA, FALSE)
+)
+
+all_tracts$income_population_LUOF_count |> 
+  group_by(Majority, income_quartile) |> 
+  count(LUOF_logical) |> 
+  mutate(Proportion = n / sum(n)) |> 
+  filter(LUOF_logical) |> 
+  select(-LUOF_logical, -n) |> 
+  na.omit() |> 
+  pivot_wider(names_from = Majority, 
+              values_from = Proportion)
+
+# pivot_wider(odds_predictions, names_from = Income10k, values_from = Predicted_Odds, names_prefix = "Inc10k*")
+
+# pivot_wider(odds_predictions, names_from = Majority, values_from = Predicted_Odds)
+
 income_population_LUOF_deciles <- read_csv("C:/Users/madou/OneDrive - UCLA IT Services/PS-Honors/police-killings-github-project/income_population_LUOF_deciles.txt")
+
+
+# Proportion of tracts that have experienced at least 1 LUOF
 income_population_LUOF_deciles |> 
   group_by(Decile, Majority) |> 
   summarise(prop = mean(LUOF_logical)) |> 
   na.omit() |> 
   pivot_wider(names_from = Majority, values_from = prop)
 
+## Boxplots ####
 
+ggplot() + 
+  geom_boxplot(
+    data = all_tracts$income_population_LUOF_count,
+    aes(x = LUOF_logical, y = IncomeE, color = Majority)) +
+  coord_flip()
 
-
+ggplot() + 
+  geom_boxplot(
+    data = all_tracts$income_population_LUOF_count,
+    aes(x = Majority, y = IncomeE, color = LUOF_logical)) +
+  coord_flip()
