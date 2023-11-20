@@ -912,7 +912,26 @@ summary_tables$quiniles_race_victim <-
   mutate(Killings_Per_Yr = Killings / 6) |> 
   select(-Killings)
 
+# Summary table for perentile bins by race ####
+# Not using this plot for now
+# plot$race_100 <- ggplot(
+#   summary_tables$bin_table_race, 
+#   aes(x = Income, y = Killings_Per_Yr, color = race_imputed)
+# ) +
+#   geom_point() +  
+#   geom_smooth(method = "loess", formula = y ~ x, se = F) + 
+#   labs(
+#     x = "Median Household Income in Census Tracts\n100 Quantiles", 
+#     y = "Number of Persons Killed", 
+#     title = "Lethal Uses of Force",
+#     color = "Race of Victim"
+#   ) + scale_x_continuous(breaks = seq(0, 100 , by = 5)) + 
+#   theme_light() +
+#   scale_color_brewer(palette = "Dark2") +
+#   theme()
+
 ### plot$race_100 ####
+
 summary_tables$quintile_race_proportion <- 
   left_join(
     x = fatal_enc$joined |> 
@@ -1015,6 +1034,71 @@ fatal_enc$median_no_dupes <-
     fatal_enc$fatal_enc_unique_id$IncomeE,
     na.rm = T)
 
+# Not using the unique histogram
+
+# Fatal encounters: remove duplicated GEOIDs
+# This is create a data frame that will include every tract that has had
+# at least one incident, rather than every incident.
+# This will make a better comparison between tracts with any incidents 
+# (regardless of how many) vs. tracts without any incidents
+# fatal_enc$fatal_enc_unique_id <- 
+#   fatal_enc$joined[
+#     !is.na(fatal_enc$joined$IncomeE) & !duplicated(fatal_enc$joined$GEOID),
+#   ]
+# alpha <- 0.5
+# 
+# hist_unique <- 
+#   ggplot() +
+#   geom_histogram(
+#     data = fatal_enc$fatal_enc_unique_id,
+#     aes(
+#       x = IncomeE,
+#       y = after_stat(density),
+#       fill = "Lethal UOF"
+#     ),
+#     alpha = alpha,
+#     bins = 30
+#   ) +
+#   geom_histogram(
+#     data = fatal_enc$no_fatal_enc |> 
+#       filter(!is.na(IncomeE)),
+#     aes(
+#       x = IncomeE, 
+#       y = after_stat(density),
+#       fill = "No Lethal UOF"
+#     ),
+#     alpha = alpha,
+#     bins = 30
+#   ) + 
+#   geom_vline(
+#     aes(
+#       xintercept = fatal_enc$no_fuof_median_income, 
+#       color = "No Lethal UOF"
+#     ), 
+#     linetype = "dashed", linewidth = 1
+#   ) +
+#   geom_vline(
+#     aes(
+#       xintercept = fatal_enc$median_no_dupes, 
+#       color = "Lethal UOF"
+#     ), 
+#     linetype = "solid", linewidth = 1) +
+#   labs(
+#     # title = "Income",
+#     x = "Income",
+#     y = "Density",
+#     fill = "Distributions") +
+#   scale_color_manual(
+#     name = "Medians", 
+#     values = c("No Lethal UOF" = "blue3", "Lethal UOF" = "red3"),
+#     guide = guide_legend(override.aes = list(linetype = c("dashed", "solid")))
+#   ) +
+#   theme_light() +
+#   scale_fill_brewer(palette = "Set1") +
+#   scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
+#   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, color = 'black'))
+
+
 ## Race of the victim only plot ####
 summary_tables$race_freq <- 
   table(fatal_enc$joined$race_imputed) |> 
@@ -1090,6 +1174,27 @@ ggsave(plot = plot$race_proportion_of_total,
        bg = 'white',
        width = 10.4,
        height = 4.81)
+
+
+# ggsave(
+  # filename = "race_proportion_of_total.png",
+  # plot = plot$race_proportion_of_total,
+  # width = 1650 * 2,
+  # height = 780 * 2,
+  # units = "px",
+  # dpi = 360,
+  # scale = 1
+# )
+
+# ggsave(
+  # filename = "race_proportion_of_total.pdf",
+  # plot = plot$race_proportion_of_total,
+  # width = 2300,
+  # height = 2000,
+  # units = "px",
+  # dpi = 320,
+#   scale = 1.84
+# )
 
 summary_tables$quiniles_race_victim <- 
   left_join(
@@ -1278,6 +1383,65 @@ ggsave(plot = plot$hist_all_fatal,
        height = 4.81)
 
 ### Race Specific Histograms ####
+
+ggplot() +
+  geom_histogram(
+    data = all_tracts$income_population_quintiles_2020 |>
+      filter(!is.na(IncomeE) & Majority == "Black"),
+    aes(x = IncomeE, y = after_stat(density), fill = "All Tracts"),
+    alpha = alpha,
+    bins = 30
+  ) +
+  geom_histogram(
+    data = fatal_enc$joined |> filter(Majority == "Black"),
+    aes(x = IncomeE, y = after_stat(density), fill = "Lethal UOF"),
+    alpha = alpha,
+    bins = 30
+  )
+  # I need to fix so that it is median by race
+  # geom_vline(
+  #   aes(xintercept = all_tracts$median_income, color = "All Tracts"),
+  #   linetype = "dashed", linewidth = 1
+  # ) +
+  # geom_vline(
+  #   aes(xintercept = fatal_enc$median_income, color = "Lethal UOF"),
+  #   linetype = "solid", linewidth = 1) +
+  labs(
+    title = "Census Tract Median Household Income",
+    subtitle = "Lethal Uses of Force vs. All Tracts in the US",
+    x = "Income",
+    y = "Density",
+    fill = "Distributions") +
+  scale_color_manual(
+    name = "Medians",
+    values = c("Lethal UOF" = "blue3", "All Tracts" = "red3"),
+    guide = guide_legend(override.aes = list(linetype = c("dashed", "solid")))
+  ) +
+  theme_light() +
+  scale_fill_brewer(palette = "Set1") +
+  scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+
+
+
+
+
+# Plot quintiles of number of race of victim and quintile of census tract ####
+# they were killed in
+# 
+# fatal_enc$joined |> 
+# filter(
+#   !is.na(income_quintiles) &
+#     race_imputed %in% c(
+#       "African-American/Black", 
+#       "European-American/White", 
+#       "Hispanic/Latino")) |>
+# count(Income = income_quintiles,Race = race_imputed) |> 
+# rename(Killings = n) |>
+# mutate(Killings_Per_Yr = Killings / 6) |> 
+# select(-Killings)
+
 summary_tables$quiniles_race_victim <- 
   left_join(
     x = fatal_enc$joined |> 
@@ -1313,6 +1477,51 @@ summary_tables$quiniles_race_victim <-
       mutate(Prop = Killings_quintile / Total_Killed) |> 
       select(Income, Race, Prop)
   )
+# summary_tables$race_and_income_summary
+
+### Reordering Race factors ####
+###
+# summary_tables$quiniles_race_victim$Race <- 
+#   factor(
+#     summary_tables$quiniles_race_victim$Race, 
+#     levels = c("All", "African-American/Black",
+#                "European-American/White", "Hispanic/Latino"))
+# 
+# ggplot(
+#   data = summary_tables$quiniles_race_victim,
+#   aes(x = Race, y = Prop, fill = Income)) +
+#   geom_bar(
+#     stat = "identity", 
+#     position = "dodge", 
+#     color = 'black', 
+#     linewidth = 0.01) +
+#   labs(title = "Police Lethal Uses of Force",
+#        subtitle = "Race of Victim. Years: [2015-2020]",
+#        y = "Proportion of Racial Group",
+#        x = "Race of Victim") +
+#   theme_light() + 
+#   theme(
+#     axis.text.x = element_text(color = "black"),
+#     panel.grid.major.x = element_blank()
+#   )
+
+### Plot: proportion of income quintile  ####
+# ggplot(
+#   data = summary_tables$quiniles_race_victim,
+#   aes(x = Income, y = Prop, fill = Race)) +
+#   geom_bar(
+#     stat = "identity", 
+#     position = "dodge", 
+#     color = 'black', 
+#     linewidth = 0.01) +
+#   labs(title = "Police Lethal Uses of Force",
+#        subtitle = "Race of Victim. Years: [2015-2020]",
+#        # y = "Proportion of Racial Group",
+#        x = "Median Household Income") +
+#   theme_classic() + 
+#   theme(
+#     axis.text.x = element_text(color = "black"),
+#     panel.grid.major.x = element_blank())
 
 summary_tables$quiniles_race_victim <- 
   summary_tables$quiniles_race_victim |> 
@@ -1385,22 +1594,56 @@ all_tracts$income_population_LUOF_count$Majority <-
 
 all_tracts$income_population_LUOF_count$Majority <- 
   factor(all_tracts$income_population_LUOF_count$Majority, levels = c("White", "Hispanic/Latino", "Black", "No Majority"))
+# ggplot(
+#   data = summary_tables$quiniles_proportions_2,
+#   aes(x = Income, y = Prop, fill = Race)) +
+#   geom_bar(
+#     stat = "identity", 
+#     position = "dodge", 
+#     color = 'black', 
+#     linewidth = 0.01) +
+#   labs(title = "Police Lethal Uses of Force",
+#        subtitle = "Race of Victim. Years: [2015-2020]",
+#        # y = "Proportion of Racial Group",
+#        x = "Median Household Income") +
+#   theme_classic() + 
+#   theme(
+#     axis.text.x = element_text(color = "black"),
+# #     panel.grid.major.x = element_blank())
+# 
+# summary_tables$quiniles_race_victim <- 
+#   summary_tables$quiniles_race_victim |> 
+#   add_row(
+#     summary_tables$summary_1 |> 
+#       select(Income, Race = Majority,Killings_quintile = Killings) |> 
+#       mutate(Total_Killed = sum(Killings_quintile)) |> 
+#       mutate(Prop = Killings_quintile / Total_Killed) |> 
+#       select(Income, Race, Prop)
+#   )
+
 
 # 5_Regression Models ####
 #
+
+
 ## LUOF Frequency counts of each tract ####
 # Adding frequency of lethal use of force in each tract to
 # all_tracts
 
+
 all_tracts$income_population_LUOF_count$LUOF_logical <- as.logical(all_tracts$income_population_LUOF_count$LUOF_count)
+
 
 inc_in_LUOF_tracts <- 
   all_tracts$income_population_LUOF_count$IncomeE[
-    all_tracts$income_population_LUOF_count$LUOF_logical]
+    all_tracts$income_population_LUOF_count$LUOF_logical
+]
 
 inc_in_nonLUOF_tracts <- 
   all_tracts$income_population_LUOF_count$IncomeE[
-    !all_tracts$income_population_LUOF_count$LUOF_logical]
+    !all_tracts$income_population_LUOF_count$LUOF_logical
+  ]
+
 
 # qqnorm(inc_in_LUOF_tracts, pch = 16, col = 'dodgerblue')
 # qqline(inc_in_LUOF_tracts, col = 'red', lwd = 2)
@@ -1411,11 +1654,13 @@ inc_in_nonLUOF_tracts <-
 # t_test_inc <- 
 t.test(
   inc_in_LUOF_tracts,
-  inc_in_nonLUOF_tracts)
+  inc_in_nonLUOF_tracts
+)
 
 wilcox.test(
   inc_in_LUOF_tracts,
-  inc_in_nonLUOF_tracts)
+  inc_in_nonLUOF_tracts
+)
 
 # write_csv(x = all_tracts$income_population_LUOF_count, file = "income_population_LUOF_count.csv")
 
@@ -1556,54 +1801,81 @@ income_population_LUOF_deciles |>
 #     aes(x = LUOF_logical, y = IncomeE, color = Majority)) +
 #   coord_flip()
 
-plot$boxplot_by_race <- 
-  ggplot(
-    data = all_tracts$income_population_LUOF_count,
-    aes(
-      x = Majority,
-      y = IncomeE,
-      # color = LUOF_logical,
-      fill = LUOF_logical
-    )) +
-    geom_boxplot() +
-    coord_flip() +
-    theme_cowplot() +
-    labs(
-      fill = "Lethal Use\nof Force",
-      y = "Median Household Income",
-      title = "Median Household Income in Census Tracts",
-      subtitle = "Tracts with a LUOF vs. Tracts without a LUOF.")
-
-ggsave(plot = plot$boxplot_by_race,
-       filename = '11-19-plots/boxplot_by_race.png', 
-       dpi = 'retina', 
-       bg = 'white',
-       width = 10.4,
-       height = 4.81)
+ggplot(
+  data = all_tracts$income_population_LUOF_count,
+  aes(
+    x = Majority,
+    y = IncomeE,
+    # color = LUOF_logical,
+    fill = LUOF_logical
+  )) +
+  geom_boxplot() +
+  coord_flip() +
+  theme_cowplot() +
+  labs(
+    fill = "Lethal Use\nof Force",
+    y = "Median Household Income",
+    title = "Median Household Income in Census Tracts",
+    subtitle = "Tracts with a LUOF vs. Tracts without a LUOF."
+  )
+ggsave(filename = 'boxplot.png', dpi = 'retina', bg = 'white')
 
 ## Density plot by race and LUOF ####
 ## (un-weighted income)
-plot$density_by_race <-
-  ggplot(
+ggplot(
+  data = all_tracts$income_population_LUOF_count, 
+  aes(x = IncomeE, fill = LUOF_logical, color = LUOF_logical)) +
+  geom_density(alpha = 0.5) +
+  facet_wrap(~Majority) +
+  theme_light() +
+  scale_fill_brewer(palette = "Set1") +
+  scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+## Histogram by race and LUOF ####
+## (un-weighted income)
+ggplot(
+  data = all_tracts$income_population_LUOF_count, 
+  aes(x = IncomeE, y = after_stat(density), fill = LUOF_logical)) +
+  geom_histogram(
+    alpha = 0.5,
+    position = "identity") +
+  facet_wrap(~Majority) +
+  theme_light() +
+  scale_fill_brewer(palette = "Set1") +
+  scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+## Histogram using "un-weighted" Income for LUOF ####
+median_no_LUOF <- median(
+    all_tracts$income_population_LUOF_count$IncomeE[
+      !all_tracts$income_population_LUOF_count$LUOF_logical], na.rm = T)
+median_LUOF <- median(
+    all_tracts$income_population_LUOF_count$IncomeE[
+      all_tracts$income_population_LUOF_count$LUOF_logical], na.rm = T)
+ggplot() +
+  geom_histogram(
     data = all_tracts$income_population_LUOF_count, 
-    aes(x = IncomeE, fill = LUOF_logical, color = LUOF_logical)) +
-    geom_density(alpha = 0.5) +
-    facet_wrap(~Majority, ) +
-    # theme_light() +
-    # scale_fill_brewer(palette = "Set1") +
-    scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
-    # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+    aes(x = IncomeE, y = after_stat(density), fill = LUOF_logical),
+    alpha = 0.4,
+    position = "identity") +
+  geom_vline(
+    aes(xintercept = median_LUOF, color = TRUE),
+    linetype = "solid", linewidth = 1, alpha = 1) +
+  geom_vline(
+    aes(xintercept = median_no_LUOF, color = FALSE),
+    linetype = "solid", linewidth = 1, alpha = 1) +
   labs(
     title = "Census Tract Median Household Income",
     subtitle = "Tracts with a lethal use of force vs. Tracts without a lethal use of force [2015-2020].",
     # caption = "[2015-2020]",
     # tag = "dgh",
-    x = "Median Household Income",
+    x = "Income",
     y = "Density") +
-  theme_bw() +
+  theme_light() +
   scale_fill_brewer(palette = "Set1", name = "Lethal Use\nof Force") +
   scale_color_brewer(palette = "Set1", name = "Lethal Use\nof Force") +
-  # scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
+  scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
   theme(
     axis.text.x = element_text(
       angle = 90, vjust = 0.5, color = 'black'),
@@ -1616,89 +1888,8 @@ plot$density_by_race <-
     axis.title.x = element_text(color = 'black'),
     axis.title.y = element_text(color = 'black'),
     legend.text = element_text(color = 'black'),
-    legend.title = element_text(color = 'black'),
-    strip.text = element_text(color = 'black', size = 12)
-  )
+    legend.title = element_text(color = 'black')
+    )
 
-ggsave(plot = plot$density_by_race,
-       filename = '11-19-plots/density_by_race.png', 
-       dpi = 'retina', 
-       bg = 'white',
-       width = 10.4,
-       height = 4.81)
-## Histogram by race and LUOF ####
-## (un-weighted income)
-plot$hist_unweighted_by_race <- 
-  ggplot(
-    data = all_tracts$income_population_LUOF_count, 
-    aes(x = IncomeE, y = after_stat(density), fill = LUOF_logical)) +
-    geom_histogram(
-      alpha = 0.5,
-      position = "identity") +
-    facet_wrap(~Majority) +
-    theme_light() +
-    scale_fill_brewer(palette = "Set1") +
-    scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
-ggsave(plot = plot$hist_unweighted_by_race,
-       filename = '11-19-plots/hist_unweighted_by_race.png', 
-       dpi = 'retina', 
-       bg = 'white',
-       width = 10.4,
-       height = 4.81)
-
-## Histogram using "un-weighted" Income for LUOF ####
-median_no_LUOF <- median(
-    all_tracts$income_population_LUOF_count$IncomeE[
-      !all_tracts$income_population_LUOF_count$LUOF_logical], na.rm = T)
-median_LUOF <- median(
-    all_tracts$income_population_LUOF_count$IncomeE[
-      all_tracts$income_population_LUOF_count$LUOF_logical], na.rm = T)
-
-
-plot$hist_unweighted <- 
-  ggplot() +
-    geom_histogram(
-      data = all_tracts$income_population_LUOF_count, 
-      aes(x = IncomeE, y = after_stat(density), fill = LUOF_logical),
-      alpha = 0.4,
-      position = "identity") +
-    geom_vline(
-      aes(xintercept = median_LUOF, color = TRUE),
-      linetype = "solid", linewidth = 1, alpha = 1) +
-    geom_vline(
-      aes(xintercept = median_no_LUOF, color = FALSE),
-      linetype = "solid", linewidth = 1, alpha = 1) +
-    labs(
-      title = "Census Tract Median Household Income",
-      subtitle = "Tracts with a lethal use of force vs. Tracts without a lethal use of force [2015-2020].",
-      # caption = "[2015-2020]",
-      # tag = "dgh",
-      x = "Income",
-      y = "Density") +
-    theme_light() +
-    scale_fill_brewer(palette = "Set1", name = "Lethal Use\nof Force") +
-    scale_color_brewer(palette = "Set1", name = "Lethal Use\nof Force") +
-    scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
-    theme(
-      axis.text.x = element_text(
-        angle = 90, vjust = 0.5, color = 'black'),
-      axis.text.y = element_text(
-        angle = 90, hjust = 0.5, color = 'black'),
-      # plot.caption = element_text(
-      #   vjust = 100, color = 'black'),
-      plot.title = element_text(color = 'black', face = "bold"),
-      plot.subtitle = element_text(color = 'black'),
-      axis.title.x = element_text(color = 'black'),
-      axis.title.y = element_text(color = 'black'),
-      legend.text = element_text(color = 'black'),
-      legend.title = element_text(color = 'black')
-      )
-ggsave(plot = plot$hist_unweighted,
-       filename = '11-19-plots/hist_unweighted.png', 
-       dpi = 'retina', 
-       bg = 'white',
-       width = 10.4,
-       height = 4.81)
 
 
