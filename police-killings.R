@@ -435,7 +435,7 @@ summary_tables$summary_1 <- summary_tables$summary_1 |>
 plot <- list()
 # Income Quintiles only ####
 ## Create quintile bar plot ####
-plot$income_quintiles_only <- 
+plot$income_quintiles_only <-
 summary_tables$summary_1 |> 
   ggplot(
     data = _, 
@@ -472,7 +472,13 @@ summary_tables$summary_1 |>
     # axis.title = element_text(size = 20),
     # plot.title = element_text(size = 30),
     # plot.subtitle = element_text(size = 20)
-
+ggsave(
+  plot = plot$income_quintiles_only,
+  filename = '11-19-plots/quintiles_only.png', 
+  dpi = 'retina', 
+  bg = 'white',
+  width = 10.4,
+  height = 4.81)
 
 
 # Majority Race ####
@@ -502,7 +508,7 @@ summary_tables$majority_summary_1 <-
   )
 
 # Majority Race Plot ####
-plot$majority_race_only <- 
+plot$majority_race_only <-
 summary_tables$majority_summary_1 |> 
   ggplot(
     data = _, 
@@ -530,7 +536,13 @@ summary_tables$majority_summary_1 |>
   scale_y_discrete(labels = c("Black", "Latino", "White"))
   # coord_flip()
   # scale_x_continuous(breaks = seq(0,70,10))
-# plot$majority_race_only
+ggsave(
+  plot = plot$majority_race_only,
+  filename = '11-19-plots/majority_race_only.png', 
+  dpi = 'retina', 
+  bg = 'white',
+  width = 10.4,
+  height = 4.81)
 
 ## Combining plots ####
 
@@ -547,26 +559,13 @@ plot_grid(
   nrow = 2,
   rel_heights = c(1, 1.25)
 )
-
-# ggsave(
-#   filename = "cp_race_income_separate.png",
-#   plot = plot$cp_race_income_separate,
-#   width = 2300*1.5,
-#   height = 2000*1.5,
-#   units = "px",
-#   dpi = 320,
-#   # scale = 1.5
-# )
-
-# ggsave(
-#   filename = "cp_race_income_separate.pdf",
-#   plot = plot$cp_race_income_separate,
-#   width = 2300*1.5,
-#   height = 2000*1.5,
-#   units = "px",
-#   # dpi = 320,
-#   # scale = 1.5
-# )
+ggsave(
+  plot = plot$cp_race_income_separate,
+  filename = '11-19-plots/cp_race_income_separate.png', 
+  dpi = 'retina', 
+  bg = 'white',
+  width = 10.4,
+  height = 4.81)
 
 # Individual plot: Income Quintiles only ####
 plot$income_quintiles_only_ind <- 
@@ -610,27 +609,13 @@ plot$income_quintiles_only_ind <-
   # plot.subtitle = element_text(size = 20)
 # axis.title = element_text(size = 20),
 # plot.title = element_text(size = 30),
-
-
-# ggsave(
-#   filename = "income_quintiles_only_ind.png",
-#   plot = plot$income_quintiles_only_ind,
-#   width = 2300*1.5,
-#   height = 2000*1.5,
-#   units = "px",
-#   dpi = 320,
-#   # scale = 1.5
-# )
-
-# ggsave(
-#   filename = "income_quintiles_only_ind.pdf",
-#   plot = plot$income_quintiles_only_ind,
-#   width = 2300*1.5,
-#   height = 2000*1.5,
-#   units = "px",
-#   # dpi = 320,
-#   # scale = 1.5
-# )
+ggsave(
+  plot = plot$income_quintiles_only_ind,
+  filename = '11-19-plots/income_quintiles_only_ind.png', 
+  dpi = 'retina', 
+  bg = 'white',
+  width = 10.4,
+  height = 4.81)
 
 # Majority Race Plot (individual) ####
 plot$majority_race_only_ind <- 
@@ -667,29 +652,13 @@ summary_tables$majority_summary_1 |>
   # coord_flip()
   # scale_x_continuous(breaks = seq(0,70,10))
   # plot$majority_race_only
-
-
-# ggsave(
-#   filename = "majority_race_only_ind.png",
-#   plot = plot$majority_race_only_ind,
-#   width = 2300*1.5,
-#   height = 2000*1.5,
-#   units = "px",
-#   dpi = 320,
-#   # scale = 1.5
-# )
-
-# ggsave(
-#   filename = "majority_race_only_ind.pdf",
-#   plot = plot$majority_race_only_ind,
-#   width = 2300*1.5,
-#   height = 2000*1.5,
-#   units = "px",
-#   # dpi = 320,
-#   # scale = 1.5
-# )
-
-
+ggsave(
+  plot = plot$majority_race_only_ind,
+  filename = '11-19-plots/majority_race_only_ind.png', 
+  dpi = 'retina', 
+  bg = 'white',
+  width = 10.4,
+  height = 4.81)
 
 # Tables for 200 bins ####
 summary_tables$bin_table_1 <-  fatal_enc$joined |> 
@@ -734,9 +703,12 @@ summary_tables$bin_summary_1$Income <- as.numeric(summary_tables$bin_summary_1$I
 # cor(x = summary_tables$bin_summary_1$Income, y = summary_tables$bin_summary_1$Annualized_Per_10_M)
 ## Plot for 200 quantiles ####
 plot$all_200 <- 
-ggplot(summary_tables$bin_summary_1, aes(x = Income, y = Annualized_Per_10_M)) +
+ggplot(
+  summary_tables$bin_summary_1, 
+  aes(x = Income, y = Annualized_Per_10_M)) +
   geom_point() +  
-  geom_smooth(method = "loess", formula = y ~ x, color = "blue", se = TRUE) + 
+  geom_smooth(
+    method = "loess", formula = y ~ x, color = "blue", se = TRUE) + 
   labs(
     x = "Median Household Income in Census Tracts\n200 Quantiles", 
     y = "Per 10 Million Population (Annualized)", 
@@ -748,31 +720,22 @@ ggplot(summary_tables$bin_summary_1, aes(x = Income, y = Annualized_Per_10_M)) +
     axis.text.x = element_text(color = 'black', vjust = 0.5),
     axis.text.y = element_text(color = 'black')
   )
-
-# ggsave(
-#   filename = "all_200.png",
-#   plot = plot$all_200,
-#   width = 1650 * 2,
-#   height = 780 * 2,
-#   units = "px",
-#   dpi = 320,
-#   # scale = 1
-# )
-
-# ggsave(
-#   filename = "all_200.pdf",
-#   plot = plot$all_200,
-#   # width = 2300,
-#   # height = 2000,
-#   # units = "px",
-#   # dpi = 320,
-#   scale = 1.84
-# )
+ggsave(
+  plot = plot$all_200,
+  filename = '11-19-plots/all_200.png', 
+  dpi = 'retina', 
+  bg = 'white',
+  width = 10.4,
+  height = 4.81)
 
 plot$bar_200_all <- 
-ggplot(summary_tables$bin_summary_1, aes(x = Income, y = Annualized_Per_10_M)) +
-  geom_bar(stat = 'identity', fill = 'lightblue3', width = 1, color = 'black') +
-  geom_smooth(method = "loess", formula = y ~ x, color = "blue", se = TRUE) +
+ggplot(
+  summary_tables$bin_summary_1, 
+  aes(x = Income, y = Annualized_Per_10_M)) +
+  geom_bar(
+    stat = 'identity', fill = 'lightblue3', width = 1, color = 'black') +
+  geom_smooth(
+    method = "loess", formula = y ~ x, color = "blue", se = TRUE) +
   labs(
     x = "Median Household Income in Census Tracts", 
     y = "Per 10 Million Population (Annualized)", 
@@ -782,25 +745,13 @@ ggplot(summary_tables$bin_summary_1, aes(x = Income, y = Annualized_Per_10_M)) +
     axis.text.x = element_blank()
   )
 
-# ggsave(
-#   filename = "bar_200_all.png",
-#   plot = plot$bar_200_all,
-#   width = 1650 * 2,
-#   height = 780 * 2,
-#   units = "px",
-#   dpi = 320,
-#   # scale = 1
-# )
-
-# ggsave(
-#   filename = "bar_200_all.pdf",
-#   plot = plot$bar_200_all,
-#   # width = 2300,
-#   # height = 2000,
-#   # units = "px",
-#   # dpi = 320,
-#   scale = 1.84
-# )
+ggsave(
+  plot = plot$bar_200_all,
+  filename = '11-19-plots/bar_200_all.png', 
+  dpi = 'retina', 
+  bg = 'white',
+  width = 10.4,
+  height = 4.81)
 
 # ############################## #
 # Grouped by Race/Ethnicity ####
@@ -873,26 +824,13 @@ ggplot(
     # panel.grid.minor.x = element_blank()
   )
 
-# ggsave(
-#   filename = "quintile_by_race.png",
-#   plot = plot$quintile_by_race,
-#   width = 1650 * 2,
-#   height = 780 * 2,
-#   units = "px",
-#   dpi = 320,
-#   # scale = 1
-# )
-
-# ggsave(
-#   filename = "quintile_by_race.pdf",
-#   plot = plot$quintile_by_race,
-#   # width = 2300,
-#   # height = 2000,
-#   # units = "px",
-#   # dpi = 320,
-#   scale = 1.84
-# )
-
+ggsave(
+  plot = plot$quintile_by_race,
+  filename = '11-19-plots/quintile_by_race.png', 
+  dpi = 'retina', 
+  bg = 'white',
+  width = 10.4,
+  height = 4.81)
 # ############################### #
 # Grouped by Income Quintile ####
 # ############################### #
@@ -927,26 +865,13 @@ plot$race_by_quintile <-
     axis.text.y = element_text(color = "black")
     # panel.grid.major.x = element_blank()
   )
-
-# ggsave(
-#   filename = "race_by_quintile.png",
-#   plot = plot$race_by_quintile,
-#   width = 1650 * 2,
-#   height = 780 * 2,
-#   units = "px",
-#   dpi = 320,
-#   # scale = 1
-# )
-
-# ggsave(
-#   filename = "race_by_quintile.pdf",
-#   plot = plot$race_by_quintile,
-#   # width = 2300,
-#   # height = 2000,
-#   # units = "px",
-#   # dpi = 320,
-#   scale = 1.84
-# )
+ggsave(
+  plot = plot$race_by_quintile,
+  filename = '11-19-plots/race_by_quintile.png', 
+  dpi = 'retina', 
+  bg = 'white',
+  width = 10.4,
+  height = 4.81)
 
 
 
@@ -1081,33 +1006,20 @@ plot$race_100_proportion <-
   scale_color_brewer(palette = "Dark2") +
   theme()
 
-# ggsave(
-#   filename = "race_100_proportion.png",
-#   plot = plot$race_100_proportion,
-#   width = 1650 * 2,
-#   height = 780 * 2,
-#   units = "px",
-#   dpi = 320,
-#   # scale = 1
-# )
-
-# ggsave(
-#   filename = "race_100_proportion.pdf",
-#   plot = plot$race_100_proportion,
-#   # width = 2300,
-#   # height = 2000,
-#   # units = "px",
-#   # dpi = 320,
-#   scale = 1.84
-# )
+ggsave(
+  plot = plot$race_100_proportion,
+  filename = '11-19-plots/race_100_proportion.png', 
+  dpi = 'retina', 
+  bg = 'white',
+  width = 10.4,
+  height = 4.81)
 
 # ########################################################## #
 ## Creating a data frame for tracts without fatal encounters ####
 # ########################################################## #
 fatal_enc$no_fatal_enc <- 
   all_tracts$population_income2020[
-    !all_tracts$population_income2020$GEOID %in% fatal_enc$joined$GEOID,
-  ]
+    !all_tracts$population_income2020$GEOID %in% fatal_enc$joined$GEOID,]
 
 fatal_enc$no_fuof_median_income <- median(
   fatal_enc$no_fatal_enc$IncomeE, 
@@ -1185,26 +1097,7 @@ fatal_enc$median_no_dupes <-
 #   scale_fill_brewer(palette = "Set1") +
 #   scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
 #   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, color = 'black'))
-# 
-# ggsave(
-#   filename = "hist_unique.png",
-#   plot = plot$hist_unique,
-#   width = 1650 * 2,
-#   height = 780 * 2,
-#   units = "px",
-#   dpi = 320,
-#   # scale = 1
-# )
-# 
-# ggsave(
-#   filename = "hist_unique.pdf",
-#   plot = plot$hist_unique,
-#   # width = 2300,
-#   # height = 2000,
-#   # units = "px",
-#   # dpi = 320,
-#   scale = 1.84
-# )
+
 
 ## Race of the victim only plot ####
 summary_tables$race_freq <- 
@@ -1234,9 +1127,9 @@ summary_tables$race_freq$Race <- factor(
     )
 )
 
-write_csv(
-  x = summary_tables$race_freq,
-  file = "race_freq_table.csv")
+# write_csv(
+#   x = summary_tables$race_freq,
+#   file = "race_freq_table.csv")
 
 ## Race only plot ####
 ##
@@ -1275,6 +1168,12 @@ ggplot() +
     # aspect.ratio = 0.75/2.5
   ) + scale_y_continuous(breaks = seq(0, 0.5, 0.05))
 
+ggsave(plot = plot$race_proportion_of_total,
+       filename = '11-19-plots/race_proportion_of_total.png', 
+       dpi = 'retina', 
+       bg = 'white',
+       width = 10.4,
+       height = 4.81)
 
 
 # ggsave(
@@ -1364,27 +1263,13 @@ ggplot(
     plot.subtitle = element_text(size = 14),
     legend.key.size = unit(8, "mm"),
     legend.title = element_text(size = 15),
-    legend.text = element_text(size = 12)
-  )
-# ggsave(
-  # filename = "inc_and_race_victim.png",
-  # plot = plot$inc_and_race_victim,
-  # width = 1296 * 1.46,
-  # height = 519 * 1.46,
-  # units = "px",
-  # dpi = 320,
-  # scale = 1
-# )
-
-# ggsave(
-  # filename = "inc_and_race_victim.pdf",
-  # plot = plot$inc_and_race_victim,
-  # width = 2300,
-  # height = 2000,
-  # units = "px",
-  # dpi = 320,
-#   scale = 1.84
-# )
+    legend.text = element_text(size = 12))
+ggsave(plot = plot$inc_and_race_victim,
+       filename = '11-19-plots/inc_and_race_victim.png', 
+       dpi = 'retina', 
+       bg = 'white',
+       width = 10.4,
+       height = 4.81)
 
 summary_tables$quiniles_race_victim[1:20,] |> 
   mutate(Prop = round(Prop,digits = 3) * 100) |> 
@@ -1395,8 +1280,8 @@ summary_tables$quiniles_race_victim[1:20,] |>
         "4th Quintile", "5th Quintile")
     ) |> write_csv(file = "quiniles_race_victim.csv")
 
-###
-### Histograms #### 
+# Histograms ####
+## Histogram prep #### 
 ### 
 summary_tables$quiniles_race_victim <-  
   fatal_enc$joined |> 
@@ -1452,6 +1337,7 @@ summary_tables$bin_table_race <-
 
 summary_tables$bin_table_race$Income <- as.numeric(summary_tables$bin_table_race$Income)
 
+## Plot Histograms ####
 plot$hist_all_fatal <-
   ggplot() +
   geom_histogram(
@@ -1489,28 +1375,12 @@ plot$hist_all_fatal <-
   scale_fill_brewer(palette = "Set1") +
   scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
-
-# ggsave(
-  # filename = "hist_all_fatal.png",
-  # plot = plot$hist_all_fatal,
-  # width = 1650 * 2,
-  # height = 780 * 2,
-  # units = "px",
-  # dpi = 320,
-  # scale = 1
-# )
-
-# ggsave(
-  # filename = "hist_all_fatal.pdf",
-  # plot = plot$hist_all_fatal,
-  # width = 2300,
-  # height = 2000,
-  # units = "px",
-  # dpi = 320,
-  # scale = 1.84
-# )
-# 
-
+ggsave(plot = plot$hist_all_fatal,
+       filename = '11-19-plots/hist_all_fatal.png', 
+       dpi = 'retina', 
+       bg = 'white',
+       width = 10.4,
+       height = 4.81)
 
 ### Race Specific Histograms ####
 
@@ -1527,7 +1397,7 @@ ggplot() +
     aes(x = IncomeE, y = after_stat(density), fill = "Lethal UOF"),
     alpha = alpha,
     bins = 30
-  )
+  ) +
   # I need to fix so that it is median by race
   # geom_vline(
   #   aes(xintercept = all_tracts$median_income, color = "All Tracts"),
@@ -1925,35 +1795,101 @@ income_population_LUOF_deciles |>
 
 
 ## Boxplots ####
-
-ggplot() + 
-  geom_boxplot(
-    data = all_tracts$income_population_LUOF_count,
-    aes(x = LUOF_logical, y = IncomeE, color = Majority)) +
-  coord_flip()
+# ggplot() + 
+#   geom_boxplot(
+#     data = all_tracts$income_population_LUOF_count,
+#     aes(x = LUOF_logical, y = IncomeE, color = Majority)) +
+#   coord_flip()
 
 ggplot(
   data = all_tracts$income_population_LUOF_count,
   aes(
-    x = Majority, 
-    y = IncomeE, 
+    x = Majority,
+    y = IncomeE,
     # color = LUOF_logical,
     fill = LUOF_logical
-  )) + 
+  )) +
   geom_boxplot() +
-  coord_flip()
+  coord_flip() +
+  theme_cowplot() +
+  labs(
+    fill = "Lethal Use\nof Force",
+    y = "Median Household Income",
+    title = "Median Household Income in Census Tracts",
+    subtitle = "Tracts with a LUOF vs. Tracts without a LUOF."
+  )
+ggsave(filename = 'boxplot.png', dpi = 'retina', bg = 'white')
 
+## Density plot by race and LUOF ####
+## (un-weighted income)
 ggplot(
   data = all_tracts$income_population_LUOF_count, 
-  aes(x = IncomeE, y = after_stat(density), fill = LUOF_logical)
-) +
+  aes(x = IncomeE, fill = LUOF_logical, color = LUOF_logical)) +
+  geom_density(alpha = 0.5) +
+  facet_wrap(~Majority) +
+  theme_light() +
+  scale_fill_brewer(palette = "Set1") +
+  scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+## Histogram by race and LUOF ####
+## (un-weighted income)
+ggplot(
+  data = all_tracts$income_population_LUOF_count, 
+  aes(x = IncomeE, y = after_stat(density), fill = LUOF_logical)) +
   geom_histogram(
     alpha = 0.5,
     position = "identity") +
   facet_wrap(~Majority) +
-  theme_minimal()
+  theme_light() +
+  scale_fill_brewer(palette = "Set1") +
+  scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 
-ggplot(data = all_tracts$income_population_LUOF_count, aes(x = IncomeE, fill = LUOF_logical, color = LUOF_logical)) +
-  geom_density(alpha = 0.5) +
-  facet_wrap(~Majority) +
-  theme_minimal()
+## Histogram using "un-weighted" Income for LUOF ####
+median_no_LUOF <- median(
+    all_tracts$income_population_LUOF_count$IncomeE[
+      !all_tracts$income_population_LUOF_count$LUOF_logical], na.rm = T)
+median_LUOF <- median(
+    all_tracts$income_population_LUOF_count$IncomeE[
+      all_tracts$income_population_LUOF_count$LUOF_logical], na.rm = T)
+ggplot() +
+  geom_histogram(
+    data = all_tracts$income_population_LUOF_count, 
+    aes(x = IncomeE, y = after_stat(density), fill = LUOF_logical),
+    alpha = 0.4,
+    position = "identity") +
+  geom_vline(
+    aes(xintercept = median_LUOF, color = TRUE),
+    linetype = "solid", linewidth = 1, alpha = 1) +
+  geom_vline(
+    aes(xintercept = median_no_LUOF, color = FALSE),
+    linetype = "solid", linewidth = 1, alpha = 1) +
+  labs(
+    title = "Census Tract Median Household Income",
+    subtitle = "Tracts with a lethal use of force vs. Tracts without a lethal use of force [2015-2020].",
+    # caption = "[2015-2020]",
+    # tag = "dgh",
+    x = "Income",
+    y = "Density") +
+  theme_light() +
+  scale_fill_brewer(palette = "Set1", name = "Lethal Use\nof Force") +
+  scale_color_brewer(palette = "Set1", name = "Lethal Use\nof Force") +
+  scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
+  theme(
+    axis.text.x = element_text(
+      angle = 90, vjust = 0.5, color = 'black'),
+    axis.text.y = element_text(
+      angle = 90, hjust = 0.5, color = 'black'),
+    # plot.caption = element_text(
+    #   vjust = 100, color = 'black'),
+    plot.title = element_text(color = 'black', face = "bold"),
+    plot.subtitle = element_text(color = 'black'),
+    axis.title.x = element_text(color = 'black'),
+    axis.title.y = element_text(color = 'black'),
+    legend.text = element_text(color = 'black'),
+    legend.title = element_text(color = 'black')
+    )
+
+
+
