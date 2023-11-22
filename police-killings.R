@@ -1,6 +1,6 @@
 
 
-# Note: Instead of running from the top (many operations take too long, start at 3_Summary Tables)
+# Note: Instead of running from the top (many operations take too long), start at 3_Summary Tables
 
 # setwd(
 #   "C:/Users/madou/OneDrive - UCLA IT Services/PS-Honors/police-killings-github")
@@ -15,9 +15,9 @@
 # Download and clean tract income ####
 
 # all_tracts <- list()
-
-## Download 2020 tract data ####
-
+# 
+# ## Download 2020 tract data ####
+# 
 # all_tracts$population_income2020 <- get_acs(
 #   geography = "tract",
 #   variables = c(
@@ -57,16 +57,16 @@
 # )
 
 # Filter tracts with NA income values ####
+load("acs_2019_2020_raw.Rdata")
+all_tracts$income_population_quintiles_2020 <- st_drop_geometry(all_tracts$population_income2020)
 
-# all_tracts$income_population_quintiles_2020 <- st_drop_geometry(all_tracts$population_income2020)
-
-# all_tracts$income_population_quintiles_2020 <- all_tracts$income_population_quintiles_2020[!is.na(all_tracts$income_population_quintiles_2020$IncomeE),]
+all_tracts$income_population_quintiles_2020 <- all_tracts$income_population_quintiles_2020[!is.na(all_tracts$income_population_quintiles_2020$IncomeE),]
 
 ## Add quantile data to all_tracts ####
 
 ### Tertiles ####
 all_tracts$tertiles_2020 <- quantile(
-  all_tracts$population_income2020$IncomeE, 
+  all_tracts$income_population_quintiles_2020$IncomeE, 
   probs = seq(0, 1, by = (1/3)), na.rm = TRUE
 )
 all_tracts$income_population_quintiles_2020 <- 
@@ -81,7 +81,7 @@ all_tracts$income_population_quintiles_2020 <-
 
 ### Quartiles ####
 all_tracts$quartiles_2020 <- quantile(
-  all_tracts$population_income2020$IncomeE, 
+  all_tracts$income_population_quintiles_2020$IncomeE, 
   probs = seq(0, 1, by = (1/4)), na.rm = TRUE
 )
 
@@ -96,7 +96,7 @@ all_tracts$income_population_quintiles_2020 <-
   ))
 ### Quintiles ####
 all_tracts$quintiles_2020 <- quantile(
-  all_tracts$population_income2020$IncomeE, 
+  all_tracts$income_population_quintiles_2020$IncomeE, 
   probs = seq(0, 1, by = (1/5)), na.rm = TRUE
 )
 
@@ -120,7 +120,7 @@ all_tracts$income_population_quintiles_2020 <-
 
 
 all_tracts$sextile_2020 <- quantile(
-  all_tracts$population_income2020$IncomeE, 
+  all_tracts$income_population_quintiles_2020$IncomeE, 
   probs = seq(0, 1, by = (1/6)), na.rm = TRUE
 )
 
@@ -134,7 +134,7 @@ all_tracts$income_population_quintiles_2020 <-
     # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
   ))
 all_tracts$septile_2020 <- quantile(
-  all_tracts$population_income2020$IncomeE, 
+  all_tracts$income_population_quintiles_2020$IncomeE, 
   probs = seq(0, 1, by = (1/7)), na.rm = TRUE
 )
 
@@ -149,7 +149,7 @@ all_tracts$income_population_quintiles_2020 <-
   ))
 
 all_tracts$octile_2020 <- quantile(
-  all_tracts$population_income2020$IncomeE, 
+  all_tracts$income_population_quintiles_2020$IncomeE, 
   probs = seq(0, 1, by = (1/8)), na.rm = TRUE
 )
 all_tracts$income_population_quintiles_2020 <- 
@@ -163,7 +163,7 @@ all_tracts$income_population_quintiles_2020 <-
   ))
 
 all_tracts$nonile_2020 <- quantile(
-  all_tracts$population_income2020$IncomeE, 
+  all_tracts$income_population_quintiles_2020$IncomeE, 
   probs = seq(0, 1, by = (1/9)), na.rm = TRUE
 )
 all_tracts$income_population_quintiles_2020 <- 
@@ -177,7 +177,7 @@ all_tracts$income_population_quintiles_2020 <-
   ))
 
 all_tracts$decile_2020 <- quantile(
-  all_tracts$population_income2020$IncomeE, 
+  all_tracts$income_population_quintiles_2020$IncomeE, 
   probs = seq(0, 1, by = (1/10)), na.rm = TRUE
 )
 all_tracts$income_population_quintiles_2020 <- 
@@ -190,7 +190,7 @@ all_tracts$income_population_quintiles_2020 <-
     # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
   ))
 all_tracts$ventile_2020 <- quantile(
-  all_tracts$population_income2020$IncomeE, 
+  all_tracts$income_population_quintiles_2020$IncomeE, 
   probs = seq(0, 1, by = (1/20)), na.rm = TRUE
 )
 all_tracts$income_population_quintiles_2020 <- 
@@ -204,7 +204,7 @@ all_tracts$income_population_quintiles_2020 <-
   ))
 
 all_tracts$quantiles_50_2020 <- quantile(
-  all_tracts$population_income2020$IncomeE, 
+  all_tracts$income_population_quintiles_2020$IncomeE, 
   probs = seq(0, 1, by = (1/50)), na.rm = TRUE
 )
 all_tracts$income_population_quintiles_2020 <- 
@@ -214,13 +214,12 @@ all_tracts$income_population_quintiles_2020 <-
     labels = 1:50,
     breaks = all_tracts$quantiles_50_2020, 
     include.lowest = TRUE,
-    # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
+    # labels = FALSE #
   ))
 ### Divide into 200 quantiles ####
 all_tracts$two_hundred <- quantile(
   all_tracts$income_population_quintiles_2020$IncomeE, 
-  probs = seq(0, 1, by = 1/200), na.rm = TRUE
-)
+  probs = seq(0, 1, by = 1/200), na.rm = TRUE)
 
 all_tracts$income_population_quintiles_2020 <- 
   all_tracts$income_population_quintiles_2020 |> 
@@ -228,9 +227,7 @@ all_tracts$income_population_quintiles_2020 <-
     IncomeE,
     breaks = all_tracts$two_hundred, # 201 points create 200 bins
     include.lowest = TRUE,
-    labels = seq(1,200)
-    # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
-  ))
+    labels = seq(1,200)))
 
 # Divide into 100 quantiles
 all_tracts$one_hundred <- quantile(
@@ -280,12 +277,13 @@ all_tracts$income_population_quintiles_2020 <- all_tracts$income_population_quin
   mutate(
     Majority_Quintile = paste(Majority, income_quintiles, sep = "_")
   )
+load("all_tracts_complete.RData")
 
 # 2_fatal_enc ####
 
 # fatal_enc <- list()
 # fatal_enc$backup_not_clean <- read_csv(
-#   "https://docs.google.com/spreadsheets/d/1dKmaV_JiWcG8XBoRgP8b4e9Eopkpgt7FL7nyspvzAsE/export?format=csv", 
+#   "https://docs.google.com/spreadsheets/d/1dKmaV_JiWcG8XBoRgP8b4e9Eopkpgt7FL7nyspvzAsE/export?format=csv",
 #   col_types = cols(
 #     `Date of injury resulting in death (month/day/year)` = col_date(format = "%m/%d/%Y"),
 #     Name = col_skip(),
@@ -308,7 +306,7 @@ all_tracts$income_population_quintiles_2020 <- all_tracts$income_population_quin
 #     `Unique identifier (redundant)` = col_skip()
 #   )
 # )
-
+load("fatal_encounters_raw.RData")
 ## Initial Cleaning ####
 fatal_enc$initial_clean <-
   fatal_enc$backup_not_clean %>%
@@ -378,8 +376,7 @@ fatal_enc$initial_clean_geoid <-
   st_join(
     x = fatal_enc$initial_clean,
     y = all_tracts$population_income2020 %>% select(GEOID),
-    join = st_within
-  )
+    join = st_within)
 
 fatal_enc$initial_clean_geoid <- st_drop_geometry(fatal_enc$initial_clean_geoid)
 
@@ -387,8 +384,7 @@ fatal_enc$initial_clean_geoid <- st_drop_geometry(fatal_enc$initial_clean_geoid)
 fatal_enc$initial_clean_geoid <- 
   fatal_enc$initial_clean_geoid[
     !duplicated(fatal_enc$initial_clean_geoid$unique_id) | 
-      duplicated(fatal_enc$initial_clean_geoid, fromLast = TRUE),
-  ]
+      duplicated(fatal_enc$initial_clean_geoid, fromLast = TRUE),]
 
 fatal_enc$initial_clean_geoid$imputation_probability <- 
   as.numeric(fatal_enc$initial_clean_geoid$imputation_probability)
@@ -397,9 +393,10 @@ fatal_enc$joined <-
   left_join(
     x = fatal_enc$initial_clean_geoid,
     y = all_tracts$income_population_quintiles_2020,
-    by = "GEOID"
-  )
+    by = "GEOID")
 
+# Load "checkpoint_3.RData here
+load("fatal_encounters_complete.RData")
 # 3_Summary Tables ####
 summary_tables <- list()
 
@@ -428,9 +425,9 @@ summary_tables$summary_1 <- summary_tables$summary_1 |>
       Killings_Per_Yr / Population * 10000000
   )
 
-# ######################################################################### #
+# ############################################### #
 # 4_Begin ggplot ####
-# ######################################################################### #
+# ############################################### #
 
 plot <- list()
 # Income Quintiles only ####
@@ -562,10 +559,11 @@ plot_grid(
 ggsave(
   plot = plot$cp_race_income_separate,
   filename = '11-19-plots/cp_race_income_separate.png', 
-  dpi = 'retina', 
-  bg = 'white',
+  dpi = 'retina',
+  # bg = 'white',
   width = 10.4,
-  height = 4.81)
+  # height = 4.81
+  )
 
 # Individual plot: Income Quintiles only ####
 plot$income_quintiles_only_ind <- 
@@ -1249,7 +1247,7 @@ plot$hist_all_fatal <-
     bins = 30
   ) +
   geom_vline(
-    aes(xintercept = all_tracts$median_income, color = "All Tracts"),
+    xintercept = all_tracts$median_income, color = "All Tracts",
     linetype = "dashed", linewidth = 1
   ) +
   geom_vline(
@@ -1427,7 +1425,7 @@ lm_income <-
 
 # abline(lm_income)
 summary(lm_income)
-plot(lm_income)
+# plot(lm_income)
 
 
 means_binary <- aggregate(IncomeE ~ LUOF_logical + Majority, data = all_tracts$income_population_LUOF_count, FUN = median) |> 
@@ -1443,7 +1441,7 @@ overall_means_binary_diff <- sapply(aggregate(IncomeE ~ LUOF_logical, data = all
 
 # Example assuming all_tracts$income_population_LUOF_count is your dataset
 poisson_model <- 
-  glm(LUOF_count ~ Income10k * Majority, 
+  glm(LUOF_count ~ Income10k:Majority, 
       data = all_tracts$income_population_LUOF_count, 
       family = "poisson")
 
@@ -1451,7 +1449,7 @@ poisson_model <-
 summary(poisson_model)
 
 logit_model <- 
-  glm(LUOF_logical ~ income_quartile + income_quartile:Majority, 
+  glm(LUOF_logical ~ Majority:Income10k, 
       data = all_tracts$income_population_LUOF_count, 
       family = "binomial")
 
@@ -1473,6 +1471,8 @@ logit_predictions <- data.frame(
     type = 'response'
   )
 )
+
+# Predicted probabilities
 
 pivot_wider(logit_predictions, names_from = income_quartile, values_from = Predicted_Probability, names_prefix = "Income_Quartile")
 
