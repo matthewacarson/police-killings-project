@@ -1393,9 +1393,5 @@ ggplot(data = all_tracts$race_quint_proportions,
 
 ggsave(
   filename = "total_pop_race_income_quintile_distribution.png",
-  dpi = 'retina'
-)
-
-
-
+  dpi = 'retina')
 
