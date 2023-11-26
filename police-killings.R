@@ -92,7 +92,6 @@ ggsave(
   width = 10.4,
   height = 4.81)
 
-
 # Majority Race ####
 
 summary_tables$majority_table_1 <-  fatal_enc$joined %>%
@@ -1396,4 +1395,5 @@ ggplot(data = all_tracts$race_quint_proportions,
 ggsave(
   filename = "total_pop_race_income_quintile_distribution.png",
   dpi = 'retina')
+
 
