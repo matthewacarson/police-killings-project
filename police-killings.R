@@ -55,227 +55,243 @@
 #   file = "acs_2020.RData"); rm(population_income2020)
 
 # Load data from tidycensus ACS
-# all_tracts <- new.env()
-# load("RData/acs_2019_raw.Rdata", envir = all_tracts)
-# load("RData/acs_2020_raw.Rdata", envir = all_tracts)
+all_tracts <- new.env()
+load("RData/acs_2019_raw.Rdata", envir = all_tracts)
+load("RData/acs_2020_raw.Rdata", envir = all_tracts)
 
 # Filter tracts with NA income values ####
-# all_tracts$income_population_quintiles_2020 <- st_drop_geometry(all_tracts$population_income2020)
-# all_tracts$income_population_quintiles_2020 <- all_tracts$income_population_quintiles_2020[!is.na(all_tracts$income_population_quintiles_2020$IncomeE),]
+all_tracts$income_population_quintiles_2020 <- st_drop_geometry(all_tracts$population_income2020)
+all_tracts$income_population_quintiles_2020 <- all_tracts$income_population_quintiles_2020[!is.na(all_tracts$income_population_quintiles_2020$IncomeE),]
 
 ## Add quantile data to all_tracts ####
 
 ### Tertiles ####
-# all_tracts$tertiles_2020 <- quantile(
-#   all_tracts$income_population_quintiles_2020$IncomeE, 
-#   probs = seq(0, 1, by = (1/3)), na.rm = TRUE
-# )
-# all_tracts$income_population_quintiles_2020 <- 
-#   all_tracts$income_population_quintiles_2020 |> 
-#   mutate(income_tertile = cut(
-#     IncomeE,
-#     labels = 1:3,
-#     breaks = all_tracts$tertiles_2020, 
-#     include.lowest = TRUE,
-#     # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
-#   ))
-# 
-# ### Quartiles ####
-# all_tracts$quartiles_2020 <- quantile(
-#   all_tracts$income_population_quintiles_2020$IncomeE, 
-#   probs = seq(0, 1, by = (1/4)), na.rm = TRUE
-# )
-# 
-# all_tracts$income_population_quintiles_2020 <- 
-#   all_tracts$income_population_quintiles_2020 |> 
-#   mutate(income_quartile = cut(
-#     IncomeE,
-#     labels = 1:4,
-#     breaks = all_tracts$quartiles_2020, 
-#     include.lowest = TRUE,
-#     # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
-#   ))
-# ### Quintiles ####
-# all_tracts$quintiles_2020 <- quantile(
-#   all_tracts$income_population_quintiles_2020$IncomeE, 
-#   probs = seq(0, 1, by = (1/5)), na.rm = TRUE
-# )
-# 
-# all_tracts$quintile_text <- c(
-#   "1st Quintile",
-#   "2nd Quintile",
-#   "3rd Quintile",
-#   "4th Quintile",
-#   "5th Quintile"
-# )
-# 
-# all_tracts$income_population_quintiles_2020 <-
-#   all_tracts$income_population_quintiles_2020 |>
-#   mutate(income_quintiles = cut(
-#     IncomeE,
-#     labels = all_tracts$quintile_text,
-#     breaks = all_tracts$quintiles_2020,
-#     include.lowest = TRUE,
-#     # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
-#   ))
-# 
-# 
-# all_tracts$sextile_2020 <- quantile(
-#   all_tracts$income_population_quintiles_2020$IncomeE, 
-#   probs = seq(0, 1, by = (1/6)), na.rm = TRUE
-# )
-# 
-# all_tracts$income_population_quintiles_2020 <- 
-#   all_tracts$income_population_quintiles_2020 |> 
-#   mutate(income_sextile = cut(
-#     IncomeE,
-#     labels = 1:6,
-#     breaks = all_tracts$sextile_2020, 
-#     include.lowest = TRUE,
-#     # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
-#   ))
-# all_tracts$septile_2020 <- quantile(
-#   all_tracts$income_population_quintiles_2020$IncomeE, 
-#   probs = seq(0, 1, by = (1/7)), na.rm = TRUE
-# )
-# 
-# all_tracts$income_population_quintiles_2020 <- 
-#   all_tracts$income_population_quintiles_2020 |> 
-#   mutate(income_septile = cut(
-#     IncomeE,
-#     labels = 1:7,
-#     breaks = all_tracts$septile_2020, 
-#     include.lowest = TRUE,
-#     # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
-#   ))
-# 
-# all_tracts$octile_2020 <- quantile(
-#   all_tracts$income_population_quintiles_2020$IncomeE, 
-#   probs = seq(0, 1, by = (1/8)), na.rm = TRUE
-# )
-# all_tracts$income_population_quintiles_2020 <- 
-#   all_tracts$income_population_quintiles_2020 |> 
-#   mutate(income_octile = cut(
-#     IncomeE,
-#     labels = 1:8,
-#     breaks = all_tracts$octile_2020, 
-#     include.lowest = TRUE,
-#     # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
-#   ))
-# 
-# all_tracts$nonile_2020 <- quantile(
-#   all_tracts$income_population_quintiles_2020$IncomeE, 
-#   probs = seq(0, 1, by = (1/9)), na.rm = TRUE
-# )
-# all_tracts$income_population_quintiles_2020 <- 
-#   all_tracts$income_population_quintiles_2020 |> 
-#   mutate(income_nonile = cut(
-#     IncomeE,
-#     labels = 1:9,
-#     breaks = all_tracts$nonile_2020, 
-#     include.lowest = TRUE,
-#     # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
-#   ))
-# 
-# all_tracts$decile_2020 <- quantile(
-#   all_tracts$income_population_quintiles_2020$IncomeE, 
-#   probs = seq(0, 1, by = (1/10)), na.rm = TRUE
-# )
-# all_tracts$income_population_quintiles_2020 <- 
-#   all_tracts$income_population_quintiles_2020 |> 
-#   mutate(income_decile = cut(
-#     IncomeE,
-#     labels = 1:10,
-#     breaks = all_tracts$decile_2020, 
-#     include.lowest = TRUE,
-#     # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
-#   ))
-# all_tracts$ventile_2020 <- quantile(
-#   all_tracts$income_population_quintiles_2020$IncomeE, 
-#   probs = seq(0, 1, by = (1/20)), na.rm = TRUE
-# )
-# all_tracts$income_population_quintiles_2020 <- 
-#   all_tracts$income_population_quintiles_2020 |> 
-#   mutate(income_ventile = cut(
-#     IncomeE,
-#     labels = 1:20,
-#     breaks = all_tracts$ventile_2020, 
-#     include.lowest = TRUE,
-#     # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
-#   ))
-# 
-# all_tracts$quantiles_50_2020 <- quantile(
-#   all_tracts$income_population_quintiles_2020$IncomeE, 
-#   probs = seq(0, 1, by = (1/50)), na.rm = TRUE
-# )
-# all_tracts$income_population_quintiles_2020 <- 
-#   all_tracts$income_population_quintiles_2020 |> 
-#   mutate(income_50_quantiles = cut(
-#     IncomeE,
-#     labels = 1:50,
-#     breaks = all_tracts$quantiles_50_2020, 
-#     include.lowest = TRUE,
-#     # labels = FALSE #
-#   ))
-# ### Divide into 200 quantiles ####
-# all_tracts$two_hundred <- quantile(
-#   all_tracts$income_population_quintiles_2020$IncomeE, 
-#   probs = seq(0, 1, by = 1/200), na.rm = TRUE)
-# 
-# all_tracts$income_population_quintiles_2020 <- 
-#   all_tracts$income_population_quintiles_2020 |> 
-#   mutate(income_bins = cut(
-#     IncomeE,
-#     breaks = all_tracts$two_hundred, # 201 points create 200 bins
-#     include.lowest = TRUE,
-#     labels = seq(1,200)))
-# 
-# # Divide into 100 quantiles
-# all_tracts$one_hundred <- quantile(
-#   all_tracts$income_population_quintiles_2020$IncomeE, 
-#   probs = seq(0, 1, by = 1/100), na.rm = TRUE
-# )
-# 
-# all_tracts$income_population_quintiles_2020 <- 
-#   all_tracts$income_population_quintiles_2020 |> 
-#   mutate(income_bins_100 = cut(
-#     IncomeE,
-#     breaks = all_tracts$one_hundred, 
-#     include.lowest = TRUE,
-#     labels = seq(1,100)
-#     # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
-#   ))
-# 
-# ## Designate tracts as racial majorities ####
-# 
-# all_tracts$income_population_quintiles_2020 <- all_tracts$income_population_quintiles_2020 %>%
-#   mutate(
-#     NH_WhiteP = NH_WhiteE / Total_popE,
-#     NH_BlackP = NH_BlackE / Total_popE,
-#     NH_AsianP = NH_AsianE / Total_popE,
-#     Hisp_LatinoP = Hisp_LatinoE / Total_popE,
-#     Majority = case_when(
-#       NH_WhiteP > 0.5 ~ 'White',
-#       NH_BlackP > 0.5 ~ 'Black',
-#       # NH_AsianP > 0.5 ~ 'A',
-#       Hisp_LatinoP > 0.5 ~ 'Hispanic/Latino'))
-# 
-# ## Identifying majority race/ethnicity with 2019 data. ####
-# 
-# all_tracts$income_population_quintiles_2019 <- all_tracts$population_income2019 %>% 
-#   mutate(
-#     NH_WhiteP = NH_WhiteE / Total_popE,
-#     NH_BlackP = NH_BlackE / Total_popE,
-#     NH_AsianP = NH_AsianE / Total_popE,
-#     Hisp_LatinoP = Hisp_LatinoE / Total_popE,
-#     Majority = case_when(
-#       NH_WhiteP > 0.5 ~ 'White',
-#       NH_BlackP > 0.5 ~ 'Black',
-#       # NH_AsianP > 0.5 ~ 'A',
-#       Hisp_LatinoP > 0.5 ~ 'Hispanic/Latino'))
-# 
-# all_tracts$income_population_quintiles_2020 <- all_tracts$income_population_quintiles_2020 %>% 
-#   mutate(Majority_Quintile = paste(Majority, income_quintiles, sep = "_"))
+all_tracts$tertiles_2020 <- quantile(
+  all_tracts$income_population_quintiles_2020$IncomeE,
+  probs = seq(0, 1, by = (1/3)), na.rm = TRUE
+)
+all_tracts$income_population_quintiles_2020 <-
+  all_tracts$income_population_quintiles_2020 |>
+  mutate(income_tertile = cut(
+    IncomeE,
+    labels = 1:3,
+    breaks = all_tracts$tertiles_2020,
+    include.lowest = TRUE,
+    ordered_result = TRUE
+    # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
+  ))
+
+### Quartiles ####
+all_tracts$quartiles_2020 <- quantile(
+  all_tracts$income_population_quintiles_2020$IncomeE,
+  probs = seq(0, 1, by = (1/4)), na.rm = TRUE
+)
+
+all_tracts$income_population_quintiles_2020 <-
+  all_tracts$income_population_quintiles_2020 |>
+  mutate(income_quartile = cut(
+    IncomeE,
+    labels = 1:4,
+    breaks = all_tracts$quartiles_2020,
+    include.lowest = TRUE,
+    ordered_result = TRUE
+    # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
+  ))
+### Quintiles ####
+
+all_tracts$income_population_quintiles_2020 <-
+  all_tracts$income_population_quintiles_2020 |>
+  mutate(income_quintiles = cut(
+    IncomeE,
+    labels = c("1st Quintile",
+               "2nd Quintile",
+               "3rd Quintile",
+               "4th Quintile",
+               "5th Quintile"),
+    breaks = quantile(IncomeE, 
+                      probs = seq(0, 1, by = (1/5)), 
+                      na.rm = TRUE),
+    include.lowest = TRUE, ordered_result = TRUE))
+
+
+# Changing quintile labeling
+all_tracts$income_population_quintiles_2020 <-
+  all_tracts$income_population_quintiles_2020 |>
+  mutate(income_quintiles_nolab = cut(
+    IncomeE,
+    labels = 1:5,
+    breaks = all_tracts$quintiles_2020,
+    include.lowest = TRUE))
+
+
+# Break into 15 quantiles
+all_tracts$income_population_quintiles_2020 <- 
+  all_tracts$income_population_quintiles_2020 |>
+  mutate(income_15_quant = cut(
+    IncomeE,
+    labels = 1:15,
+    breaks = quantile(IncomeE, 
+      probs = seq(0, 1, by = (1/15)), 
+      na.rm = TRUE), 
+      include.lowest = TRUE))
+
+### Sextiles ####
+all_tracts$sextile_2020 <- quantile(
+  all_tracts$income_population_quintiles_2020$IncomeE,
+  probs = seq(0, 1, by = (1/6)), na.rm = TRUE
+)
+
+all_tracts$income_population_quintiles_2020 <-
+  all_tracts$income_population_quintiles_2020 |>
+  mutate(income_sextile = cut(
+    IncomeE,
+    labels = 1:6,
+    breaks = all_tracts$sextile_2020,
+    include.lowest = TRUE,
+    # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
+  ))
+all_tracts$septile_2020 <- quantile(
+  all_tracts$income_population_quintiles_2020$IncomeE,
+  probs = seq(0, 1, by = (1/7)), na.rm = TRUE
+)
+
+all_tracts$income_population_quintiles_2020 <-
+  all_tracts$income_population_quintiles_2020 |>
+  mutate(income_septile = cut(
+    IncomeE,
+    labels = 1:7,
+    breaks = all_tracts$septile_2020,
+    include.lowest = TRUE,
+    # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
+  ))
+
+all_tracts$octile_2020 <- quantile(
+  all_tracts$income_population_quintiles_2020$IncomeE,
+  probs = seq(0, 1, by = (1/8)), na.rm = TRUE
+)
+all_tracts$income_population_quintiles_2020 <-
+  all_tracts$income_population_quintiles_2020 |>
+  mutate(income_octile = cut(
+    IncomeE,
+    labels = 1:8,
+    breaks = all_tracts$octile_2020,
+    include.lowest = TRUE,
+    # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
+  ))
+
+all_tracts$nonile_2020 <- quantile(
+  all_tracts$income_population_quintiles_2020$IncomeE,
+  probs = seq(0, 1, by = (1/9)), na.rm = TRUE
+)
+all_tracts$income_population_quintiles_2020 <-
+  all_tracts$income_population_quintiles_2020 |>
+  mutate(income_nonile = cut(
+    IncomeE,
+    labels = 1:9,
+    breaks = all_tracts$nonile_2020,
+    include.lowest = TRUE,
+    # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
+  ))
+
+all_tracts$decile_2020 <- quantile(
+  all_tracts$income_population_quintiles_2020$IncomeE,
+  probs = seq(0, 1, by = (1/10)), na.rm = TRUE
+)
+all_tracts$income_population_quintiles_2020 <-
+  all_tracts$income_population_quintiles_2020 |>
+  mutate(income_decile = cut(
+    IncomeE,
+    labels = 1:10,
+    breaks = all_tracts$decile_2020,
+    include.lowest = TRUE,
+    # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
+  ))
+all_tracts$ventile_2020 <- quantile(
+  all_tracts$income_population_quintiles_2020$IncomeE,
+  probs = seq(0, 1, by = (1/20)), na.rm = TRUE
+)
+all_tracts$income_population_quintiles_2020 <-
+  all_tracts$income_population_quintiles_2020 |>
+  mutate(income_ventile = cut(
+    IncomeE,
+    labels = 1:20,
+    breaks = all_tracts$ventile_2020,
+    include.lowest = TRUE,
+    # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
+  ))
+
+all_tracts$quantiles_50_2020 <- quantile(
+  all_tracts$income_population_quintiles_2020$IncomeE,
+  probs = seq(0, 1, by = (1/50)), na.rm = TRUE
+)
+all_tracts$income_population_quintiles_2020 <-
+  all_tracts$income_population_quintiles_2020 |>
+  mutate(income_50_quantiles = cut(
+    IncomeE,
+    labels = 1:50,
+    breaks = all_tracts$quantiles_50_2020,
+    include.lowest = TRUE,
+    # labels = FALSE #
+  ))
+### Divide into 200 quantiles ####
+all_tracts$two_hundred <- quantile(
+  all_tracts$income_population_quintiles_2020$IncomeE,
+  probs = seq(0, 1, by = 1/200), na.rm = TRUE)
+
+all_tracts$income_population_quintiles_2020 <-
+  all_tracts$income_population_quintiles_2020 |>
+  mutate(income_bins = cut(
+    IncomeE,
+    breaks = all_tracts$two_hundred, # 201 points create 200 bins
+    include.lowest = TRUE,
+    labels = seq(1,200)))
+
+# Divide into 100 quantiles
+all_tracts$one_hundred <- quantile(
+  all_tracts$income_population_quintiles_2020$IncomeE,
+  probs = seq(0, 1, by = 1/100), na.rm = TRUE
+)
+
+all_tracts$income_population_quintiles_2020 <-
+  all_tracts$income_population_quintiles_2020 |>
+  mutate(income_bins_100 = cut(
+    IncomeE,
+    breaks = all_tracts$one_hundred,
+    include.lowest = TRUE,
+    labels = seq(1,100)
+    # labels = FALSE # Setting labels to FALSE gives numeric labels to bins
+  ))
+
+## Designate tracts as racial majorities ####
+
+all_tracts$income_population_quintiles_2020 <- all_tracts$income_population_quintiles_2020 %>%
+  mutate(
+    NH_WhiteP = NH_WhiteE / Total_popE,
+    NH_BlackP = NH_BlackE / Total_popE,
+    NH_AsianP = NH_AsianE / Total_popE,
+    Hisp_LatinoP = Hisp_LatinoE / Total_popE,
+    Majority = case_when(
+      NH_WhiteP > 0.5 ~ 'White',
+      NH_BlackP > 0.5 ~ 'Black',
+      # NH_AsianP > 0.5 ~ 'A',
+      Hisp_LatinoP > 0.5 ~ 'Hispanic/Latino'))
+
+## Identifying majority race/ethnicity with 2019 data. ####
+
+all_tracts$income_population_quintiles_2019 <- all_tracts$population_income2019 %>%
+  mutate(
+    NH_WhiteP = NH_WhiteE / Total_popE,
+    NH_BlackP = NH_BlackE / Total_popE,
+    NH_AsianP = NH_AsianE / Total_popE,
+    Hisp_LatinoP = Hisp_LatinoE / Total_popE,
+    Majority = case_when(
+      NH_WhiteP > 0.5 ~ 'White',
+      NH_BlackP > 0.5 ~ 'Black',
+      # NH_AsianP > 0.5 ~ 'A',
+      Hisp_LatinoP > 0.5 ~ 'Hispanic/Latino'))
+
+all_tracts$income_population_quintiles_2020 <- all_tracts$income_population_quintiles_2020 %>%
+  mutate(Majority_Quintile = paste(Majority, income_quintiles, sep = "_"))
 
 ################# #
 # Checkpoint 1 ####
@@ -1722,14 +1738,6 @@ ggsave(plot = plot$hist_unweighted,
 
 # save.image(file = "RData/checkpoint_5.RData")
 load(file = "RData/checkpoint_5.RData")
-# Changing quintile labeling
-all_tracts$income_population_quintiles_2020 <-
-  all_tracts$income_population_quintiles_2020 |>
-  mutate(income_quintiles_nolab = cut(
-    IncomeE,
-    labels = 1:5,
-    breaks = all_tracts$quintiles_2020,
-    include.lowest = TRUE))
 
 # Total population by race 2020
 all_tracts$total_pop_by_race <- 
@@ -1803,16 +1811,6 @@ ggsave(
   dpi = 'retina'
 )
 
-# Break into 15 quantiles
-all_tracts$income_population_quintiles_2020 <- 
-  all_tracts$income_population_quintiles_2020 |>
-  mutate(income_15_quant = cut(
-    IncomeE,
-    labels = 1:15,
-    breaks = quantile(
-      IncomeE, 
-      probs = seq(0, 1, by = (1/15)), 
-      na.rm = TRUE, 
-      include.lowest = TRUE)))
+
 
 
