@@ -1,5 +1,3 @@
-
-
 # Note: Instead of running from the top (many operations take too long), start at 3_Summary Tables
 
 # setwd(
@@ -7,14 +5,11 @@
 # 1_all_tracts ####
 
 # Load Libraries ####
-
 # library(tidycensus)
 # library(sf)
 # library(tidyverse)
 
 # Download and clean tract income ####
-
-
 ## Download 2019 data ####
 
 # population_income2019 <- get_acs(
@@ -38,9 +33,7 @@
 #   population_income2019, 
 #   file = "acs_2019.RData"); rm(population_income2019)
 
-
 ## Download 2020 tract data ####
-
 # population_income2020 <- get_acs(
 #   geography = "tract",
 #   variables = c(
