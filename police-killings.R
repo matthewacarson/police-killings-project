@@ -80,9 +80,13 @@ summary_tables$summary_1 |>
     # axis.title = element_text(size = 20),
     # plot.title = element_text(size = 30),
     # plot.subtitle = element_text(size = 20)
+
 ggsave(
   plot = plot$income_quintiles_only,
-  filename = '11-19-plots/quintiles_only.png', 
+  filename = paste(
+    'plots/quintiles_only_', 
+    format(Sys.time(), "%Y-%m-%d_%H-%M-%OS3"), '.png', 
+    sep = ''), #'plots/quintiles_only.png', 
   dpi = 'retina', 
   bg = 'white',
   width = 10.4,
@@ -146,7 +150,7 @@ summary_tables$majority_summary_1 |>
   # scale_x_continuous(breaks = seq(0,70,10))
 ggsave(
   plot = plot$majority_race_only,
-  filename = '11-19-plots/majority_race_only.png', 
+  filename = 'plots/majority_race_only.png', 
   dpi = 'retina', 
   bg = 'white',
   width = 10.4,
@@ -169,7 +173,7 @@ plot_grid(
 )
 ggsave(
   plot = plot$cp_race_income_separate,
-  filename = '11-19-plots/cp_race_income_separate.png', 
+  filename = 'plots/cp_race_income_separate.png', 
   dpi = 'retina',
   # bg = 'white',
   width = 10.4,
@@ -220,7 +224,7 @@ plot$income_quintiles_only_ind <-
 # plot.title = element_text(size = 30),
 ggsave(
   plot = plot$income_quintiles_only_ind,
-  filename = '11-19-plots/income_quintiles_only_ind.png', 
+  filename = 'plots/income_quintiles_only_ind.png', 
   dpi = 'retina', 
   bg = 'white',
   width = 10.4,
@@ -263,7 +267,7 @@ summary_tables$majority_summary_1 |>
   # plot$majority_race_only
 ggsave(
   plot = plot$majority_race_only_ind,
-  filename = '11-19-plots/majority_race_only_ind.png', 
+  filename = 'plots/majority_race_only_ind.png', 
   dpi = 'retina', 
   bg = 'white',
   width = 10.4,
@@ -331,7 +335,7 @@ ggplot(
   )
 ggsave(
   plot = plot$all_200,
-  filename = '11-19-plots/all_200.png', 
+  filename = 'plots/all_200.png', 
   dpi = 'retina', 
   bg = 'white',
   width = 10.4,
@@ -356,7 +360,7 @@ ggplot(
 
 ggsave(
   plot = plot$bar_200_all,
-  filename = '11-19-plots/bar_200_all.png', 
+  filename = 'plots/bar_200_all.png', 
   dpi = 'retina', 
   bg = 'white',
   width = 10.4,
@@ -435,7 +439,7 @@ ggplot(
 
 ggsave(
   plot = plot$quintile_by_race,
-  filename = '11-19-plots/quintile_by_race.png', 
+  filename = 'plots/quintile_by_race.png', 
   dpi = 'retina', 
   bg = 'white',
   width = 10.4,
@@ -476,13 +480,11 @@ plot$race_by_quintile <-
   )
 ggsave(
   plot = plot$race_by_quintile,
-  filename = '11-19-plots/race_by_quintile.png', 
+  filename = 'plots/race_by_quintile.png', 
   dpi = 'retina', 
   bg = 'white',
   width = 10.4,
   height = 4.81)
-
-
 
 # ################################### #
 # Plots using race of the victim ####
@@ -598,7 +600,7 @@ plot$race_100_proportion <-
 
 ggsave(
   plot = plot$race_100_proportion,
-  filename = '11-19-plots/race_100_proportion.png', 
+  filename = 'plots/race_100_proportion.png', 
   dpi = 'retina', 
   bg = 'white',
   width = 10.4,
@@ -694,7 +696,7 @@ ggplot() +
   ) + scale_y_continuous(breaks = seq(0, 0.5, 0.05))
 
 ggsave(plot = plot$race_proportion_of_total,
-       filename = '11-19-plots/race_proportion_of_total.png', 
+       filename = 'plots/race_proportion_of_total.png', 
        dpi = 'retina', 
        bg = 'white',
        width = 10.4,
@@ -769,7 +771,7 @@ ggplot(
     legend.title = element_text(size = 15),
     legend.text = element_text(size = 12))
 ggsave(plot = plot$inc_and_race_victim,
-       filename = '11-19-plots/inc_and_race_victim.png', 
+       filename = 'plots/inc_and_race_victim.png', 
        dpi = 'retina', 
        bg = 'white',
        width = 10.4,
@@ -880,7 +882,7 @@ plot$hist_all_fatal <-
   scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 ggsave(plot = plot$hist_all_fatal,
-       filename = '11-19-plots/hist_all_fatal.png', 
+       filename = 'plots/hist_all_fatal.png', 
        dpi = 'retina', 
        bg = 'white',
        width = 10.4,
@@ -1023,13 +1025,13 @@ inc_in_nonLUOF_tracts <-
 # qqline(inc_in_nonLUOF_tracts, col = 'blue', lwd = 2)
 
 # t_test_inc <- 
-t.test(
-  inc_in_LUOF_tracts,
-  inc_in_nonLUOF_tracts)
+# t.test(
+  # inc_in_LUOF_tracts,
+  # inc_in_nonLUOF_tracts)
 
-wilcox.test(
-  inc_in_LUOF_tracts,
-  inc_in_nonLUOF_tracts)
+# wilcox.test(
+  # inc_in_LUOF_tracts,
+  # inc_in_nonLUOF_tracts)
 
 # write_csv(x = all_tracts$income_population_LUOF_count, file = "income_population_LUOF_count.csv")
 
@@ -1040,7 +1042,7 @@ lm_income <-
 #      y = all_tracts$income_population_LUOF_count$LUOF_logical)
 
 # abline(lm_income)
-summary(lm_income)
+# summary(lm_income)
 # plot(lm_income)
 
 
@@ -1062,14 +1064,14 @@ poisson_model <-
       family = "poisson")
 
 # Display summary
-summary(poisson_model)
+# summary(poisson_model)
 
 logit_model <- 
   glm(LUOF_logical ~ Majority:Income10k, 
       data = all_tracts$income_population_LUOF_count, 
       family = "binomial")
 
-summary(logit_model)
+# summary(logit_model)
 # plot(logit_model)
 
 # predictions
@@ -1191,7 +1193,7 @@ plot$boxplot_by_race <-
       subtitle = "Tracts with a LUOF vs. Tracts without a LUOF.")
 
 ggsave(plot = plot$boxplot_by_race,
-       filename = '11-19-plots/boxplot_by_race.png', 
+       filename = 'plots/boxplot_by_race.png', 
        dpi = 'retina', 
        bg = 'white',
        width = 10.4,
@@ -1237,7 +1239,7 @@ plot$density_by_race <-
   )
 
 ggsave(plot = plot$density_by_race,
-       filename = '11-19-plots/density_by_race.png', 
+       filename = 'plots/density_by_race.png', 
        dpi = 'retina', 
        bg = 'white',
        width = 10.4,
@@ -1257,7 +1259,7 @@ plot$hist_unweighted_by_race <-
     scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 ggsave(plot = plot$hist_unweighted_by_race,
-       filename = '11-19-plots/hist_unweighted_by_race.png', 
+       filename = 'plots/hist_unweighted_by_race.png', 
        dpi = 'retina', 
        bg = 'white',
        width = 10.4,
@@ -1311,7 +1313,7 @@ plot$hist_unweighted <-
       legend.title = element_text(color = 'black')
       )
 ggsave(plot = plot$hist_unweighted,
-       filename = '11-19-plots/hist_unweighted.png', 
+       filename = 'plots/hist_unweighted.png', 
        dpi = 'retina', 
        bg = 'white',
        width = 10.4,
@@ -1382,7 +1384,7 @@ ggplot(data = all_tracts$race_quint_proportions,
     x = "Racial or Ethnic Group",
     y = "Percentage of Group"
   ) +
-  theme_classic() +
+  theme_light() +
   scale_y_continuous(
     breaks = seq(0,0.35,0.1), 
     labels = function(x) paste0(x * 100, '%')) + #, name = "Percentage") +
