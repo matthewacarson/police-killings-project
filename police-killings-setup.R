@@ -275,7 +275,8 @@ all_tracts$income_population_quintiles_2019 <- all_tracts$population_income2019 
       # NH_AsianP > 0.5 ~ 'A',
       Hisp_LatinoP > 0.5 ~ 'Hispanic/Latino'))
 
-all_tracts$income_population_quintiles_2020 <- all_tracts$income_population_quintiles_2020 %>%
+all_tracts$income_population_quintiles_2020 <- 
+  all_tracts$income_population_quintiles_2020 %>%
   mutate(Majority_Quintile = paste(Majority, income_quintiles, sep = "_"))
 
 # fatal_enc$backup_not_clean <- read_csv(
@@ -302,85 +303,88 @@ all_tracts$income_population_quintiles_2020 <- all_tracts$income_population_quin
 #     `Unique identifier (redundant)` = col_skip()
 #   )
 # )
-load("RData/fatal_encounters_raw.RData", envir = fatal_enc <- new.env())
+# load("RData/fatal_encounters_raw.RData", 
+# envir = fatal_enc <- new.env())
+
 ## Initial Cleaning ####
-fatal_enc$initial_clean <-
-  fatal_enc$backup_not_clean %>%
-  select(
-    # Select columns to keep and rename
-    c(unique_id = `Unique ID`,
-      race = `Race`,
-      race_imputed = `Race with imputations`,
-      imputation_probability = `Imputation probability`,
-      date = `Date of injury resulting in death (month/day/year)`,
-      city = `Location of death (city)`,
-      state = `State`,
-      zip = `Location of death (zip code)`,
-      county = `Location of death (county)`,
-      latitude = `Latitude`,
-      longitude = `Longitude`,
-      agencies = `Agency or agencies involved`,
-      highest_force = `Highest level of force`,
-      armed = `Armed/Unarmed`,
-      weapon = `Alleged weapon`,
-      aggressive = `Aggressive physical movement`,
-      fleeing = `Fleeing/Not fleeing`,
-      intended_use_of_force = `Intended use of force (Developing)`,
-    )
-  ) |>    ### Remove spacer (this wasn't an observation) ####
-filter(date != "1999-12-31") |>
-  ### Remove non-numeric characters from the latitude column ####
-mutate(latitude = as.numeric(gsub("[^0-9.-]", "", latitude))) |> 
-  filter(
-    highest_force %in% c(
-      "Gunshot", 
-      "Tasered", 
-      "Beaten/Bludgeoned with instrument",
-      "Asphyxiated/Restrained", 
-      "Asphyxiation/Restrained",
-      "Asphyxiation/Restrain", 
-      "Less-than-lethal force",
-      "Stabbed", 
-      "Chemical agent/Pepper spray", 
-      "Restrain/Asphyxiation")) |>  
-  filter(intended_use_of_force != "Suicide")
 
-fatal_enc$initial_clean <- fatal_enc$initial_clean |> 
-  filter(year(date) >= 2015 & year(date) <= 2020)
-
-# Fix Hispanic/Latino (uppercase "I")
+# fatal_enc$initial_clean <-
+#   fatal_enc$backup_not_clean %>%
+#   select(
+#     # Select columns to keep and rename
+#     c(unique_id = `Unique ID`,
+#       race = `Race`,
+#       race_imputed = `Race with imputations`,
+#       imputation_probability = `Imputation probability`,
+#       date = `Date of injury resulting in death (month/day/year)`,
+#       city = `Location of death (city)`,
+#       state = `State`,
+#       zip = `Location of death (zip code)`,
+#       county = `Location of death (county)`,
+#       latitude = `Latitude`,
+#       longitude = `Longitude`,
+#       agencies = `Agency or agencies involved`,
+#       highest_force = `Highest level of force`,
+#       armed = `Armed/Unarmed`,
+#       weapon = `Alleged weapon`,
+#       aggressive = `Aggressive physical movement`,
+#       fleeing = `Fleeing/Not fleeing`,
+#       intended_use_of_force = `Intended use of force (Developing)`,
+#     )
+#   ) |>    ### Remove spacer (this wasn't an observation) ####
+# filter(date != "1999-12-31") |>
+#   ### Remove non-numeric characters from the latitude column ####
+# mutate(latitude = as.numeric(gsub("[^0-9.-]", "", latitude))) |> 
+#   filter(
+#     highest_force %in% c(
+#       "Gunshot", 
+#       "Tasered", 
+#       "Beaten/Bludgeoned with instrument",
+#       "Asphyxiated/Restrained", 
+#       "Asphyxiation/Restrained",
+#       "Asphyxiation/Restrain", 
+#       "Less-than-lethal force",
+#       "Stabbed", 
+#       "Chemical agent/Pepper spray", 
+#       "Restrain/Asphyxiation")) |>  
+#   filter(intended_use_of_force != "Suicide")
 # 
-fatal_enc$initial_clean$race_imputed <- ifelse(
-  fatal_enc$initial_clean$race_imputed == "HIspanic/Latino",
-  "Hispanic/Latino", 
-  fatal_enc$initial_clean$race_imputed
-)
-
-## Adding sf object to fatal_enc (combined lat/long) ####
-fatal_enc$initial_clean <- 
-  fatal_enc$initial_clean %>% 
-  st_as_sf(coords = c('longitude', 'latitude'), crs = "NAD83")
-
-## Join the fatal encounters data set with census data
-### Add GEOID to the fatal encounters data set
-
-# r Add GEOID to the fatal encounters data set
-fatal_enc$initial_clean_geoid <- 
-  st_join(
-    x = fatal_enc$initial_clean,
-    y = all_tracts$population_income2020 %>% select(GEOID),
-    join = st_within)
-
-fatal_enc$initial_clean_geoid <- st_drop_geometry(fatal_enc$initial_clean_geoid)
-
-# Remove duplicated rows (unique ids that appear twice)
-fatal_enc$initial_clean_geoid <- 
-  fatal_enc$initial_clean_geoid[
-    !duplicated(fatal_enc$initial_clean_geoid$unique_id) | 
-      duplicated(fatal_enc$initial_clean_geoid, fromLast = TRUE),]
-
-fatal_enc$initial_clean_geoid$imputation_probability <-
-  as.numeric(fatal_enc$initial_clean_geoid$imputation_probability)
+# fatal_enc$initial_clean <- fatal_enc$initial_clean |> 
+#   filter(year(date) >= 2015 & year(date) <= 2020)
+# 
+# # Fix Hispanic/Latino (uppercase "I")
+# # 
+# fatal_enc$initial_clean$race_imputed <- ifelse(
+#   fatal_enc$initial_clean$race_imputed == "HIspanic/Latino",
+#   "Hispanic/Latino", 
+#   fatal_enc$initial_clean$race_imputed
+# )
+# 
+# ## Adding sf object to fatal_enc (combined lat/long) ####
+# fatal_enc$initial_clean <- 
+#   fatal_enc$initial_clean %>% 
+#   st_as_sf(coords = c('longitude', 'latitude'), crs = "NAD83")
+# 
+# ## Join the fatal encounters data set with census data
+# ### Add GEOID to the fatal encounters data set
+# 
+# # r Add GEOID to the fatal encounters data set
+# fatal_enc$initial_clean_geoid <- 
+#   st_join(
+#     x = fatal_enc$initial_clean,
+#     y = all_tracts$population_income2020 %>% select(GEOID),
+#     join = st_within)
+# 
+# fatal_enc$initial_clean_geoid <- st_drop_geometry(fatal_enc$initial_clean_geoid)
+# 
+# # Remove duplicated rows (unique ids that appear twice)
+# fatal_enc$initial_clean_geoid <- 
+#   fatal_enc$initial_clean_geoid[
+#     !duplicated(fatal_enc$initial_clean_geoid$unique_id) | 
+#       duplicated(fatal_enc$initial_clean_geoid, fromLast = TRUE),]
+# 
+# fatal_enc$initial_clean_geoid$imputation_probability <-
+#   as.numeric(fatal_enc$initial_clean_geoid$imputation_probability)
 
 ############################################ #
 # Joining with all_tracts data from above ####
