@@ -1,26 +1,16 @@
-# Note: Instead of running from the top (many operations take too long), start at 3_Summary Tables
-
-# setwd(
-#   "C:/Users/madou/OneDrive - UCLA IT Services/PS-Honors/police-killings-github")
+# setwd("C:/Users/madou/OneDrive - UCLA IT Services/PS-Honors/police-killings-github")
 
 # Load Libraries ####
 # library(tidycensus)
 # library(sf)
 # library(tidyverse)
 
-################# #
-# Checkpoint 1 ####
-################# #
+# Run setup file to bring in data to summarize
 source(file = "police-killings-setup.R")
+################################################ #
+# Begin Summary Tables  ########################
+################################################ #
 
-
-################# #
-# Checkpoint 2 ####
-################# #
-
-# save.image(file = "RData/checkpoint_2.RData")
-load(file = "RData/checkpoint_2.RData")
-# 3_Summary Tables ####
 summary_tables <- new.env()
 
 summary_tables$fatal_enc_table_1 <-  fatal_enc$joined %>%
@@ -46,15 +36,9 @@ summary_tables$summary_1 <- summary_tables$summary_1 |>
     Annualized_Per_10_M =
       Killings_Per_Yr / Population * 10000000)
 
-################# #
-# Checkpoint 3 ####
-################# #
-
-# save.image(file = "RData/checkpoint_3.RData")
-load(file = "RData/checkpoint_3.RData")
-# ############################################### #
-# 4_Begin ggplot ####
-# ############################################### #
+################################################ #
+# Begin ggplot #################################
+################################################ #
 
 plot <- new.env()
 # Income Quintiles only ####

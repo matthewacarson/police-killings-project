@@ -275,10 +275,6 @@ all_tracts$income_population_quintiles_2019 <- all_tracts$population_income2019 
       # NH_AsianP > 0.5 ~ 'A',
       Hisp_LatinoP > 0.5 ~ 'Hispanic/Latino'))
 
-all_tracts$income_population_quintiles_2020 <- 
-  all_tracts$income_population_quintiles_2020 %>%
-  mutate(Majority_Quintile = paste(Majority, income_quintiles, sep = "_"))
-
 # fatal_enc$backup_not_clean <- read_csv(
 #   "https://docs.google.com/spreadsheets/d/1dKmaV_JiWcG8XBoRgP8b4e9Eopkpgt7FL7nyspvzAsE/export?format=csv",
 #   col_types = cols(
