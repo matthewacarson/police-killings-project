@@ -51,8 +51,7 @@
 #   file = "acs_2020.RData"); rm(population_income2020)
 
 # Load data from tidycensus ACS
-all_tracts <- new.env()
-load("RData/acs_2019_raw.Rdata", envir = all_tracts)
+load("RData/acs_2019_raw.Rdata", envir = all_tracts <- new.env())
 load("RData/acs_2020_raw.Rdata", envir = all_tracts)
 
 # Filter tracts with NA income values ####
@@ -299,8 +298,11 @@ all_tracts$income_population_quintiles_2019 <- all_tracts$population_income2019 
 #     `Unique identifier (redundant)` = col_skip()
 #   )
 # )
-# load("RData/fatal_encounters_raw.RData", 
-# envir = fatal_enc <- new.env())
+
+# if (!grepl(pattern = "fatal_enc", x = ls())) {
+  # fatal_enc <- new.env()
+# }
+# load(file = "RData/fatal_encounters_raw.RData", envir = fatal_enc)
 
 ## Initial Cleaning ####
 
@@ -385,7 +387,9 @@ all_tracts$income_population_quintiles_2019 <- all_tracts$population_income2019 
 ############################################ #
 # Joining with all_tracts data from above ####
 ############################################ #
-load(file = "RData/fatal_enc_initial_clean_geoid.RData")
+load(
+  file = "RData/fatal_enc_initial_clean_geoid.RData",
+  envir = fatal_enc <- new.env())
 
 fatal_enc$joined <- 
   left_join(
