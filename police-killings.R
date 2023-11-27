@@ -385,10 +385,7 @@ summary_tables$race_and_income_summary <-
     x = summary_tables$race_and_income,
     y = summary_tables$race_and_income_pop,
     by = c("Majority", "income_quintiles")
-  )
-
-summary_tables$race_and_income_summary <- 
-  summary_tables$race_and_income_summary |> 
+  ) |> 
   mutate(
     Annualized_Per_10_M =
       Killings / Population * 10000000 / 6
@@ -402,9 +399,12 @@ summary_tables$race_and_income_summary <-
   ) |> add_row(
     summary_tables$summary_1 |>
       select(-Killings_Per_Yr)
-  ) |> na.omit()
+  ) |> na.omit() |> 
+  mutate(
+    Income = factor(Income, ordered = TRUE),
+    Majority = factor(Majority, ordered = TRUE))
 
-plot$quintile_by_race <- 
+# plot$quintile_by_race
 ggplot(
   summary_tables$race_and_income_summary
   ,aes(x = Majority, y = Annualized_Per_10_M, fill = Income)) +
@@ -435,18 +435,20 @@ ggplot(
     panel.grid.major.x = element_blank(),
     # panel.grid.minor.x = element_blank()
   )
-
 ggsave(
-  plot = plot$quintile_by_race,
-  filename = 'plots/quintile_by_race.png', 
-  dpi = 'retina', 
-  bg = 'white',
-  width = 10.4,
-  height = 4.81)
+  'plots/original_quintile_denominators_by_race.png', 
+  dpi = 'retina')
+# ggsave(
+#   plot = plot$quintile_by_race,
+#   filename = 'plots/quintile_by_race.png', 
+#   dpi = 'retina', 
+#   bg = 'white',
+#   width = 10.4,
+#   height = 4.81)
 # ############################### #
 # Grouped by Income Quintile ####
 # ############################### #
-plot$race_by_quintile <- 
+# plot$race_by_quintile <- 
   ggplot(
   summary_tables$race_and_income_summary, 
   aes(x = Income, y = Annualized_Per_10_M, fill = Majority)) +
@@ -478,12 +480,16 @@ plot$race_by_quintile <-
     # panel.grid.major.x = element_blank()
   )
 ggsave(
-  plot = plot$race_by_quintile,
-  filename = 'plots/race_by_quintile.png', 
-  dpi = 'retina', 
-  bg = 'white',
-  width = 10.4,
-  height = 4.81)
+  'plots/original_quintile_denominators_by_quintile.png', 
+  dpi = 'retina')
+
+# ggsave(
+#   plot = plot$race_by_quintile,
+#   filename = 'plots/race_by_quintile.png', 
+#   dpi = 'retina', 
+#   bg = 'white',
+#   width = 10.4,
+#   height = 4.81)
 
 # ################################### #
 # Plots using race of the victim ####
@@ -1395,5 +1401,4 @@ ggplot(data = all_tracts$race_quint_proportions,
 ggsave(
   filename = "total_pop_race_income_quintile_distribution.png",
   dpi = 'retina')
-
 

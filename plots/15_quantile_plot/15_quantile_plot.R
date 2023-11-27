@@ -2,7 +2,11 @@
 # Grouped by Race/Ethnicity ####
 # ############################## #
 
-# table(fatal_enc$joined$Majority, fatal_enc$joined$income_quintiles)
+# Note: this script uses 15 tract income quantiles.
+# The reasons for choosing 15 quantiles is that it lets
+# us divide quintiles into tertiles of each quintile. 
+# So by looking at the three lowest of 15 quantiles, 
+# we are looking at the tertiles of the lowest quintile.
 
 summary_tables$quant15_table <- 
   fatal_enc$joined |> 
@@ -56,7 +60,7 @@ summary_tables$quant15_summary <-
     ) |> 
   rename(Income = income_15_quant)
 
-plot$quant15_by_race
+# plot$quant15_by_race
   ggplot(
     summary_tables$quant15_summary |> filter(Income <= 3)
     ,aes(x = Majority, y = Annualized_Per_10_M, fill = Income)) +
@@ -87,7 +91,7 @@ plot$quant15_by_race
     panel.grid.major.x = element_blank(),
     # panel.grid.minor.x = element_blank()
   )
-ggsave(filename = "15_quantile_plot_by_race.png", dpi = 'retina')
+ggsave(filename = "plots/15_quantile_plot/15_quantile_plot_by_race.png", dpi = 'retina')
 # plot$quant15_by_race + scale_fill_discrete(labels = c('High Program', 'Low Program', 'Other Program'))
 
 ################################################# #
@@ -116,11 +120,11 @@ ggplot(
        subtitle = "Lowest three tract income quantiles of 15 quantiles (tertiles of the lowest tract income quintile). Years: [2015-2020]",
        y = "Per 10 Million Population Per Year",
        x = "Tertiles of the Lowest Tract Income Quintile",#"Based on Median Household Income in Census Tracts Where a Lethal Use of Force Occurred",
-       fill = "Racial or Ethnic Group") +
+       fill = "Racial or\nEthnic Group") +
   theme_classic() + 
   theme(
     axis.text.x = element_text(color = "black", size = 14),
     axis.text.y = element_text(color = "black"),
-    panel.grid.major.x = element_blank(),
-    # panel.grid.minor.x = element_blank()
-  ) 
+    panel.grid.major.x = element_blank()) 
+ggsave(filename = "plots/15_quantile_plot/15_quantile_plot_by_tert.png", dpi = 'retina')
+
