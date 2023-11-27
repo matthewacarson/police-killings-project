@@ -41,26 +41,27 @@ summary_tables$quant15_pop <-
       rename(Population = Total_popE) |> mutate(Majority = 'All')
   )
 
-
 summary_tables$quant15_joined <- 
   left_join(
     x = summary_tables$quant15_table,
     y = summary_tables$quant15_pop,
     by = join_by(Majority, income_15_quant))
 
-
 summary_tables$quant15_summary <- 
   summary_tables$quant15_joined |> 
   mutate(
-    Annualized_Per_10_M =
-      Killings / Population * 10000000 / 6)
+    Annualized_Per_10_M = 
+      Killings / Population * 10000000 / 6,
+    Majority = factor(Majority, ordered = TRUE)
+    ) |> 
+  rename(Income = income_15_quant)
 
-plot$quintile_by_race <- 
+plot$quant15_by_race
   ggplot(
-    summary_tables$race_and_income_summary
+    summary_tables$quant15_summary |> filter(Income <= 3)
     ,aes(x = Majority, y = Annualized_Per_10_M, fill = Income)) +
   geom_hline(
-    yintercept = seq(0,70, by = 10), 
+    yintercept = seq(0,110, by = 10), 
     color = "gray", 
     linetype = "dashed", 
     linewidth = 0.5,
@@ -69,7 +70,7 @@ plot$quintile_by_race <-
     stat = "identity", 
     position = position_dodge(width = 0.85), 
     color = 'black', 
-    width = 0.75
+    width = 0.82
   ) +
   geom_text(aes(label = round(Annualized_Per_10_M, 1)),
             position = position_dodge(width = 0.85),
@@ -78,7 +79,7 @@ plot$quintile_by_race <-
        subtitle = "Years: [2015-2020]",
        y = "Per 10 Million Population Per Year",
        x = "Majority (> 50%)",#"Based on Median Household Income in Census Tracts Where a Lethal Use of Force Occurred",
-       fill = "Median Household\nIncome in\nCensus Tract") +
+       fill = "Tertiles of the\nLowest Quintile") +
   theme_classic() + 
   theme(
     axis.text.x = element_text(color = "black"),
@@ -86,52 +87,40 @@ plot$quintile_by_race <-
     panel.grid.major.x = element_blank(),
     # panel.grid.minor.x = element_blank()
   )
+ggsave(filename = "15_quantile_plot_by_race.png", dpi = 'retina')
+# plot$quant15_by_race + scale_fill_discrete(labels = c('High Program', 'Low Program', 'Other Program'))
 
-ggsave(
-  plot = plot$quintile_by_race,
-  filename = 'plots/quintile_by_race.png', 
-  dpi = 'retina', 
-  bg = 'white',
-  width = 10.4,
-  height = 4.81)
-# ############################### #
-# Grouped by Income Quintile ####
-# ############################### #
-plot$race_by_quintile <- 
-  ggplot(
-    summary_tables$race_and_income_summary, 
-    aes(x = Income, y = Annualized_Per_10_M, fill = Majority)) +
+################################################# #
+# By Income
+################################################# #
+
+ggplot(
+  summary_tables$quant15_summary |> filter(Income <= 3),
+  aes(x = Income, y = Annualized_Per_10_M, fill = Majority)) +
   geom_hline(
-    yintercept = seq(0,70, by = 10), 
+    yintercept = seq(0,110, by = 10), 
     color = "gray", 
     linetype = "dashed", 
-    linewidth = 0.5
+    linewidth = 0.5,
   ) +
   geom_bar(
     stat = "identity", 
     position = position_dodge(width = 0.85), 
     color = 'black', 
-    # linewidth = 0.01,
-    width = 0.75
+    width = 0.82
   ) +
   geom_text(aes(label = round(Annualized_Per_10_M, 1)),
             position = position_dodge(width = 0.85),
             vjust = -0.4, color = "black", size = 3) +
   labs(title = "Rate of Police Lethal Uses of Force",
-       subtitle = "Years: [2015-2020]",
+       subtitle = "Lowest three tract income quantiles of 15 quantiles (tertiles of the lowest tract income quintile). Years: [2015-2020]",
        y = "Per 10 Million Population Per Year",
-       x = "Median Household Income in Census Tract",
-       fill = "Majority\n(> 50%)") +
+       x = "Tertiles of the Lowest Tract Income Quintile",#"Based on Median Household Income in Census Tracts Where a Lethal Use of Force Occurred",
+       fill = "Racial or Ethnic Group") +
   theme_classic() + 
   theme(
-    axis.text.x = element_text(color = "black"),
-    axis.text.y = element_text(color = "black")
-    # panel.grid.major.x = element_blank()
-  )
-ggsave(
-  plot = plot$race_by_quintile,
-  filename = 'plots/race_by_quintile.png', 
-  dpi = 'retina', 
-  bg = 'white',
-  width = 10.4,
-  height = 4.81)
+    axis.text.x = element_text(color = "black", size = 14),
+    axis.text.y = element_text(color = "black"),
+    panel.grid.major.x = element_blank(),
+    # panel.grid.minor.x = element_blank()
+  ) 
