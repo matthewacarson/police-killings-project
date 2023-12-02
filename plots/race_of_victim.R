@@ -204,12 +204,9 @@ ggsave(
        width = 10.4,
        height = 4.81)
 
-
 #################################################### #
 # Distribution by quintile within race ####
 #################################################### #
-
-
 
 summary_tables$quiniles_race_victim <- 
   left_join(
@@ -280,8 +277,8 @@ ggplot(
     legend.title = element_text(size = 15),
     legend.text = element_text(size = 12))
 
-ggsave(plot = plots$inc_and_race_victim,
-       filename = 'plots/inc_and_race_victim.png', 
+ggsave(
+       filename = 'plots/plots_by_race/inc_and_race_victim.png', 
        dpi = 'retina', 
        bg = 'white',
        width = 10.4,
@@ -294,4 +291,4 @@ summary_tables$quiniles_race_victim[1:20,] |>
     Income =
       c("1st Quintile", "2nd Quintile", "3rd Quintile", 
         "4th Quintile", "5th Quintile")
-  ) |> write_csv(file = "quiniles_race_victim.csv")
+  # ) |> write_csv(file = "quiniles_race_victim.csv")

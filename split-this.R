@@ -213,22 +213,22 @@ all_tracts$income_population_LUOF_count$Majority <-
 # Checkpoint 4 ####
 ################# #
 # save.image(file = "RData/checkpoint_4.RData")
-load(file = "RData/checkpoint_4.RData")
+# load(file = "RData/checkpoint_4.RData")
 # 5_Regression Models ####
 #
 ## LUOF Frequency counts of each tract ####
 # Adding frequency of lethal use of force in each tract to
 # all_tracts
 
-all_tracts$income_population_LUOF_count$LUOF_logical <- as.logical(all_tracts$income_population_LUOF_count$LUOF_count)
-
-inc_in_LUOF_tracts <- 
-  all_tracts$income_population_LUOF_count$IncomeE[
-    all_tracts$income_population_LUOF_count$LUOF_logical]
-
-inc_in_nonLUOF_tracts <- 
-  all_tracts$income_population_LUOF_count$IncomeE[
-    !all_tracts$income_population_LUOF_count$LUOF_logical]
+# all_tracts$income_population_LUOF_count$LUOF_logical <- as.logical(all_tracts$income_population_LUOF_count$LUOF_count)
+# 
+# inc_in_LUOF_tracts <- 
+#   all_tracts$income_population_LUOF_count$IncomeE[
+#     all_tracts$income_population_LUOF_count$LUOF_logical]
+# 
+# inc_in_nonLUOF_tracts <- 
+#   all_tracts$income_population_LUOF_count$IncomeE[
+#     !all_tracts$income_population_LUOF_count$LUOF_logical]
 
 # qqnorm(inc_in_LUOF_tracts, pch = 16, col = 'dodgerblue')
 # qqline(inc_in_LUOF_tracts, col = 'red', lwd = 2)
@@ -247,9 +247,9 @@ inc_in_nonLUOF_tracts <-
 
 # write_csv(x = all_tracts$income_population_LUOF_count, file = "income_population_LUOF_count.csv")
 
-lm_income <- 
-  lm(IncomeE ~ LUOF_logical + LUOF_logical:Majority,
-     data = all_tracts$income_population_LUOF_count)
+# lm_income <- 
+#   lm(IncomeE ~ LUOF_logical + LUOF_logical:Majority,
+#      data = all_tracts$income_population_LUOF_count)
 # plot(x = all_tracts$income_population_LUOF_count$IncomeE,
 #      y = all_tracts$income_population_LUOF_count$LUOF_logical)
 
@@ -386,23 +386,23 @@ income_population_LUOF_deciles |>
 #     aes(x = LUOF_logical, y = IncomeE, color = Majority)) +
 #   coord_flip()
 
-plots$boxplot_by_race <- 
-  ggplot(
-    data = all_tracts$income_population_LUOF_count,
-    aes(
-      x = Majority,
-      y = IncomeE,
-      # color = LUOF_logical,
-      fill = LUOF_logical
-    )) +
-    geom_boxplot() +
-    coord_flip() +
-    theme_cowplot() +
-    labs(
-      fill = "Lethal Use\nof Force",
-      y = "Median Household Income",
-      title = "Median Household Income in Census Tracts",
-      subtitle = "Tracts with a LUOF vs. Tracts without a LUOF.")
+
+ggplot(
+  data = all_tracts$income_population_LUOF_count,
+  aes(
+    x = Majority,
+    y = IncomeE,
+    # color = LUOF_logical,
+    fill = LUOF_logical
+  )) +
+  geom_boxplot() +
+  coord_flip() +
+  theme_cowplot() +
+  labs(
+    fill = "Lethal Use\nof Force",
+    y = "Median Household Income",
+    title = "Median Household Income in Census Tracts",
+    subtitle = "Tracts with a LUOF vs. Tracts without a LUOF.")
 
 ggsave(plot = plots$boxplot_by_race,
        filename = 'plots/boxplot_by_race.png', 
@@ -413,42 +413,42 @@ ggsave(plot = plots$boxplot_by_race,
 
 ## Density plot by race and LUOF ####
 ## (un-weighted income)
-plots$density_by_race <-
-  ggplot(
-    data = all_tracts$income_population_LUOF_count, 
-    aes(x = IncomeE, fill = LUOF_logical, color = LUOF_logical)) +
-    geom_density(alpha = 0.5) +
-    facet_wrap(~Majority, ) +
-    # theme_light() +
-    # scale_fill_brewer(palette = "Set1") +
-    scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
-    # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-  labs(
-    title = "Census Tract Median Household Income",
-    subtitle = "Tracts with a lethal use of force vs. Tracts without a lethal use of force [2015-2020].",
-    # caption = "[2015-2020]",
-    # tag = "dgh",
-    x = "Median Household Income",
-    y = "Density") +
-  theme_bw() +
-  scale_fill_brewer(palette = "Set1", name = "Lethal Use\nof Force") +
-  scale_color_brewer(palette = "Set1", name = "Lethal Use\nof Force") +
-  # scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
-  theme(
-    axis.text.x = element_text(
-      angle = 90, vjust = 0.5, color = 'black'),
-    axis.text.y = element_text(
-      angle = 90, hjust = 0.5, color = 'black'),
-    # plot.caption = element_text(
-    #   vjust = 100, color = 'black'),
-    plot.title = element_text(color = 'black', face = "bold"),
-    plot.subtitle = element_text(color = 'black'),
-    axis.title.x = element_text(color = 'black'),
-    axis.title.y = element_text(color = 'black'),
-    legend.text = element_text(color = 'black'),
-    legend.title = element_text(color = 'black'),
-    strip.text = element_text(color = 'black', size = 12)
-  )
+
+ggplot(
+  data = all_tracts$income_population_LUOF_count, 
+  aes(x = IncomeE, fill = LUOF_logical, color = LUOF_logical)) +
+  geom_density(alpha = 0.5) +
+  facet_wrap(~Majority, ) +
+  # theme_light() +
+  # scale_fill_brewer(palette = "Set1") +
+  scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
+  # theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+labs(
+  title = "Census Tract Median Household Income",
+  subtitle = "Tracts with a lethal use of force vs. Tracts without a lethal use of force [2015-2020].",
+  # caption = "[2015-2020]",
+  # tag = "dgh",
+  x = "Median Household Income",
+  y = "Density") +
+theme_bw() +
+scale_fill_brewer(palette = "Set1", name = "Lethal Use\nof Force") +
+scale_color_brewer(palette = "Set1", name = "Lethal Use\nof Force") +
+# scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
+theme(
+  axis.text.x = element_text(
+    angle = 90, vjust = 0.5, color = 'black'),
+  axis.text.y = element_text(
+    angle = 90, hjust = 0.5, color = 'black'),
+  # plot.caption = element_text(
+  #   vjust = 100, color = 'black'),
+  plot.title = element_text(color = 'black', face = "bold"),
+  plot.subtitle = element_text(color = 'black'),
+  axis.title.x = element_text(color = 'black'),
+  axis.title.y = element_text(color = 'black'),
+  legend.text = element_text(color = 'black'),
+  legend.title = element_text(color = 'black'),
+  strip.text = element_text(color = 'black', size = 12)
+)
 
 ggsave(plot = plots$density_by_race,
        filename = 'plots/density_by_race.png', 
@@ -458,18 +458,19 @@ ggsave(plot = plots$density_by_race,
        height = 4.81)
 ## Histogram by race and LUOF ####
 ## (un-weighted income)
-plots$hist_unweighted_by_race <- 
-  ggplot(
-    data = all_tracts$income_population_LUOF_count, 
-    aes(x = IncomeE, y = after_stat(density), fill = LUOF_logical)) +
-    geom_histogram(
-      alpha = 0.5,
-      position = "identity") +
-    facet_wrap(~Majority) +
-    theme_light() +
-    scale_fill_brewer(palette = "Set1") +
-    scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+ 
+ggplot(
+  data = all_tracts$income_population_LUOF_count, 
+  aes(x = IncomeE, y = after_stat(density), fill = LUOF_logical)) +
+  geom_histogram(
+    alpha = 0.5,
+    position = "identity") +
+  facet_wrap(~Majority) +
+  theme_light() +
+  scale_fill_brewer(palette = "Set1") +
+  scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
 ggsave(plot = plots$hist_unweighted_by_race,
        filename = 'plots/hist_unweighted_by_race.png', 
        dpi = 'retina', 
@@ -486,44 +487,43 @@ median_LUOF <- median(
       all_tracts$income_population_LUOF_count$LUOF_logical], na.rm = T)
 
 
-plots$hist_unweighted <- 
-  ggplot() +
-    geom_histogram(
-      data = all_tracts$income_population_LUOF_count, 
-      aes(x = IncomeE, y = after_stat(density), fill = LUOF_logical),
-      alpha = 0.4,
-      position = "identity") +
-    geom_vline(
-      aes(xintercept = median_LUOF, color = TRUE),
-      linetype = "solid", linewidth = 1, alpha = 1) +
-    geom_vline(
-      aes(xintercept = median_no_LUOF, color = FALSE),
-      linetype = "solid", linewidth = 1, alpha = 1) +
-    labs(
-      title = "Census Tract Median Household Income",
-      subtitle = "Tracts with a lethal use of force vs. Tracts without a lethal use of force [2015-2020].",
-      # caption = "[2015-2020]",
-      # tag = "dgh",
-      x = "Income",
-      y = "Density") +
-    theme_light() +
-    scale_fill_brewer(palette = "Set1", name = "Lethal Use\nof Force") +
-    scale_color_brewer(palette = "Set1", name = "Lethal Use\nof Force") +
-    scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
-    theme(
-      axis.text.x = element_text(
-        angle = 90, vjust = 0.5, color = 'black'),
-      axis.text.y = element_text(
-        angle = 90, hjust = 0.5, color = 'black'),
-      # plot.caption = element_text(
-      #   vjust = 100, color = 'black'),
-      plot.title = element_text(color = 'black', face = "bold"),
-      plot.subtitle = element_text(color = 'black'),
-      axis.title.x = element_text(color = 'black'),
-      axis.title.y = element_text(color = 'black'),
-      legend.text = element_text(color = 'black'),
-      legend.title = element_text(color = 'black')
-      )
+ggplot() +
+  geom_histogram(
+    data = all_tracts$income_population_LUOF_count, 
+    aes(x = IncomeE, y = after_stat(density), fill = LUOF_logical),
+    alpha = 0.4,
+    position = "identity") +
+  geom_vline(
+    aes(xintercept = median_LUOF, color = TRUE),
+    linetype = "solid", linewidth = 1, alpha = 1) +
+  geom_vline(
+    aes(xintercept = median_no_LUOF, color = FALSE),
+    linetype = "solid", linewidth = 1, alpha = 1) +
+  labs(
+    title = "Census Tract Median Household Income",
+    subtitle = "Tracts with a lethal use of force vs. Tracts without a lethal use of force [2015-2020].",
+    # caption = "[2015-2020]",
+    # tag = "dgh",
+    x = "Income",
+    y = "Density") +
+  theme_light() +
+  scale_fill_brewer(palette = "Set1", name = "Lethal Use\nof Force") +
+  scale_color_brewer(palette = "Set1", name = "Lethal Use\nof Force") +
+  scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
+  theme(
+    axis.text.x = element_text(
+      angle = 90, vjust = 0.5, color = 'black'),
+    axis.text.y = element_text(
+      angle = 90, hjust = 0.5, color = 'black'),
+    # plot.caption = element_text(
+    #   vjust = 100, color = 'black'),
+    plot.title = element_text(color = 'black', face = "bold"),
+    plot.subtitle = element_text(color = 'black'),
+    axis.title.x = element_text(color = 'black'),
+    axis.title.y = element_text(color = 'black'),
+    legend.text = element_text(color = 'black'),
+    legend.title = element_text(color = 'black'))
+
 ggsave(plot = plots$hist_unweighted,
        filename = 'plots/hist_unweighted.png', 
        dpi = 'retina', 
