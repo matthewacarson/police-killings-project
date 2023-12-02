@@ -1,3 +1,16 @@
+# setwd("C:/Users/madou/OneDrive - UCLA IT Services/PS-Honors/police-killings-github")
+
+# Load Libraries ####
+# library(tidycensus)
+# library(sf)
+# library(tidyverse)
+
+# Run setup file to bring in data to summarize
+source(file = "police-killings-setup.R")
+################################################ #
+# Begin Summary Tables  ########################
+################################################ #
+
 # ############################## #
 # Grouped by Race/Ethnicity ####
 # ############################## #
@@ -91,8 +104,7 @@ summary_tables$quant15_summary <-
     panel.grid.major.x = element_blank(),
     # panel.grid.minor.x = element_blank()
   )
-ggsave(filename = "plots/15_quantile_plot/15_quantile_plot_by_race.png", dpi = 'retina')
-# plot$quant15_by_race + scale_fill_discrete(labels = c('High Program', 'Low Program', 'Other Program'))
+ggsave(filename = "plots/15_quantile_plot/15_quantile_plot_by_race.png", dpi = 'retina', width = 10.4, height = 4.81)
 
 ################################################# #
 # By Income
@@ -126,5 +138,8 @@ ggplot(
     axis.text.x = element_text(color = "black", size = 14),
     axis.text.y = element_text(color = "black"),
     panel.grid.major.x = element_blank()) 
-ggsave(filename = "plots/15_quantile_plot/15_quantile_plot_by_tert.png", dpi = 'retina')
+ggsave(filename = "plots/15_quantile_plot/15_quantile_plot_by_tert.png", 
+       dpi = 'retina',   
+       width = 10.4,
+       height = 4.81)
 

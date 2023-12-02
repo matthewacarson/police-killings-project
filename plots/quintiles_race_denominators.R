@@ -60,10 +60,10 @@ ggplot(
     summary_tables$race_income_summary_race_denom
     ,aes(x = Majority, y = Annualized_Per_10_M, fill = Income)) +
   geom_hline(
-    yintercept = seq(0,100, by = 10), 
+    yintercept = seq(0,100, by = 12.5), 
     color = "gray", 
     linetype = "dashed", 
-    linewidth = 0.5,
+    linewidth = 0.5
   ) +
   geom_bar(
     stat = "identity", 
@@ -77,7 +77,7 @@ ggplot(
   labs(title = "Rate of Police Lethal Uses of Force",
        subtitle = "Years: [2015-2020]",
        y = "Per 10 Million Population Per Year",
-       x = "Majority (> 50%)",#"Based on Median Household Income in Census Tracts Where a Lethal Use of Force Occurred",
+       x = "Majority (> 50%)",# "Based on Median Household Income in Census Tracts Where a Lethal Use of Force Occurred",
        fill = "Median Household\nIncome in\nCensus Tract") +
   theme_classic() + 
   theme(

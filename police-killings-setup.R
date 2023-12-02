@@ -5,6 +5,14 @@
 # library(sf)
 # library(tidyverse)
 
+# Creating environments
+
+if (!exists("all_tracts")) {all_tracts <- new.env()}
+
+if (!exists("fatal_enc")) {fatal_enc <- new.env()}
+
+if (!exists("summary_tables")) {summary_tables <- new.env()}
+
 # Download and clean tract income ####
 ## Download 2019 data ####
 
@@ -51,7 +59,7 @@
 #   file = "acs_2020.RData"); rm(population_income2020)
 
 # Load data from tidycensus ACS
-load("RData/acs_2019_raw.Rdata", envir = all_tracts <- new.env())
+load("RData/acs_2019_raw.Rdata", envir = all_tracts)
 load("RData/acs_2020_raw.Rdata", envir = all_tracts)
 
 # Filter tracts with NA income values ####
@@ -299,11 +307,6 @@ all_tracts$income_population_quintiles_2019 <- all_tracts$population_income2019 
 #   )
 # )
 
-# if (!grepl(pattern = "fatal_enc", x = ls())) {
-  # fatal_enc <- new.env()
-# }
-# load(file = "RData/fatal_encounters_raw.RData", envir = fatal_enc)
-
 ## Initial Cleaning ####
 
 # fatal_enc$initial_clean <-
@@ -389,11 +392,70 @@ all_tracts$income_population_quintiles_2019 <- all_tracts$population_income2019 
 ############################################ #
 load(
   file = "RData/fatal_enc_initial_clean_geoid.RData",
-  envir = fatal_enc <- new.env())
+  envir = fatal_enc)
 
 fatal_enc$joined <- 
   left_join(
     x = fatal_enc$initial_clean_geoid,
     y = all_tracts$income_population_quintiles_2020,
     by = "GEOID")
+
+if (!exists("summary_tables$summary_1")) {
+  summary_tables$fatal_enc_table_1 <-  fatal_enc$joined %>%
+    count(Income = income_quintiles) %>% rename(Killings = n) %>% 
+    filter(!is.na(Income)) %>% mutate(Killings_Per_Yr = Killings / 6)
+  
+  summary_tables$pop_table_1 <- tapply(
+    all_tracts$income_population_quintiles_2020$Total_popE, 
+    all_tracts$income_population_quintiles_2020$income_quintiles,
+    sum, na.rm = TRUE) %>% 
+    data.frame(Income = rownames(.), Population = .)
+  
+  summary_tables$summary_1 <- 
+    left_join(
+      x = summary_tables$fatal_enc_table_1,
+      y = summary_tables$pop_table_1,
+      by = "Income")
+  
+  summary_tables$summary_1$Majority <- "All"
+  
+  summary_tables$summary_1 <- summary_tables$summary_1 |> 
+    mutate(
+      Annualized_Per_10_M =
+        Killings_Per_Yr / Population * 10000000)
+}
+
+summary_tables$race_and_income <- 
+  fatal_enc$joined |> 
+  count(Majority, income_quintiles) |> 
+  rename(Killings = n)
+
+summary_tables$race_and_income_pop <- all_tracts$income_population_quintiles_2020 |> 
+  aggregate(Total_popE ~ Majority + income_quintiles, FUN = sum) |> 
+  rename(Population = Total_popE)
+
+summary_tables$race_and_income_summary <- 
+  left_join(
+    x = summary_tables$race_and_income,
+    y = summary_tables$race_and_income_pop,
+    by = c("Majority", "income_quintiles")
+  )
+
+summary_tables$race_and_income_summary <- 
+  summary_tables$race_and_income_summary |> 
+  mutate(
+    Annualized_Per_10_M =
+      Killings / Population * 10000000 / 6
+  ) |> 
+  select(
+    Majority, 
+    Income = income_quintiles,
+    Population,
+    Killings,
+    Annualized_Per_10_M
+  ) |> add_row(
+    summary_tables$summary_1 |>
+      select(-Killings_Per_Yr)
+  ) |> na.omit()
+
 
