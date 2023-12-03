@@ -56,16 +56,16 @@ summary_tables$race_and_income_pop <- all_tracts$income_population_quintiles_202
     Black = sum(`Black Pop`),
     Latino = sum(`Hispanic/Latino Pop`)
   ) |> na.omit()
-  
-  
-  
-summary_tables$victim_race_majority_quint <- 
+
+
+summary_tables$victim_race_majority_quint <-
   left_join(
     x = summary_tables$race_victim_majority_and_quintile,
     y = summary_tables$race_and_income_pop
-  ) |> na.omit()
+  ) |> na.omit() # |> write_csv(file = "xtabs_race_majority_inc/victim_race_majority_quint.csv")
 
-summary_tables$victim_race_majority_quint_annual <- 
+
+summary_tables$victim_race_majority_quint_annual <-
 summary_tables$victim_race_majority_quint |> 
   mutate(
     Annual_10_M = 
@@ -75,9 +75,10 @@ summary_tables$victim_race_majority_quint |>
         Victim_Race == 'Hispanic/Latino' ~ n / Latino / 6 * 10000000
       ),
     Income_Quintile = as.factor(Income_Quintile)
-  )
+  ) # |> write_csv(file = "xtabs_race_majority_inc/xtabs_all_data.csv")
 
-summary_tables$victim_race_majority_quint_annual |> 
+
+summary_tables$victim_race_majority_quint_annual |> # print(n = 99)
   select(
     Victim_Race,
     Majority,
@@ -88,6 +89,74 @@ summary_tables$victim_race_majority_quint_annual |>
     names_from = Victim_Race,
     names_prefix = "Victim_",
     values_from = Annual_10_M
-  ) |> write_csv(file = "xtabs_victim_race_majority_inc.csv")
+  ) # |> write_csv(file = "xtabs_race_majority_inc/xtabs_victim_race_majority_inc.csv")
+
+############################################################## #
+# Majority Black Tracts by Victim Race and Income Quintile ####
+############################################################## #
+ggplot() + 
+  geom_line(data = summary_tables$victim_race_majority_quint_annual |> 
+                filter(Majority == 'Black'),
+              aes(
+                x = Income_Quintile, y = Annual_10_M, 
+                color = Victim_Race, group = Victim_Race), lwd = 1) +
+  labs(
+    title = "Majority Black Tracts",
+    x = "Census Tract Income Quintile",
+    y = "Annualized Rate Per 10 Million Population",
+  ) + guides(color = guide_legend(title = "Victim's Race"))
+
+ggsave(
+  filename = "plots/xtabs_race_majority_inc/Majority Black Tracts.png",
+  dpi = 'retina',
+  width = 10.4,
+  height = 4.81
+)
+
+############################################################## #
+# Majority White Tracts by Victim Race and Income Quintile ####
+############################################################## #
+
+ggplot() + 
+  geom_line(data = summary_tables$victim_race_majority_quint_annual |> 
+                filter(Majority == 'White'),
+              aes(
+                x = Income_Quintile, y = Annual_10_M, 
+                color = Victim_Race, group = Victim_Race), lwd = 1) +
+  labs(
+    title = "Majority White Tracts",
+    x = "Census Tract Income Quintile",
+    y = "Annualized Rate Per 10 Million Population",
+  ) + guides(color = guide_legend(title = "Victim's Race"))
+
+ggsave(
+  filename = "plots/xtabs_race_majority_inc/Majority White Tracts.png",
+  dpi = 'retina',
+  width = 10.4,
+  height = 4.81
+)
 
 
+####################################################################### #
+# Majority Hispanic/Latino Tracts by Victim Race and Income Quintile ####
+####################################################################### #
+
+ggplot() + 
+  geom_line(  data = summary_tables$victim_race_majority_quint_annual |> 
+                filter(Majority == 'Hispanic/Latino'),
+              aes(
+                x = Income_Quintile, y = Annual_10_M, 
+                color = Victim_Race, group = Victim_Race), lwd = 1) +
+  labs(
+    title = "Majority Hispanic/Latino Tracts",
+    x = "Income Quintile",
+    y = "Annualized Rate Per 10 Million Population",
+  ) + guides(color = guide_legend(title = "Victim's Race"))
+
+
+ggsave(
+  filename = "plots/xtabs_race_majority_inc/Majority Hispanic_Latino Tracts.png",
+  dpi = 'retina',
+  width = 10.4,
+  height = 4.81
+)
