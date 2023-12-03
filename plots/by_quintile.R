@@ -24,7 +24,8 @@ summary_tables$race_and_income <-
   count(Majority, income_quintiles) |> 
   rename(Killings = n)
 
-summary_tables$race_and_income_pop <- all_tracts$income_population_quintiles_2020 |> 
+summary_tables$race_and_income_pop <- 
+  all_tracts$income_population_quintiles_2020 |> 
   aggregate(Total_popE ~ Majority + income_quintiles, FUN = sum) |> 
   rename(Population = Total_popE)
 
@@ -146,7 +147,7 @@ ggsave(
 # table(fatal_enc$joined$Majority, fatal_enc$joined$income_quintiles)
 
 ####################################### #
-# These plots use diffeerent colors. 
+# These plots use different colors. 
 # They are the original plots I made.
 # The difference is that I used total 
 # population of that tract rather than

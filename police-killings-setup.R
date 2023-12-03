@@ -394,11 +394,39 @@ load(
   file = "RData/fatal_enc_initial_clean_geoid.RData",
   envir = fatal_enc)
 
-fatal_enc$joined <- 
+fatal_enc$joined_backup <- 
   left_join(
     x = fatal_enc$initial_clean_geoid,
     y = all_tracts$income_population_quintiles_2020,
     by = "GEOID")
+
+############################################# #
+# Rename race and race_imputed variables
+############################################# #
+
+fatal_enc$joined <- 
+  fatal_enc$joined_backup |> 
+  mutate(
+    race =
+      case_when(
+        race == "European-American/White" ~ "White",
+        race == "African-American/Black" ~ "Black",
+        race == "Hispanic/Latino" ~ race,
+        TRUE ~ "Other/Unknown"
+      ),
+    race_imputed =
+      case_when(
+        race_imputed == "European-American/White" ~ "White",
+        race_imputed == "African-American/Black" ~ "Black",
+        race_imputed == "Hispanic/Latino" ~ race_imputed,
+        TRUE ~ "Other/Unknown"
+      )
+  )
+
+
+############################################# #
+# Creating basic summary table 
+############################################# #
 
 if (!exists("summary_tables$summary_1")) {
   summary_tables$fatal_enc_table_1 <-  fatal_enc$joined %>%

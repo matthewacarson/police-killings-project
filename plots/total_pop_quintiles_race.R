@@ -22,7 +22,7 @@ all_tracts$race_quint_xtab <-
     values_to = "population") |> 
   aggregate(population ~ Quintile + Race, FUN = sum)
 
-# Calculate the proportion of each racial group liiving in each income
+# Calculate the proportion of each racial group living in each income
 # quintile
 all_tracts$race_quint_proportions <- 
   left_join(
