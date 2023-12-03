@@ -1,4 +1,12 @@
+# setwd("C:/Users/madou/OneDrive - UCLA IT Services/PS-Honors/police-killings-github")
 
+# Load Libraries ####
+# library(tidycensus)
+# library(sf)
+# library(tidyverse)
+
+# Run setup file to bring in data to summarize
+source(file = "police-killings-setup.R")
 # Histograms ####
 ## Histogram prep #### 
 ### 
@@ -220,15 +228,15 @@ all_tracts$income_population_LUOF_count$Majority <-
 # Adding frequency of lethal use of force in each tract to
 # all_tracts
 
-# all_tracts$income_population_LUOF_count$LUOF_logical <- as.logical(all_tracts$income_population_LUOF_count$LUOF_count)
-# 
-# inc_in_LUOF_tracts <- 
-#   all_tracts$income_population_LUOF_count$IncomeE[
-#     all_tracts$income_population_LUOF_count$LUOF_logical]
-# 
-# inc_in_nonLUOF_tracts <- 
-#   all_tracts$income_population_LUOF_count$IncomeE[
-#     !all_tracts$income_population_LUOF_count$LUOF_logical]
+all_tracts$income_population_LUOF_count$LUOF_logical <- as.logical(all_tracts$income_population_LUOF_count$LUOF_count)
+
+inc_in_LUOF_tracts <-
+  all_tracts$income_population_LUOF_count$IncomeE[
+    all_tracts$income_population_LUOF_count$LUOF_logical]
+
+inc_in_nonLUOF_tracts <-
+  all_tracts$income_population_LUOF_count$IncomeE[
+    !all_tracts$income_population_LUOF_count$LUOF_logical]
 
 # qqnorm(inc_in_LUOF_tracts, pch = 16, col = 'dodgerblue')
 # qqline(inc_in_LUOF_tracts, col = 'red', lwd = 2)
@@ -270,37 +278,37 @@ overall_means_binary_diff <- sapply(aggregate(IncomeE ~ LUOF_logical, data = all
 
 
 # Example assuming all_tracts$income_population_LUOF_count is your dataset
-poisson_model <- 
-  glm(LUOF_count ~ Income10k:Majority, 
-      data = all_tracts$income_population_LUOF_count, 
-      family = "poisson")
-
-# Display summary
-# summary(poisson_model)
-
-logit_model <- 
-  glm(LUOF_logical ~ Majority:Income10k, 
-      data = all_tracts$income_population_LUOF_count, 
-      family = "binomial")
+# poisson_model <- 
+#   glm(LUOF_count ~ Income10k:Majority, 
+#       data = all_tracts$income_population_LUOF_count, 
+#       family = "poisson")
+# 
+# # Display summary
+# # summary(poisson_model)
+# 
+# logit_model <- 
+#   glm(LUOF_logical ~ Majority:Income10k, 
+#       data = all_tracts$income_population_LUOF_count, 
+#       family = "binomial")
 
 # summary(logit_model)
 # plot(logit_model)
 
 # predictions
-logit_prediction_df <- data.frame(
-  Majority = rep(levels(all_tracts$income_population_LUOF_count$Majority), each = 4),
-  income_quartile = as.factor(rep(seq(1, 4, by = 1), times = 4))
-  # Term = names(logit_model$coefficients)[-1]
-)
-
-logit_predictions <- data.frame(
-  logit_prediction_df,
-  Predicted_Probability = predict(
-    logit_model, 
-    newdata = logit_prediction_df,
-    type = 'response'
-  )
-)
+# logit_prediction_df <- data.frame(
+#   Majority = rep(levels(all_tracts$income_population_LUOF_count$Majority), each = 4),
+#   income_quartile = as.factor(rep(seq(1, 4, by = 1), times = 4))
+#   # Term = names(logit_model$coefficients)[-1]
+# )
+# 
+# logit_predictions <- data.frame(
+#   logit_prediction_df,
+#   Predicted_Probability = predict(
+#     logit_model, 
+#     newdata = logit_prediction_df,
+#     type = 'response'
+#   )
+# )
 
 # Predicted probabilities
 
@@ -367,7 +375,7 @@ all_tracts$income_population_LUOF_count |>
 
 # pivot_wider(odds_predictions, names_from = Majority, values_from = Predicted_Odds)
 
-income_population_LUOF_deciles <- read_csv("C:/Users/madou/OneDrive - UCLA IT Services/PS-Honors/police-killings-github-project/income_population_LUOF_deciles.txt")
+income_population_LUOF_deciles <- read_csv("income_population_LUOF_deciles.txt")
 
 
 # Proportion of tracts that have experienced at least 1 LUOF
@@ -540,7 +548,7 @@ ggsave(plot = plots$hist_unweighted,
 # Checkpoint 5 ####
 ################# #
 
-load(file = "RData/checkpoint_5.RData")
+# load(file = "RData/checkpoint_5.RData")
 
 # Total population by race 2020
 all_tracts$total_pop_by_race <- 

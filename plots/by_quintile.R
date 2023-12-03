@@ -84,8 +84,10 @@ ggplot(
     # panel.grid.minor.x = element_blank()
   )
 ggsave(
-  'plots/original_quintile_denominators_by_race.png', 
-  dpi = 'retina')
+  'plots/by_quintile/original_quintile_denominators_by_race.png', 
+  dpi = 'retina',
+  width = 10.4,
+  height = 4.81)
 # ggsave(
 #   plot = plots$quintile_by_race,
 #   filename = 'plots/quintile_by_race.png', 
@@ -128,8 +130,10 @@ ggplot(
     # panel.grid.major.x = element_blank()
   )
 ggsave(
-  'plots/original_quintile_denominators_by_quintile.png', 
-  dpi = 'retina')
+  'plots/by_quintile/original_quintile_denominators_by_quintile.png', 
+  dpi = 'retina',
+  width = 10.4,
+  height = 4.81)
 
 # ggsave(
 #   plot = plots$race_by_quintile,
@@ -144,6 +148,9 @@ ggsave(
 ####################################### #
 # These plots use diffeerent colors. 
 # They are the original plots I made.
+# The difference is that I used total 
+# population of that tract rather than
+# total population of each particular race.
 ####################################### #
 
 

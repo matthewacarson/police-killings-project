@@ -384,7 +384,7 @@ summary_tables$quiniles_race_victim$Race <-
     summary_tables$quiniles_race_victim$Race, 
     levels = c("All", "African-American/Black",
                "European-American/White", "Hispanic/Latino"))
-plots$inc_and_race_victim
+
 ggplot(
   data = summary_tables$quiniles_race_victim,
   aes(x = Race, y = Prop, fill = Income)) +
@@ -520,6 +520,7 @@ ggplot() +
   scale_fill_brewer(palette = "Set1") +
   scale_x_continuous(breaks = seq(0, 250000, by = 25000)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
 ggsave(plot = plots$hist_all_fatal,
        filename = 'plots/hist_all_fatal.png', 
        dpi = 'retina', 
