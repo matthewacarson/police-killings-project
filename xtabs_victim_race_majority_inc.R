@@ -5,7 +5,9 @@
 # library(sf)
 # library(tidyverse)
 
-# Run setup file to bring in data to summarize
+################################################# #
+# Run setup file to bring in data to summarize ####
+################################################# #
 source(file = "police-killings-setup.R")
 
 
@@ -68,6 +70,12 @@ summary_tables$victim_race_majority_quint <-
 summary_tables$victim_race_majority_quint_annual <-
 summary_tables$victim_race_majority_quint |> 
   mutate(
+    Killed_Per_Yr =
+      case_when(
+        Victim_Race == 'White' ~ n / 6 ,
+        Victim_Race == 'Black' ~ n / 6,
+        Victim_Race == 'Hispanic/Latino' ~ n /  6
+      ),
     Annual_10_M = 
       case_when(
         Victim_Race == 'White' ~ n / White / 6 * 10000000,
@@ -77,6 +85,27 @@ summary_tables$victim_race_majority_quint |>
     Income_Quintile = as.factor(Income_Quintile)
   ) # |> write_csv(file = "xtabs_race_majority_inc/xtabs_all_data.csv")
 
+##################################################### #
+# Annualized -- NOT PER CAPITA! ####
+##################################################### #
+
+summary_tables$victim_race_majority_quint_annual |> # print(n = 99)
+  select(
+    Victim_Race,
+    Majority,
+    Income_Quintile,
+    Killed_Per_Yr) |> 
+  # filter(Victim_Race == 'Black') |> 
+  pivot_wider(
+    names_from = Victim_Race,
+    names_prefix = "Victim_",
+    values_from = Killed_Per_Yr
+  )
+
+
+###################################################### #
+# Annualized, Per capita rates ####
+###################################################### #
 
 summary_tables$victim_race_majority_quint_annual |> # print(n = 99)
   select(
@@ -90,6 +119,11 @@ summary_tables$victim_race_majority_quint_annual |> # print(n = 99)
     names_prefix = "Victim_",
     values_from = Annual_10_M
   ) # |> write_csv(file = "xtabs_race_majority_inc/xtabs_victim_race_majority_inc.csv")
+
+
+################################################################ #
+# Plots using Annualized, per capita rates ####
+################################################################ #
 
 ############################################################## #
 # Majority Black Tracts by Victim Race and Income Quintile ####
@@ -156,6 +190,81 @@ ggplot() +
 
 ggsave(
   filename = "plots/xtabs_race_majority_inc/Majority Hispanic_Latino Tracts.png",
+  dpi = 'retina',
+  width = 10.4,
+  height = 4.81
+)
+
+################################################################ #
+# Plots using Annualized but NOT PER CAPITA rates ####
+################################################################ #
+
+
+############################################################## #
+# Majority Black Tracts by Victim Race and Income Quintile ####
+############################################################## #
+ggplot() + 
+  geom_line(data = summary_tables$victim_race_majority_quint_annual |> 
+              filter(Majority == 'Black'),
+            aes(
+              x = Income_Quintile, y = Killed_Per_Yr, 
+              color = Victim_Race, group = Victim_Race), lwd = 1) +
+  labs(
+    title = "Majority Black Tracts",
+    x = "Census Tract Income Quintile",
+    y = "Number of Persons Killed",
+  ) + guides(color = guide_legend(title = "Victim's Race"))
+
+ggsave(
+  filename = "plots/NOT_PC_xtabs_race_majority_inc/Majority Black Tracts.png",
+  dpi = 'retina',
+  width = 10.4,
+  height = 4.81
+)
+
+############################################################## #
+# Majority White Tracts by Victim Race and Income Quintile ####
+############################################################## #
+
+ggplot() + 
+  geom_line(data = summary_tables$victim_race_majority_quint_annual |> 
+              filter(Majority == 'White'),
+            aes(
+              x = Income_Quintile, y = Killed_Per_Yr, 
+              color = Victim_Race, group = Victim_Race), lwd = 1) +
+  labs(
+    title = "Majority White Tracts",
+    x = "Census Tract Income Quintile",
+    y = "Number of Persons Killed",
+  ) + guides(color = guide_legend(title = "Victim's Race"))
+
+ggsave(
+  filename = "plots/NOT_PC_xtabs_race_majority_inc/Majority White Tracts.png",
+  dpi = 'retina',
+  width = 10.4,
+  height = 4.81
+)
+
+
+####################################################################### #
+# Majority Hispanic/Latino Tracts by Victim Race and Income Quintile ####
+####################################################################### #
+
+ggplot() + 
+  geom_line(  data = summary_tables$victim_race_majority_quint_annual |> 
+                filter(Majority == 'Hispanic/Latino'),
+              aes(
+                x = Income_Quintile, y = Killed_Per_Yr, 
+                color = Victim_Race, group = Victim_Race), lwd = 1) +
+  labs(
+    title = "Majority Hispanic/Latino Tracts",
+    x = "Income Quintile",
+    y = "Number of Persons Killed",
+  ) + guides(color = guide_legend(title = "Victim's Race"))
+
+
+ggsave(
+  filename = "plots/NOT_PC_xtabs_race_majority_inc/Majority Hispanic_Latino Tracts.png",
   dpi = 'retina',
   width = 10.4,
   height = 4.81

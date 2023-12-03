@@ -94,7 +94,7 @@ summary_tables$quant15_summary <-
             vjust = -0.4, color = "black", size = 3) +
   labs(title = "Rate of Police Lethal Uses of Force",
        subtitle = "Years: [2015-2020]",
-       y = "Per 10 Million Population Per Year",
+       y = "Per 10 Million Population (Annualized)",
        x = "Majority (> 50%)",#"Based on Median Household Income in Census Tracts Where a Lethal Use of Force Occurred",
        fill = "Tertiles of the\nLowest Quintile") +
   theme_classic() + 
@@ -130,7 +130,7 @@ ggplot(
             vjust = -0.4, color = "black", size = 3) +
   labs(title = "Rate of Police Lethal Uses of Force",
        subtitle = "Lowest three tract income quantiles of 15 quantiles (tertiles of the lowest tract income quintile). Years: [2015-2020]",
-       y = "Per 10 Million Population Per Year",
+       y = "Per 10 Million Population (Annualized)",
        x = "Tertiles of the Lowest Tract Income Quintile",#"Based on Median Household Income in Census Tracts Where a Lethal Use of Force Occurred",
        fill = "Racial or\nEthnic Group") +
   theme_classic() + 
@@ -138,6 +138,7 @@ ggplot(
     axis.text.x = element_text(color = "black", size = 14),
     axis.text.y = element_text(color = "black"),
     panel.grid.major.x = element_blank()) 
+
 ggsave(filename = "plots/15_quantile_plot/15_quantile_plot_by_tert.png", 
        dpi = 'retina',   
        width = 10.4,

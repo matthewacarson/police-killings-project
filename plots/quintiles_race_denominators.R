@@ -99,7 +99,9 @@ ggplot(
   )
 ggsave(
   'plots/quintiles_race_denominators/race_only_denom_race.png',
-  dpi = 'retina')
+  dpi = 'retina',
+  width = 10.4,
+  height = 4.81)
 # ############################### #
 # Grouped by Income Quintile ####
 # ############################### #
@@ -135,4 +137,6 @@ ggplot(
   )
 ggsave(
   'plots/quintiles_race_denominators/race_only_denom_quint.png',
-  dpi = 'retina')
+  dpi = 'retina',
+  width = 10.4,
+  height = 4.81)

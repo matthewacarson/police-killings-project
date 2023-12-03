@@ -23,8 +23,8 @@ summary_tables$bin_table_race <-
   filter(
     !is.na(income_bins_100) &
       race_imputed %in% c(
-        "African-American/Black", 
-        "European-American/White", 
+        "Black", 
+        "White", 
         "Hispanic/Latino")) |> 
   count(Income = income_bins_100, race_imputed) |> 
   rename(Killings = n) |> 
@@ -39,8 +39,8 @@ summary_tables$quiniles_race_victim <-
   filter(
     !is.na(income_quintiles) &
       race_imputed %in% c(
-        "African-American/Black", 
-        "European-American/White", 
+        "Black", 
+        "White", 
         "Hispanic/Latino")) |> 
   count(Income = income_quintiles, race_imputed) |> 
   rename(Killings = n) |>
@@ -54,8 +54,8 @@ summary_tables$quintile_race_proportion <-
       filter(
         !is.na(income_quintiles) &
           race_imputed %in% c(
-            "African-American/Black", 
-            "European-American/White", 
+            "Black", 
+            "White", 
             "Hispanic/Latino")) |> 
       count(Income = income_quintiles, race_imputed) |> 
       rename(Killings_by_Quintile_and_Race = n),
@@ -63,8 +63,8 @@ summary_tables$quintile_race_proportion <-
       filter(
         !is.na(income_quintiles) &
           race_imputed %in% c(
-            "African-American/Black", 
-            "European-American/White", 
+            "Black", 
+            "White", 
             "Hispanic/Latino")) |> 
       count(race_imputed) |> 
       rename(Killings_Race_Total = n),
@@ -80,8 +80,8 @@ summary_tables$bin_table_race_proportion <-
       filter(
         !is.na(income_bins_100) &
           race_imputed %in% c(
-            "African-American/Black", 
-            "European-American/White", 
+            "Black", 
+            "White", 
             "Hispanic/Latino")) |> 
       count(Income = income_bins_100, race_imputed) |> 
       rename(Killings_inc_race = n),
@@ -89,8 +89,8 @@ summary_tables$bin_table_race_proportion <-
       filter(
         !is.na(income_bins_100) &
           race_imputed %in% c(
-            "African-American/Black", 
-            "European-American/White", 
+            "Black", 
+            "White", 
             "Hispanic/Latino")) |> 
       count(race_imputed) |> 
       rename(Killings_race_only = n),
@@ -139,15 +139,15 @@ summary_tables$race_freq <-
   as.data.frame() |> 
   rename(Race = Var1) |> 
   filter(Race %in% c(
-    "African-American/Black",
-    "European-American/White",
+    "Black",
+    "White",
     "Hispanic/Latino")
   ) |> mutate(
     Prop = Freq / nrow(fatal_enc$joined),
     Race =
       case_when(
-        Race == "African-American/Black" ~ "Black",
-        Race == "European-American/White" ~ "White",
+        Race == "Black" ~ "Black",
+        Race == "White" ~ "White",
         Race == "Hispanic/Latino" ~ "Latino"
       )
   )
@@ -214,8 +214,8 @@ summary_tables$quiniles_race_victim <-
       filter(
         !is.na(income_quintiles) &
           race_imputed %in% c(
-            "African-American/Black", 
-            "European-American/White", 
+            "Black", 
+            "White", 
             "Hispanic/Latino")) |>
       count(Income = income_quintiles,Race = race_imputed) |> 
       rename(Killings_race_inc = n),
@@ -223,8 +223,8 @@ summary_tables$quiniles_race_victim <-
       filter(
         !is.na(income_quintiles) &
           race_imputed %in% c(
-            "African-American/Black", 
-            "European-American/White", 
+            "Black", 
+            "White", 
             "Hispanic/Latino")) |> 
       count(Race = race_imputed) |> 
       rename(Killed_race = n),
@@ -249,8 +249,8 @@ summary_tables$quiniles_race_victim <-
 summary_tables$quiniles_race_victim$Race <- 
   factor(
     summary_tables$quiniles_race_victim$Race, 
-    levels = c("All", "African-American/Black",
-               "European-American/White", "Hispanic/Latino"))
+    levels = c("All", "Black",
+               "White", "Hispanic/Latino"))
 
 ggplot(
   data = summary_tables$quiniles_race_victim,
@@ -265,7 +265,10 @@ ggplot(
        subtitle = "Years: [2015-2020]",
        y = "Proportion LUOF Within Each Racial Group",
        x = "Race of Victim") +
-  theme_classic() + 
+  geom_text(aes(label = round(Prop, 2)),
+            position = position_dodge(width = 0.9),
+            vjust = -0.4, color = "black", size = 3) +
+  theme_light() + 
   theme(
     axis.text.x = element_text(size = 12, color = "black"),
     axis.text.y = element_text(size = 12, angle = 90, hjust = 0.5, color = 'black'),
