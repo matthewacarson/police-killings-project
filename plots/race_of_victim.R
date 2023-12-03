@@ -37,12 +37,12 @@ summary_tables$bin_table_race$Income <- as.numeric(summary_tables$bin_table_race
 summary_tables$quiniles_race_victim <-  
   fatal_enc$joined |> 
   filter(
-    !is.na(income_quintiles) &
+    !is.na(income_quintiles_nolab) &
       race_imputed %in% c(
         "Black", 
         "White", 
         "Hispanic/Latino")) |> 
-  count(Income = income_quintiles, race_imputed) |> 
+  count(Income = income_quintiles_nolab, race_imputed) |> 
   rename(Killings = n) |>
   mutate(Killings_Per_Yr = Killings / 6) |> 
   select(-Killings)
@@ -52,16 +52,16 @@ summary_tables$quintile_race_proportion <-
   left_join(
     x = fatal_enc$joined |> 
       filter(
-        !is.na(income_quintiles) &
+        !is.na(income_quintiles_nolab) &
           race_imputed %in% c(
             "Black", 
             "White", 
             "Hispanic/Latino")) |> 
-      count(Income = income_quintiles, race_imputed) |> 
+      count(Income = income_quintiles_nolab, race_imputed) |> 
       rename(Killings_by_Quintile_and_Race = n),
     y = fatal_enc$joined |> 
       filter(
-        !is.na(income_quintiles) &
+        !is.na(income_quintiles_nolab) &
           race_imputed %in% c(
             "Black", 
             "White", 
@@ -212,16 +212,16 @@ summary_tables$quiniles_race_victim <-
   left_join(
     x = fatal_enc$joined |> 
       filter(
-        !is.na(income_quintiles) &
+        !is.na(income_quintiles_nolab) &
           race_imputed %in% c(
             "Black", 
             "White", 
             "Hispanic/Latino")) |>
-      count(Income = income_quintiles,Race = race_imputed) |> 
+      count(Income = income_quintiles_nolab,Race = race_imputed) |> 
       rename(Killings_race_inc = n),
     y =   fatal_enc$joined |> 
       filter(
-        !is.na(income_quintiles) &
+        !is.na(income_quintiles_nolab) &
           race_imputed %in% c(
             "Black", 
             "White", 
@@ -262,8 +262,8 @@ ggplot(
     width = 0.8,
     linewidth = 0.5) +
   labs(title = "Police Lethal Uses of Force",
-       subtitle = "Years: [2015-2020]",
-       y = "Proportion LUOF Within Each Racial Group",
+       subtitle = "The proportion of each racial group killed in each US Census median household income quintile.",
+       y = "Proportion",
        x = "Race of Victim") +
   geom_text(aes(label = round(Prop, 2)),
             position = position_dodge(width = 0.9),
@@ -272,13 +272,15 @@ ggplot(
   theme(
     axis.text.x = element_text(size = 12, color = "black"),
     axis.text.y = element_text(size = 12, angle = 90, hjust = 0.5, color = 'black'),
-    axis.title.x = element_text(size = 15),
-    axis.title.y = element_text(size = 15),
-    plot.title = element_text(size = 18),
-    plot.subtitle = element_text(size = 14),
-    legend.key.size = unit(8, "mm"),
-    legend.title = element_text(size = 15),
-    legend.text = element_text(size = 12))
+    # axis.title.x = element_text(size = 15),
+    # axis.title.y = element_text(size = 15),
+    # plot.title = element_text(size = 18),
+    # plot.subtitle = element_text(size = 14),
+    # legend.key.size = unit(8, "mm"),
+    # legend.title = element_text(size = 15),
+    # legend.text = element_text(size = 12)
+    ) + 
+  guides(fill = guide_legend(title = "Median Household\nIncome"))
 
 ggsave(
        filename = 'plots/plots_by_race/inc_and_race_victim.png', 
@@ -287,11 +289,10 @@ ggsave(
        width = 10.4,
        height = 4.81)
 
+################################### #
+# Cross Tabulations Table ####
+################################### #
+
 summary_tables$quiniles_race_victim[1:20,] |> 
   mutate(Prop = round(Prop,digits = 3) * 100) |> 
-  pivot_wider(names_from = Race, values_from = Prop) |> 
-  mutate(
-    Income =
-      c("1st Quintile", "2nd Quintile", "3rd Quintile", 
-        "4th Quintile", "5th Quintile")
-  # ) |> write_csv(file = "quiniles_race_victim.csv")
+  pivot_wider(names_from = Race, values_from = Prop) #|> write_csv(file = "quiniles_race_victim.csv")

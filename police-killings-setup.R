@@ -428,45 +428,44 @@ fatal_enc$joined <-
 # Creating basic summary table 
 ############################################# #
 
-if (!exists("summary_tables$summary_1")) {
-  summary_tables$fatal_enc_table_1 <-  fatal_enc$joined %>%
-    count(Income = income_quintiles) %>% rename(Killings = n) %>% 
-    filter(!is.na(Income)) %>% mutate(Killings_Per_Yr = Killings / 6)
-  
-  summary_tables$pop_table_1 <- tapply(
-    all_tracts$income_population_quintiles_2020$Total_popE, 
-    all_tracts$income_population_quintiles_2020$income_quintiles,
-    sum, na.rm = TRUE) %>% 
-    data.frame(Income = rownames(.), Population = .)
-  
-  summary_tables$summary_1 <- 
-    left_join(
-      x = summary_tables$fatal_enc_table_1,
-      y = summary_tables$pop_table_1,
-      by = "Income")
-  
-  summary_tables$summary_1$Majority <- "All"
-  
-  summary_tables$summary_1 <- summary_tables$summary_1 |> 
-    mutate(
-      Annualized_Per_10_M =
-        Killings_Per_Yr / Population * 10000000)
-}
+summary_tables$fatal_enc_table_1 <-  fatal_enc$joined %>%
+  count(Income = income_quintiles_nolab) %>% rename(Killings = n) %>% 
+  filter(!is.na(Income)) %>% mutate(Killings_Per_Yr = Killings / 6)
+
+summary_tables$pop_table_1 <- tapply(
+  all_tracts$income_population_quintiles_2020$Total_popE, 
+  all_tracts$income_population_quintiles_2020$income_quintiles_nolab,
+  sum, na.rm = TRUE) %>% 
+  data.frame(Income = rownames(.), Population = .)
+
+summary_tables$summary_1 <- 
+  left_join(
+    x = summary_tables$fatal_enc_table_1,
+    y = summary_tables$pop_table_1,
+    by = "Income")
+
+summary_tables$summary_1$Majority <- "All"
+
+summary_tables$summary_1 <- summary_tables$summary_1 |> 
+  mutate(
+    Annualized_Per_10_M =
+      Killings_Per_Yr / Population * 10000000)
+
 
 summary_tables$race_and_income <- 
   fatal_enc$joined |> 
-  count(Majority, income_quintiles) |> 
+  count(Majority, income_quintiles_nolab) |> 
   rename(Killings = n)
 
 summary_tables$race_and_income_pop <- all_tracts$income_population_quintiles_2020 |> 
-  aggregate(Total_popE ~ Majority + income_quintiles, FUN = sum) |> 
+  aggregate(Total_popE ~ Majority + income_quintiles_nolab, FUN = sum) |> 
   rename(Population = Total_popE)
 
 summary_tables$race_and_income_summary <- 
   left_join(
     x = summary_tables$race_and_income,
     y = summary_tables$race_and_income_pop,
-    by = c("Majority", "income_quintiles")
+    by = c("Majority", "income_quintiles_nolab")
   )
 
 summary_tables$race_and_income_summary <- 
@@ -477,7 +476,7 @@ summary_tables$race_and_income_summary <-
   ) |> 
   select(
     Majority, 
-    Income = income_quintiles,
+    Income = income_quintiles_nolab,
     Population,
     Killings,
     Annualized_Per_10_M
