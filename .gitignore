@@ -1,8 +1,8 @@
-.Rproj.user
-.Rhistory
+
 .RData
+.RDataTmp
+.Rhistory
+.Rproj.user/
+RData/
 .Ruserdata
 Bitmap.RData
-.RDataTmp
-RData
-checkpoint_3.RData
