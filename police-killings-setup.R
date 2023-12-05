@@ -228,6 +228,19 @@ all_tracts$income_population_quintiles_2020 <-
     breaks = all_tracts$quantiles_50_2020,
     include.lowest = TRUE, ordered_result = TRUE))
 
+# Divide into 100  (percentiles)
+all_tracts$one_hundred <- quantile(
+  all_tracts$income_population_quintiles_2020$IncomeE,
+  probs = seq(0, 1, by = 1/100), na.rm = TRUE)
+
+all_tracts$income_population_quintiles_2020 <-
+  all_tracts$income_population_quintiles_2020 |>
+  mutate(income_bins_100 = cut(
+    IncomeE,
+    labels = seq(1,100),
+    breaks = all_tracts$one_hundred,
+    include.lowest = TRUE,ordered_result = TRUE))
+
 ### Sub-Percentiles (200 quantiles) ####
 all_tracts$two_hundred <- quantile(
   all_tracts$income_population_quintiles_2020$IncomeE,
@@ -241,18 +254,6 @@ all_tracts$income_population_quintiles_2020 <-
     breaks = all_tracts$two_hundred, # 201 points create 200 bins
     include.lowest = TRUE, ordered_result = TRUE))
 
-# Divide into 100 quantiles
-all_tracts$one_hundred <- quantile(
-  all_tracts$income_population_quintiles_2020$IncomeE,
-  probs = seq(0, 1, by = 1/100), na.rm = TRUE)
-
-all_tracts$income_population_quintiles_2020 <-
-  all_tracts$income_population_quintiles_2020 |>
-  mutate(income_bins_100 = cut(
-    IncomeE,
-    labels = seq(1,100),
-    breaks = all_tracts$one_hundred,
-    include.lowest = TRUE,ordered_result = TRUE))
 
 ## Designate tracts as racial majorities ####
 

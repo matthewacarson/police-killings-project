@@ -1,10 +1,21 @@
+
+# setwd("C:/Users/madou/OneDrive - UCLA IT Services/PS-Honors/police-killings-github")
+
+# Load Libraries ####
+# library(tidycensus)
+# library(sf)
+# library(tidyverse)
+
+# Run setup file to bring in data to summarize
+source(file = "police-killings-setup.R")
+
+
 # #################################
 # Grouped by Race/Ethnicity
 # #################################
 library(grid)
-library(ggplot2)
-# fatal_enc_plots <- list()
-fatal_enc_plots$by_race <- ggplot(
+
+ggplot(
   summary_tables$race_and_quintiles_incl_overall_rate %>%
     filter(Majority_Race != "Asian")
   # summary_tables$race_and_quintiles, # excludes "All Groups" category 

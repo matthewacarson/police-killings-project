@@ -1,3 +1,15 @@
+# setwd("C:/Users/madou/OneDrive - UCLA IT Services/PS-Honors/police-killings-github")
+
+# Load Libraries ####
+# library(tidycensus)
+# library(sf)
+# library(tidyverse)
+
+# Run setup file to bring in data to summarize
+source(file = "police-killings-setup.R")
+
+
+
 # There are some issues with this plot.
 # Since there are such small underlying population numbers when dividing into 
 # percentiles, the rates sometimes are dramatically high. It is possible that 
