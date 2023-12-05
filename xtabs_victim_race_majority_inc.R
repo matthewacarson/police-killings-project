@@ -44,7 +44,8 @@ summary_tables$race_victim_majority_and_quintile <-
   #   Majority) |> 
   #   aggregate(`White Pop` + `Black Pop` + `Hispanic/Latino Pop` ~ `Income Quintile` + Majority, FUN = sum)
 
-summary_tables$race_and_income_pop <- all_tracts$income_population_quintiles_2020 %>%
+summary_tables$race_and_income_pop <- 
+  all_tracts$income_population_quintiles_2020 %>%
   select(
     `White Pop` = NH_WhiteE,
     `Black Pop` = NH_BlackE,
@@ -194,6 +195,103 @@ ggsave(
   height = 4.81
 )
 
+################################################# #
+# plot all interactions ####
+# Victim Race x Majority x Income Quintile
+################################################# #
+
+ggplot() + 
+  geom_line(data = summary_tables$victim_race_majority_quint_annual,
+            aes(
+              x = Income_Quintile, y = Annual_10_M, 
+              color = Victim_Race, linetype = Majority, 
+              group = interaction(Victim_Race, Majority)), lwd = 1) +
+  labs(
+    title = "Lethal Use of Force Interactions",
+    subtitle = "Victim Race x Majority-race in Tract x Census Tract Household Income Quintile",
+    x = "Census Tract Income Quintile",
+    y = "Annualized Rate Per 10 Million Population"
+  ) +
+  scale_linetype_manual(values = c("solid", "dotted", "dashed"),
+                        name = "Majority") + 
+  guides(
+    linetype = guide_legend(
+      title = "Majority", override.aes = list(size = 10)),
+    color = guide_legend(
+      title = "Victim", override.aes = list(linetype = "solid", size = 10))) +
+  theme(
+    legend.title = element_text(size = 14),
+    legend.text = element_text(size = 12))
+
+
+ggsave(
+  filename = "plots/xtabs_race_majority_inc/all interactions no points.png",
+  dpi = 'retina',
+  width = 10.4,
+  height = 4.81
+)
+
+######################### #
+# Trying to add points
+######################### #
+
+# ggplot() + 
+#   geom_line(data = summary_tables$victim_race_majority_quint_annual,
+#             aes(
+#               x = Income_Quintile, y = Annual_10_M, 
+#               color = Victim_Race, linetype = Majority, group = interaction(Victim_Race, Majority)), lwd = 1) + 
+#   geom_point(data = summary_tables$victim_race_majority_quint_annual,
+#              aes(
+#                x = Income_Quintile, y = Annual_10_M, 
+#                color = Victim_Race, shape = Majority, group = interaction(Victim_Race, Majority)), size = 3) +
+#   labs(
+#     title = "Lethal Use of Force Interactions",
+#     subtitle = "Victim Race x Majority-race Tract x Census Tract Median Household Income Quintile",
+#     x = "Census Tract Income Quintile",
+#     y = "Annualized Rate Per 10 Million Population",
+#   ) +
+#   scale_linetype_manual(
+#     values = c("solid", "dotdash", "longdash"), # rep("solid", 3),
+#     name = "Majority") + 
+#   guides(color = guide_legend(title = "Victim", override.aes = list(linetype = "solid")))
+
+# Using code below instead (12/4)
+ggplot() + 
+  geom_line(data = summary_tables$victim_race_majority_quint_annual,
+            aes(
+              x = Income_Quintile, y = Annual_10_M, 
+              color = Victim_Race, linetype = Majority, 
+              group = interaction(Victim_Race, Majority)), lwd = 1) + 
+  geom_point(data = summary_tables$victim_race_majority_quint_annual,
+             aes(
+               x = Income_Quintile, y = Annual_10_M, 
+               color = Victim_Race, shape = Majority, 
+               group = interaction(Victim_Race, Majority)), size = 3) +
+  labs(
+    title = "Lethal Use of Force Interactions",
+    subtitle = "Victim Race x Majority-race Tract x Census Tract Median Household Income Quintile",
+    x = "Census Tract Income Quintile",
+    y = "Annualized Rate Per 10 Million Population",
+  ) +
+  scale_linetype_manual(
+    values = c("solid", "dotdash", "longdash"),
+    name = "Majority") + 
+  guides(
+    color = guide_legend(
+      title = "Victim", override.aes = list(shape = c(NA, NA, NA)))
+  )
+
+
+ggsave(
+  filename = "plots/xtabs_race_majority_inc/all interactions with points.png",
+  dpi = 'retina',
+  width = 10.4,
+  height = 4.81
+)
+
+
+
+
 ################################################################ #
 # Plots using Annualized but NOT PER CAPITA rates ####
 ################################################################ #
@@ -264,64 +362,6 @@ ggplot() +
 
 ggsave(
   filename = "plots/xtabs_race_majority_inc/not_per_capita/Majority Hispanic_Latino Tracts.png",
-  dpi = 'retina',
-  width = 10.4,
-  height = 4.81
-)
-
-################################################# #
-# plot all interactions ####
-# Victim Race x Majority x Income Quintile
-################################################# #
-
-ggplot() + 
-  geom_line(data = summary_tables$victim_race_majority_quint_annual,
-            aes(
-              x = Income_Quintile, y = Annual_10_M, 
-              color = Victim_Race, linetype = Majority, group = interaction(Victim_Race, Majority)), lwd = 1) +
-  labs(
-    title = "Lethal Use of Force Interactions",
-    subtitle = "Victim Race x Majority-race in Tract x Census Tract Household Income Quintile",
-    x = "Census Tract Income Quintile",
-    y = "Annualized Rate Per 10 Million Population"
-  ) +
-  scale_linetype_manual(values = c("solid", "dotdash", "longdash"),
-                        name = "Majority") + 
-  guides(color = guide_legend(title = "Victim", override.aes = list(linetype = "solid")))
-
-ggsave(
-  filename = "plots/xtabs_race_majority_inc/all interactions no points.png",
-  dpi = 'retina',
-  width = 10.4,
-  height = 4.81
-)
-
-######################### #
-# Trying to add points
-######################### #
-
-ggplot() + 
-  geom_line(data = summary_tables$victim_race_majority_quint_annual,
-            aes(
-              x = Income_Quintile, y = Annual_10_M, 
-              color = Victim_Race, linetype = Majority, group = interaction(Victim_Race, Majority)), lwd = 1) + 
-  geom_point(data = summary_tables$victim_race_majority_quint_annual,
-             aes(
-               x = Income_Quintile, y = Annual_10_M, 
-               color = Victim_Race, shape = Majority, group = interaction(Victim_Race, Majority)), size = 3) +
-  labs(
-    title = "Lethal Use of Force Interactions",
-    subtitle = "Victim Race x Majority-race Tract x Census Tract Median Household Income Quintile",
-    x = "Census Tract Income Quintile",
-    y = "Annualized Rate Per 10 Million Population",
-  ) +
-  scale_linetype_manual(
-    values = c("solid", "dotdash", "longdash"), # rep("solid", 3),
-    name = "Majority") + 
-  guides(color = guide_legend(title = "Victim", override.aes = list(linetype = "solid")))
-
-ggsave(
-  filename = "plots/xtabs_race_majority_inc/all interactions with points.png",
   dpi = 'retina',
   width = 10.4,
   height = 4.81
