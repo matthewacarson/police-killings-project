@@ -15,14 +15,13 @@ source(file = "police-killings-setup.R")
 # percentiles, the rates sometimes are dramatically high. It is possible that 
 # reducing to 50 quantiles would resolve this issue
 
-summary_tables$income_100_majority <- 
+summary_tables$income_50_majority <- 
   left_join(
     x = fatal_enc$joined |>
-          count(Majority, income_bins_100) |>
+          count(Majority, income_50_quantiles) |>
           rename(
             Killings = n,
-            Income = income_bins_100
-          ) |> filter() |> 
+            Income = income_50_quantiles) |> 
           na.omit(),
     y = all_tracts$income_population_quintiles_2020 |>
           aggregate(Total_popE ~ Majority + income_bins_100, FUN = sum) |>
