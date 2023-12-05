@@ -139,7 +139,8 @@ ggplot() +
     title = "Majority Black Tracts",
     x = "Census Tract Income Quintile",
     y = "Annualized Rate Per 10 Million Population",
-  ) + guides(color = guide_legend(title = "Victim's Race"))
+  ) + guides(color = guide_legend(title = "Victim's Race")) +
+  theme_light()
 
 ggsave(
   filename = "plots/xtabs_race_majority_inc/Majority Black Tracts.png",
@@ -155,14 +156,14 @@ ggsave(
 ggplot() + 
   geom_line(data = summary_tables$victim_race_majority_quint_annual |> 
                 filter(Majority == 'White'),
-              aes(
-                x = Income_Quintile, y = Annual_10_M, 
+              aes(x = Income_Quintile, y = Annual_10_M, 
                 color = Victim_Race, group = Victim_Race), lwd = 1) +
   labs(
     title = "Majority White Tracts",
     x = "Census Tract Income Quintile",
     y = "Annualized Rate Per 10 Million Population",
-  ) + guides(color = guide_legend(title = "Victim's Race"))
+  ) + guides(color = guide_legend(title = "Victim's Race")) +
+  theme_light()
 
 ggsave(
   filename = "plots/xtabs_race_majority_inc/Majority White Tracts.png",
@@ -185,7 +186,8 @@ ggplot() +
     title = "Majority Hispanic/Latino Tracts",
     x = "Census Tract Income Quintile",
     y = "Annualized Rate Per 10 Million Population",
-  ) + guides(color = guide_legend(title = "Victim's Race"))
+  ) + guides(color = guide_legend(title = "Victim's Race")) +
+  theme_light()
 
 
 ggsave(
@@ -221,7 +223,8 @@ ggplot() +
       title = "Victim", override.aes = list(linetype = "solid", size = 10))) +
   theme(
     legend.title = element_text(size = 14),
-    legend.text = element_text(size = 12))
+    legend.text = element_text(size = 12)) +
+  theme_light()
 
 
 ggsave(
@@ -279,7 +282,7 @@ ggplot() +
   guides(
     color = guide_legend(
       title = "Victim", override.aes = list(shape = c(NA, NA, NA)))
-  )
+  ) + theme_light()
 
 
 ggsave(
@@ -310,7 +313,8 @@ ggplot() +
     title = "Majority Black Tracts",
     x = "Census Tract Income Quintile",
     y = "Number of Persons Killed",
-  ) + guides(color = guide_legend(title = "Victim's Race"))
+  ) + guides(color = guide_legend(title = "Victim's Race")) +
+  theme_light()
 
 ggsave(
   filename = "plots/xtabs_race_majority_inc/not_per_capita/Majority Black Tracts.png",
@@ -333,7 +337,8 @@ ggplot() +
     title = "Majority White Tracts",
     x = "Census Tract Income Quintile",
     y = "Number of Persons Killed",
-  ) + guides(color = guide_legend(title = "Victim's Race"))
+  ) + guides(color = guide_legend(title = "Victim's Race")) +
+  theme_light()
 
 ggsave(
   filename = "plots/xtabs_race_majority_inc/not_per_capita/Majority White Tracts.png",
@@ -357,7 +362,8 @@ ggplot() +
     title = "Majority Hispanic/Latino Tracts",
     x = "Income Quintile",
     y = "Number of Persons Killed",
-  ) + guides(color = guide_legend(title = "Victim's Race"))
+  ) + guides(color = guide_legend(title = "Victim's Race")) +
+  theme_light()
 
 
 ggsave(
