@@ -201,11 +201,11 @@ ggplot() +
   ) + scale_y_continuous(breaks = seq(0, 0.5, 0.05))
 
 ggsave(
-       filename = 'plots/plots_by_race/race_proportion_of_total_bar.png', 
-       dpi = 'retina', 
-       bg = 'white',
-       width = 10.4,
-       height = 4.81)
+  filename = 'plots/plots_by_race/race_proportion_of_total_bar.png', 
+  dpi = 'retina', 
+  bg = 'white',
+  width = 10.4,
+  height = 4.81)
 
 #################################################### #
 # Distribution by quintile within race ####
@@ -283,15 +283,15 @@ ggplot(
     # legend.key.size = unit(8, "mm"),
     # legend.title = element_text(size = 15),
     # legend.text = element_text(size = 12)
-    ) + 
+  ) + 
   guides(fill = guide_legend(title = "Median\nHousehold\nIncome"))
 
 ggsave(
-       filename = 'plots/plots_by_race/inc_and_race_victim.png', 
-       dpi = 'retina', 
-       bg = 'white',
-       width = 10.4,
-       height = 4.81)
+  filename = 'plots/plots_by_race/inc_and_race_victim.png', 
+  dpi = 'retina', 
+  bg = 'white',
+  width = 10.4,
+  height = 4.81)
 
 ################################### #
 # Cross Tabulations Table ####
@@ -307,23 +307,55 @@ summary_tables$quiniles_race_victim[1:20,] |>
 # LUOF and race population distribution ####
 ############################################ #
 
+all_tracts$total_pop_by_race <- 
+  data.frame(
+    Race = c('Black', 'Hispanic/Latino', 'White'),
+    race_total_pop = c(
+      sum(all_tracts$income_population_quintiles_2020$NH_BlackE),
+      sum(all_tracts$income_population_quintiles_2020$Hisp_LatinoE),
+      sum(all_tracts$income_population_quintiles_2020$NH_WhiteE)))
+
+# Calculating the total population by Race in each income quintile
+all_tracts$race_quint_xtab <- 
+  all_tracts$income_population_quintiles_2020 |> 
+  select(
+    "White" = NH_WhiteE, 
+    "Black" = NH_BlackE, 
+    "Hispanic/Latino" = Hisp_LatinoE, 
+    Quintile = income_quintiles_nolab,
+    NAME) |> 
+  pivot_longer(
+    cols = c('White', 'Black', 'Hispanic/Latino'),
+    names_to = 'Race',
+    values_to = "population") |> 
+  aggregate(population ~ Quintile + Race, FUN = sum)
+
+# Calculate the proportion of each racial group living in each income
+# quintile
+all_tracts$race_quint_proportions <- 
+  left_join(
+    x = all_tracts$race_quint_xtab,
+    y = all_tracts$total_pop_by_race,
+    by = join_by(Race)) |> 
+  mutate(Population = population / race_total_pop) |> 
+  select(-race_total_pop)
+
+
+# making changes
 right_join(
   x = summary_tables$quiniles_race_victim |> 
-  rename(Quintile = Income, LUOF_Prop = Prop),
-
+    rename(Quintile = Income, LUOFs = Prop),
+  
   y = all_tracts$race_quint_proportions |> 
-  rename(Population_Prop = Proportion) |> 
     select(-population),
-
+  
   by = join_by(Quintile, Race)) |> 
   pivot_longer(
-    cols = c("LUOF_Prop", "Population_Prop"),
+    cols = c("LUOFs", "Population"),
     names_to = "Type",
-    
-    # names_prefix = c("LUOF_Prop", "Population_Prop"),
     values_to = "Proportion"
   ) |> 
-  assign(
+assign(
   "IncRace_pop_and_IncRace_LUOF",
   value = _,
   envir = summary_tables)
@@ -335,125 +367,56 @@ right_join(
 ggplot(summary_tables$IncRace_pop_and_IncRace_LUOF, aes(x = Quintile, y = Proportion, color = Race, shape = Type)) +
   geom_point(size = 3) +
   geom_line(aes(group = interaction(Race, Type)), linewidth = 1) +
-  labs(title = "Proportion by Quintile, Race, and Type",
+  labs(title = "Distributions Within Each Racial Group",
+       subtitle = "Proportion of LUOFs in each quintile vs. proportion of the population living in that quintile",
        x = "Quintile",
-       y = "Proportion") +
-  scale_color_manual(values = c("Black" = "red", "Hispanic/Latino" = "blue", "White" = "green")) +
-  scale_shape_manual(values = c("LUOF_Prop" = 16, "Population_Prop" = 17)) +
+       y = "Proportion",
+       shape = "Proportion of") +
+  scale_color_manual(values = c("Black" = "red", "Hispanic/Latino" = "blue", "White" = "green2")) +
+  scale_shape_manual(values = c("LUOFs" = 16, "Population" = 17)) +
+  guides(
+    color = guide_legend(override.aes = list(shape = NA))
+  ) +
   theme_minimal() +
   theme(legend.position = "right")
+
+ggsave(
+  filename = 'plots/plots_by_race/inc_and_race_victim_line.png', 
+  dpi = 'retina', 
+  bg = 'white',
+  width = 10.4,
+  height = 4.81)
 
 ############## #
 # Bar plot ####
 ############## #
 
-ggplot(summary_tables$IncRace_pop_and_IncRace_LUOF, aes(x = Quintile, y = Proportion, fill = Race, alpha = Type)) +
-  geom_bar(position = "dodge", stat = "identity", width = 0.7,
-           show.legend = TRUE) +
-  labs(title = "Proportion by Quintile, Race, and Type",
-       x = "Quintile",
-       y = "Proportion") +
-  scale_fill_manual(values = c("Black" = "red", "Hispanic/Latino" = "blue", "White" = "green")) +
-  scale_alpha_manual(values = c("LUOF_Prop" = 1, "Population_Prop" = 0.3)) +
-  theme_minimal() +
-  theme(legend.position = "right")
-
-
 library(ggpattern)
 
-
-# I can't get the legend right for this one
 ggplot(
-  summary_tables$IncRace_pop_and_IncRace_LUOF, 
+  summary_tables$IncRace_pop_and_IncRace_LUOF,
   aes(x = Quintile, y = Proportion)) +
   geom_bar_pattern(
-    aes(fill = Race, pattern_density = Type), 
+    aes(fill = Race, pattern_density = Type),
     position = "dodge",
     stat = "identity",
     width = 0.7,
     show.legend = TRUE) +
-  labs(title = "Proportion by Quintile, Race, and Type",
-       x = "Quintile",
-       y = "Proportion") +
-  scale_pattern_density_manual(values = c("LUOF_Prop" = 0, "Population_Prop" = 0.2)) +
-  theme_minimal() +
-  theme(legend.position = "right")
-
-# The legend shows patterns, but I want them removed for race
-
-ggplot(
-  summary_tables$IncRace_pop_and_IncRace_LUOF, 
-  aes(x = Quintile, y = Proportion)) +
-  geom_col_pattern(
-    aes(fill = Race, pattern_density = Type), 
-    position = "dodge", width = 0.7, show.legend = TRUE) +
-  labs(title = "Proportion by Quintile, Race, and Type",
-       x = "Quintile",
-       y = "Proportion") +
-  scale_pattern_density_manual(values = c("LUOF_Prop" = 0, "Population_Prop" = 0.2)) +
-  theme_minimal() +
-  theme(legend.position = "right")
-
-ggplot(
-  summary_tables$IncRace_pop_and_IncRace_LUOF, 
-  aes(x = Quintile, y = Proportion)) +
-  geom_col_pattern(
-    aes(fill = Race, pattern_density = interaction(Race, Type)), 
-    position = "dodge", width = 0.7, show.legend = TRUE) +
-  labs(title = "Proportion by Quintile, Race, and Type",
-       x = "Quintile",
-       y = "Proportion") +
-  # scale_pattern_density_manual(values = c("LUOF_Prop" = 0, "Population_Prop" = 0.2)) +
-  theme_minimal() +
-  theme(legend.position = "right")
-
-
-################################## #
-################################## 
-
-ggplot(
-  summary_tables$IncRace_pop_and_IncRace_LUOF, 
-  aes(x = Quintile, y = Proportion)) +
-  geom_col_pattern(
-    aes(fill = Race, pattern_density = interaction(Race, Type)), 
-    position = "dodge", width = 0.7, show.legend = TRUE) +
-  labs(title = "Proportion by Quintile, Race, and Type",
-       x = "Quintile",
-       y = "Proportion") +
-  scale_pattern_manual(name = "Race and Type",
-                    values = c("Black_LUOF_Prop" = 0, 
-                               "White_LUOF_Prop" = 0, 
-                               "Hispanic/Latino_LUOF_Prop" = 0, 
-                               "Black_Population_Prop" = 0.2,
-                               "Hispanic/Latino_Population_Prop" = 0.2,
-                               "White_Population_Prop" = 0.2),
-                    labels = c("Black-LUOF", "Black-Population",
-                               "Hispanic/Latino-LUOF", 
-                               "Hispanic/Latino-Population",
-                               "White-LUOF", 
-                               "White-Population")) 
-  # scale_pattern_manual(name = "Proportion",
-  #                      values = c("LUOF_Prop" = 0, "Population_Prop" = 0.2),
-  #                      labels = c("LUOF", "Population"))
-  # guides(fill = guide_legend(override.aes = list(pattern = c(0, 0.2))))
-
-
-
-ggplot(
-  summary_tables$IncRace_pop_and_IncRace_LUOF, 
-  aes(x = Quintile, y = Proportion)) +
-  geom_bar_pattern(
-    aes(fill = Race, pattern_density = Type), 
-    position = "dodge",
-    stat = "identity",
-    width = 0.7,
-    show.legend = TRUE) +
-  labs(title = "Proportion by Quintile, Race, and Type",
+  labs(title = "Proportion by Quintile, Race",
        x = "Quintile",
        y = "Proportion",
-       fill = "Race",  # Set custom fill legend title
-       pattern_density = "Proportion"  # Set custom pattern_density legend title
+       pattern_density = "Proportion of") +
+  scale_pattern_density_manual(
+    values = c("LUOFs" = 0, "Population" = 0.2)) +
+  guides(
+    fill = guide_legend(override.aes = list(pattern_density = 0))
   ) +
-  scale_pattern_density_manual(values = c("LUOF_Prop" = 0, "Population_Prop" = 0.2)) +
-  theme_minimal() +
-  theme(legend.position = "right")
+  theme_minimal() #+
+  # theme(legend.position = "right")
+
+ggsave(
+  filename = 'plots/plots_by_race/population_vs_LUOF_distribution.png', 
+  dpi = 'retina', 
+  bg = 'white',
+  width = 10.4,
+  height = 4.81)
