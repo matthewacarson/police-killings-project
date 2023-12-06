@@ -328,6 +328,32 @@ right_join(
   value = _,
   envir = summary_tables)
 
+
+# making changes
+right_join(
+  x = summary_tables$quiniles_race_victim |> 
+    rename(Quintile = Income, LUOF_Prop = Prop),
+  
+  y = all_tracts$race_quint_proportions |> 
+    rename(Population_Prop = Proportion) |> 
+    select(-population),
+  
+  by = join_by(Quintile, Race)) |> 
+  pivot_longer(
+    cols = c("LUOF_Prop", "Population_Prop"),
+    names_to = "Type",
+    values_to = "Proportion"
+  ) |> 
+  mutate(Type = case_when(
+    Type == "LUOF_Prop" ~ "LUOF",
+    Type == "Population_Prop" ~ "Population",
+    TRUE ~ Type  # Keep other values as they are
+  )) #|> 
+  assign(
+    "IncRace_pop_and_IncRace_LUOF",
+    value = _,
+    envir = summary_tables)
+
 ############################## #
 # Line interaction plot ####
 ############################## #
