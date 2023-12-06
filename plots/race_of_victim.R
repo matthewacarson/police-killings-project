@@ -10,7 +10,7 @@ source(file = "police-killings-setup.R")
 
 
 # ################################### #
-# Plots using race of the victim ####
+# Plots using race of the victim 
 # ################################### #
 
 ## ######################## #
@@ -30,7 +30,8 @@ summary_tables$bin_table_race <-
   rename(Killings = n) |> 
   mutate(Killings_Per_Yr = Killings / 6)
 
-summary_tables$bin_table_race$Income <- as.numeric(summary_tables$bin_table_race$Income)
+summary_tables$bin_table_race$Income <- 
+  as.numeric(summary_tables$bin_table_race$Income)
 
 # Plot quintiles of number of race of victim and quintile of census tract ####
 # they were killed in
@@ -102,7 +103,9 @@ summary_tables$bin_table_race_proportion <-
 
 summary_tables$bin_table_race_proportion$Income <- as.numeric(summary_tables$bin_table_race_proportion$Income)
 
-
+############################################ #
+# Begin GGplot ####
+############################################ #
 ggplot(
   summary_tables$bin_table_race_proportion, 
   aes(x = Income, y = Proportion, color = race_imputed)
@@ -217,7 +220,7 @@ summary_tables$quiniles_race_victim <-
             "Black", 
             "White", 
             "Hispanic/Latino")) |>
-      count(Income = income_quintiles_nolab,Race = race_imputed) |> 
+      count(Income = income_quintiles_nolab,Race = race_imputed) |>
       rename(Killings_race_inc = n),
     y =   fatal_enc$joined |> 
       filter(
@@ -240,7 +243,8 @@ summary_tables$quiniles_race_victim <-
       select(Income, Race = Majority,Killings_quintile = Killings) |> 
       mutate(Total_Killed = sum(Killings_quintile)) |> 
       mutate(Prop = Killings_quintile / Total_Killed) |> 
-      select(Income, Race, Prop)
+      select(Income, Race, Prop) |> 
+      mutate(Income = factor(Income, ordered = T))
   )
 # summary_tables$race_and_income_summary
 
@@ -265,7 +269,7 @@ ggplot(
        subtitle = "The proportion of each racial group killed in each US Census median household income quintile.",
        y = "Proportion",
        x = "Race of Victim") +
-  geom_text(aes(label = round(Prop, 2)),
+  geom_text(aes(label = paste0(round(Prop, 2) * 100, "%")),
             position = position_dodge(width = 0.9),
             vjust = -0.4, color = "black", size = 3) +
   theme_light() + 
@@ -280,7 +284,7 @@ ggplot(
     # legend.title = element_text(size = 15),
     # legend.text = element_text(size = 12)
     ) + 
-  guides(fill = guide_legend(title = "Median Household\nIncome"))
+  guides(fill = guide_legend(title = "Median\nHousehold\nIncome"))
 
 ggsave(
        filename = 'plots/plots_by_race/inc_and_race_victim.png', 
@@ -296,3 +300,45 @@ ggsave(
 summary_tables$quiniles_race_victim[1:20,] |> 
   mutate(Prop = round(Prop,digits = 3) * 100) |> 
   pivot_wider(names_from = Race, values_from = Prop) #|> write_csv(file = "quiniles_race_victim.csv")
+
+
+
+############################################ #
+# LUOF and race population distribution ####
+############################################ #
+
+right_join(
+  x = summary_tables$quiniles_race_victim |> 
+  rename(Quintile = Income, LUOF_Prop = Prop),
+
+  y = all_tracts$race_quint_proportions |> 
+  rename(Population_Prop = Proportion) |> 
+    select(-population),
+
+  by = join_by(Quintile, Race)) |> 
+  pivot_longer(
+    cols = c("LUOF_Prop", "Population_Prop"),
+    names_to = "Type",
+    
+    # names_prefix = c("LUOF_Prop", "Population_Prop"),
+    values_to = "Proportion"
+  ) |> 
+  assign(
+  "IncRace_pop_and_IncRace_LUOF",
+  value = _,
+  envir = summary_tables)
+
+############################## #
+# Line interaction plot ####
+############################## #
+
+ggplot(summary_tables$IncRace_pop_and_IncRace_LUOF, aes(x = Quintile, y = Proportion, color = Race, shape = Type)) +
+  geom_point(size = 3) +
+  geom_line(aes(group = interaction(Race, Type)), size = 1) +
+  labs(title = "Proportion by Quintile, Race, and Type",
+       x = "Quintile",
+       y = "Proportion") +
+  scale_color_manual(values = c("Black" = "red", "Hispanic/Latino" = "blue", "White" = "green")) +
+  scale_shape_manual(values = c("LUOF_Prop" = 16, "Population_Prop" = 17)) +
+  theme_minimal() +
+  theme(legend.position = "right")

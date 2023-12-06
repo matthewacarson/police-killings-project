@@ -12,42 +12,42 @@ source(file = "police-killings-setup.R")
 # Tables for 200 bins ####
 ######################## #
 
-summary_tables$bin_table_1 <-  fatal_enc$joined |> 
-  filter(!is.na(income_bins)) |> 
-  count(Income = income_bins) |> 
+summary_tables$bins200_table_1 <-  fatal_enc$joined |> 
+  filter(!is.na(income_bins_200)) |> 
+  count(Income = income_bins_200) |> 
   rename(Killings = n) |> 
   mutate(Killings_Per_Yr = Killings / 6)
 
-summary_tables$bin_pop_table_1 <- tapply(
+summary_tables$bins200_pop_table_1 <- tapply(
   all_tracts$income_population_quintiles_2020$Total_popE, 
-  all_tracts$income_population_quintiles_2020$income_bins,
+  all_tracts$income_population_quintiles_2020$income_bins_200,
   sum, na.rm = TRUE) %>%
   data.frame(Income = rownames(.), Population = .)
 
 # Median income of each bin
 # fatal_enc$joined |>  aggregate(IncomeE ~ Majority + income_bins, FUN = median)
 
-summary_tables$bin_summary_1 <- 
+summary_tables$bins200_summary_1 <- 
   left_join(
-    x = summary_tables$bin_table_1,
-    y = summary_tables$bin_pop_table_1,
+    x = summary_tables$bins200_table_1,
+    y = summary_tables$bins200_pop_table_1,
     by = "Income"
   )
 
-summary_tables$bin_summary_1 <- summary_tables$bin_summary_1 |> 
+summary_tables$bins200_summary_1 <- summary_tables$bins200_summary_1 |> 
   mutate(
     Annualized_Per_10_M =
       Killings_Per_Yr / Population * 10000000
   )
 
-summary_tables$bin_summary_1$Income <- as.numeric(summary_tables$bin_summary_1$Income)
+summary_tables$bins200_summary_1$Income <- as.numeric(summary_tables$bins200_summary_1$Income)
 
 ############################################## #
 ## geom_point plot - 200 quantiles ##########
 ############################################## #
 
 ggplot(
-  summary_tables$bin_summary_1, 
+  summary_tables$bins200_summary_1, 
   aes(x = Income, y = Annualized_Per_10_M)) +
   geom_point() +  
   geom_smooth(
@@ -75,7 +75,7 @@ ggsave(
 ############################################## #
 
 ggplot(
-  summary_tables$bin_summary_1, 
+  summary_tables$bins200_summary_1, 
   aes(x = Income, y = Annualized_Per_10_M)) +
   geom_bar(
     stat = 'identity', fill = 'lightblue3', width = 1, color = 'black') +

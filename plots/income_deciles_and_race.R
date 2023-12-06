@@ -71,9 +71,9 @@ summary_tables$decile_race_denom <-
 
 ggplot(summary_tables$decile_race_denom, aes(x = as.numeric(Income), y = Annualized_Per_10_M, color = Majority)) +
   geom_point() + 
-  geom_smooth(method = "loess", formula = y ~ x, se = FALSE, span = 1) + 
+  geom_smooth(method = "loess", formula = y ~ x, se = FALSE) + 
   labs(
-    x = "Median Household Income in Census Tracts (Deciles)", 
+    x = "Median Household Income in Census Tracts Deciles", 
     y = "Per 10 Million Population (Annualized)", 
     title = "Lethal Uses of Force"
   ) + 
@@ -86,7 +86,7 @@ ggplot(summary_tables$decile_race_denom, aes(x = as.numeric(Income), y = Annuali
   )
 
 ggsave(
-  'plots/income_deciles_and_race/income_deciles_and_race.png',
+  'plots/quintiles_race_denominators/race_only_denom_quint.png',
   dpi = 'retina',
   width = 10.4,
   height = 4.81)

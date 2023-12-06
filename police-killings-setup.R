@@ -202,6 +202,17 @@ all_tracts$income_population_quintiles_2020 <-
                       na.rm = TRUE), 
     include.lowest = TRUE, ordered_result = TRUE))
 
+### Sub-Octile ####
+all_tracts$income_population_quintiles_2020 <- 
+  all_tracts$income_population_quintiles_2020 |>
+  mutate(income_suboctile = cut(
+    IncomeE,
+    labels = 1:16,
+    breaks = quantile(IncomeE, 
+                      probs = seq(0, 1, by = (1/16)), 
+                      na.rm = TRUE), 
+    include.lowest = TRUE, ordered_result = TRUE))
+
 ### Ventiles ####
 all_tracts$ventile_2020 <- quantile(
   all_tracts$income_population_quintiles_2020$IncomeE,
@@ -248,7 +259,7 @@ all_tracts$two_hundred <- quantile(
 
 all_tracts$income_population_quintiles_2020 <-
   all_tracts$income_population_quintiles_2020 |>
-  mutate(income_bins = cut(
+  mutate(income_bins_200 = cut(
     IncomeE,
     labels = seq(1,200),
     breaks = all_tracts$two_hundred, # 201 points create 200 bins

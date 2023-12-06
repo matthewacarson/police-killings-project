@@ -1,4 +1,3 @@
-
 .RData
 .RDataTmp
 .Rhistory
@@ -6,3 +5,4 @@
 RData/
 .Ruserdata
 Bitmap.RData
+do-not-upload/

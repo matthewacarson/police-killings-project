@@ -32,7 +32,19 @@ all_tracts$race_quint_proportions <-
   mutate(Proportion = population / race_total_pop) |> 
   select(-race_total_pop)
 
-# Plot
+################### #
+### Save as CSV ####
+################### #
+
+all_tracts$race_quint_proportions |> select(-population) |>  
+  mutate(Proportion = Proportion * 100) |>
+  pivot_wider(names_from = Race, values_from = Proportion) |> 
+  write_csv(file = "race_quint_proportions.csv")
+
+
+############### #
+# Plot ####
+############### #
 ggplot(data = all_tracts$race_quint_proportions,
        aes(x = Race, 
            y = Proportion, 
