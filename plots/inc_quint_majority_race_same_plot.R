@@ -11,7 +11,7 @@ source(file = "police-killings-setup.R")
 ############################## #
 ## Create quintile bar plot ####
 ############################## #
-
+# This needs to be assigned to an object for cowplot
 income_quintiles_only <-
   summary_tables$summary_1 |> 
   ggplot(
@@ -54,7 +54,7 @@ income_quintiles_only <-
 ################## #
 # Majority Race ####
 ################## #
-
+# This needs to be assigned to an object for cowplot
 summary_tables$majority_table_1 <-  fatal_enc$joined %>%
   count(Majority = Majority) %>% rename(Killings = n) %>% 
   filter(!is.na(Majority)) %>% mutate(Killings_Per_Yr = Killings / 6)

@@ -364,29 +364,106 @@ assign(
 # Line interaction plot ####
 ############################## #
 
-ggplot(summary_tables$IncRace_pop_and_IncRace_LUOF, aes(x = Quintile, y = Proportion, color = Race, shape = Type)) +
+## Using shapes ####
+ggplot(
+  summary_tables$IncRace_pop_and_IncRace_LUOF, 
+  aes(
+    x = Quintile, 
+    y = Proportion, 
+    color = Race, 
+    shape = Type, 
+    group = interaction(Race, Type))) +
   geom_point(size = 3) +
-  geom_line(aes(group = interaction(Race, Type)), linewidth = 1) +
-  labs(title = "Distributions Within Each Racial Group",
-       subtitle = "Proportion of LUOFs in each quintile vs. proportion of the population living in that quintile",
-       x = "Quintile",
-       y = "Proportion",
-       shape = "Proportion of") +
-  scale_color_manual(values = c("Black" = "red", "Hispanic/Latino" = "blue", "White" = "green2")) +
+  geom_line(linewidth = 1) +
+  # scale_color_manual(
+    # values = c(
+      # "Black" = "red", 
+      # "Hispanic/Latino" = "blue", 
+      # "White" = "green2")) +
   scale_shape_manual(values = c("LUOFs" = 16, "Population" = 17)) +
   guides(
     color = guide_legend(override.aes = list(shape = NA))
   ) +
-  theme_minimal() +
+  labs(
+    title = "Distributions Within Each Racial Group",
+    subtitle = "Proportion of LUOFs in each quintile vs. proportion of the population living in that quintile",
+    x = "Quintile",
+    y = "Proportion",
+    shape = "Proportion of",
+    color = "Victim") +
+  theme_light() +
   theme(legend.position = "right")
 
 ggsave(
-  filename = 'plots/plots_by_race/inc_and_race_victim_line.png', 
+  filename = 'plots/plots_by_race/inc_and_race_victim_shape.png', 
   dpi = 'retina', 
   bg = 'white',
   width = 10.4,
   height = 4.81)
 
+### Using line type ####
+ggplot(
+  summary_tables$IncRace_pop_and_IncRace_LUOF, 
+  aes(
+    x = Quintile, 
+    y = Proportion, 
+    color = Race, 
+    linetype = Type, 
+    group = interaction(Race, Type))) +
+  # geom_point(size = 3) +
+  geom_line(linewidth = 1) +
+  scale_shape_manual(values = c("LUOFs" = 16, "Population" = 17)) +
+  guides(
+    # color = guide_legend(override.aes = list(shape = NA)),
+    linetype = guide_legend(
+      title = "Proportion of", override.aes = list(size = 10)),
+    color = guide_legend(
+      title = "Proportion of", override.aes = list(linetype = "solid", size = 10)),
+      title = "Victim", override.aes = list(linetype = "solid", size = 10)
+  ) +
+  # scale_linetype_manual(values = c("solid", "dashed"),
+  #                       name = "Proportion of") + 
+  labs(title = "Distributions Within Each Racial Group",
+       subtitle = "Proportion of LUOFs in each quintile vs. proportion of the population living in that quintile",
+       x = "Quintile",
+       y = "Proportion",
+       # shape = "Proportion of"
+       ) +
+  theme_light() +
+  theme(legend.position = "right")
+
+ggsave(
+  filename = 'plots/plots_by_race/inc_and_race_victim_linetype.png', 
+  dpi = 'retina', 
+  bg = 'white',
+  width = 10.4,
+  height = 4.81)
+
+
+# Example from another script
+ggplot() + 
+  geom_line(data = summary_tables$victim_race_majority_quint_annual,
+            aes(
+              x = Income_Quintile, y = Annual_10_M, 
+              color = Victim_Race, linetype = Majority, 
+              group = interaction(Victim_Race, Majority)), linewidth = 1) +
+  labs(
+    title = "Lethal Use of Force Interactions",
+    subtitle = "Victim Race x Majority-race in Tract x Census Tract Household Income Quintile",
+    x = "Census Tract Income Quintile",
+    y = "Annualized Rate Per 10 Million Population"
+  ) +
+  scale_linetype_manual(values = c("solid", "dotted", "dashed"),
+                        name = "Majority") + 
+  guides(
+    linetype = guide_legend(
+      title = "Majority", override.aes = list(size = 10)),
+    color = guide_legend(
+      title = "Victim", override.aes = list(linetype = "solid", size = 10))) +
+  theme(
+    legend.title = element_text(size = 14),
+    legend.text = element_text(size = 12)) +
+  theme_light()
 ############## #
 # Bar plot ####
 ############## #
