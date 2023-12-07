@@ -28,10 +28,10 @@ summary_tables$race_victim_majority_and_quintile <-
   fatal_enc$joined |> 
   filter(race_imputed != "Other/Unknown") |> 
   select(
-    Victim_Race = race_imputed,
+    Victim = race_imputed,
     Income_Quintile = income_quintiles_nolab,
     Majority) |> 
-  count(Victim_Race, Majority, Income_Quintile)
+  count(Victim, Majority, Income_Quintile)
 
 
 # summary_tables$race_and_income_pop <- 
@@ -73,17 +73,18 @@ summary_tables$victim_race_majority_quint |>
   mutate(
     Killed_Per_Yr =
       case_when(
-        Victim_Race == 'White' ~ n / 6 ,
-        Victim_Race == 'Black' ~ n / 6,
-        Victim_Race == 'Hispanic/Latino' ~ n /  6
+        Victim == 'White' ~ n / 6 ,
+        Victim == 'Black' ~ n / 6,
+        Victim == 'Hispanic/Latino' ~ n /  6
       ),
     Annual_10_M = 
       case_when(
-        Victim_Race == 'White' ~ n / White / 6 * 10000000,
-        Victim_Race == 'Black' ~ n / Black / 6 * 10000000,
-        Victim_Race == 'Hispanic/Latino' ~ n / Latino / 6 * 10000000
+        Victim == 'White' ~ n / White / 6 * 10000000,
+        Victim == 'Black' ~ n / Black / 6 * 10000000,
+        Victim == 'Hispanic/Latino' ~ n / Latino / 6 * 10000000
       ),
-    Income_Quintile = as.factor(Income_Quintile)
+    Income_Quintile = as.factor(Income_Quintile),
+    Victim = factor(Victim)
   ) # |> write_csv(file = "xtabs_race_majority_inc/xtabs_all_data.csv")
 
 ##################################################### #
@@ -92,13 +93,13 @@ summary_tables$victim_race_majority_quint |>
 
 summary_tables$victim_race_majority_quint_annual |> # print(n = 99)
   select(
-    Victim_Race,
+    Victim,
     Majority,
     Income_Quintile,
     Killed_Per_Yr) |> 
-  # filter(Victim_Race == 'Black') |> 
+  # filter(Victim == 'Black') |> 
   pivot_wider(
-    names_from = Victim_Race,
+    names_from = Victim,
     names_prefix = "Victim_",
     values_from = Killed_Per_Yr
   )
@@ -110,13 +111,13 @@ summary_tables$victim_race_majority_quint_annual |> # print(n = 99)
 
 summary_tables$victim_race_majority_quint_annual |> # print(n = 99)
   select(
-    Victim_Race,
+    Victim,
     Majority,
     Income_Quintile,
     Annual_10_M) |> 
-  # filter(Victim_Race == 'Black') |> 
+  # filter(Victim == 'Black') |> 
   pivot_wider(
-    names_from = Victim_Race,
+    names_from = Victim,
     names_prefix = "Victim_",
     values_from = Annual_10_M
   ) # |> write_csv(file = "xtabs_race_majority_inc/xtabs_victim_race_majority_inc.csv")
@@ -134,7 +135,7 @@ ggplot() +
                 filter(Majority == 'Black'),
               aes(
                 x = Income_Quintile, y = Annual_10_M, 
-                color = Victim_Race, group = Victim_Race), lwd = 1) +
+                color = Victim, group = Victim), lwd = 1) +
   labs(
     title = "Majority Black Tracts",
     x = "Census Tract Income Quintile",
@@ -157,7 +158,7 @@ ggplot() +
   geom_line(data = summary_tables$victim_race_majority_quint_annual |> 
                 filter(Majority == 'White'),
               aes(x = Income_Quintile, y = Annual_10_M, 
-                color = Victim_Race, group = Victim_Race), lwd = 1) +
+                color = Victim, group = Victim), lwd = 1) +
   labs(
     title = "Majority White Tracts",
     x = "Census Tract Income Quintile",
@@ -181,7 +182,7 @@ ggplot() +
                 filter(Majority == 'Hispanic/Latino'),
               aes(
                 x = Income_Quintile, y = Annual_10_M, 
-                color = Victim_Race, group = Victim_Race), lwd = 1) +
+                color = Victim, group = Victim), lwd = 1) +
   labs(
     title = "Majority Hispanic/Latino Tracts",
     x = "Census Tract Income Quintile",
@@ -202,25 +203,27 @@ ggsave(
 # Victim Race x Majority x Income Quintile
 ################################################# #
 
-ggplot() + 
-  geom_line(data = summary_tables$victim_race_majority_quint_annual,
-            aes(
-              x = Income_Quintile, y = Annual_10_M, 
-              color = Victim_Race, linetype = Majority, 
-              group = interaction(Victim_Race, Majority)), lwd = 1) +
+ggplot(data = summary_tables$victim_race_majority_quint_annual,
+       aes(
+         x = Income_Quintile, y = Annual_10_M, 
+         color = Victim, linetype = Majority, 
+         group = interaction(Victim, Majority))) + 
+  geom_line(lwd = 1) +
   labs(
     title = "Lethal Use of Force Interactions",
     subtitle = "Victim Race x Majority-race in Tract x Census Tract Household Income Quintile",
     x = "Census Tract Income Quintile",
     y = "Annualized Rate Per 10 Million Population"
   ) +
-  scale_linetype_manual(values = c("solid", "dotted", "dashed"),
+  scale_linetype_manual(values = c("solid", "dotted", "longdash"),
                         name = "Majority") + 
   guides(
     linetype = guide_legend(
       title = "Majority", override.aes = list(size = 10)),
     color = guide_legend(
-      title = "Victim", override.aes = list(linetype = "solid", size = 10))) +
+      title = "Victim", 
+      override.aes = list(
+        size = 10, linewidth = 10))) +
   theme(
     legend.title = element_text(size = 14),
     legend.text = element_text(size = 12)) +
@@ -242,11 +245,11 @@ ggsave(
 #   geom_line(data = summary_tables$victim_race_majority_quint_annual,
 #             aes(
 #               x = Income_Quintile, y = Annual_10_M, 
-#               color = Victim_Race, linetype = Majority, group = interaction(Victim_Race, Majority)), lwd = 1) + 
+#               color = Victim, linetype = Majority, group = interaction(Victim, Majority)), lwd = 1) + 
 #   geom_point(data = summary_tables$victim_race_majority_quint_annual,
 #              aes(
 #                x = Income_Quintile, y = Annual_10_M, 
-#                color = Victim_Race, shape = Majority, group = interaction(Victim_Race, Majority)), size = 3) +
+#                color = Victim, shape = Majority, group = interaction(Victim, Majority)), size = 3) +
 #   labs(
 #     title = "Lethal Use of Force Interactions",
 #     subtitle = "Victim Race x Majority-race Tract x Census Tract Median Household Income Quintile",
@@ -263,13 +266,13 @@ ggplot() +
   geom_line(data = summary_tables$victim_race_majority_quint_annual,
             aes(
               x = Income_Quintile, y = Annual_10_M, 
-              color = Victim_Race, linetype = Majority, 
-              group = interaction(Victim_Race, Majority)), lwd = 1) + 
+              color = Victim, linetype = Majority, 
+              group = interaction(Victim, Majority)), lwd = 1) + 
   geom_point(data = summary_tables$victim_race_majority_quint_annual,
              aes(
                x = Income_Quintile, y = Annual_10_M, 
-               color = Victim_Race, shape = Majority, 
-               group = interaction(Victim_Race, Majority)), size = 3) +
+               color = Victim, shape = Majority, 
+               group = interaction(Victim, Majority)), size = 3) +
   labs(
     title = "Lethal Use of Force Interactions",
     subtitle = "Victim Race x Majority-race Tract x Census Tract Median Household Income Quintile",
@@ -308,7 +311,7 @@ ggplot() +
               filter(Majority == 'Black'),
             aes(
               x = Income_Quintile, y = Killed_Per_Yr, 
-              color = Victim_Race, group = Victim_Race), lwd = 1) +
+              color = Victim, group = Victim), lwd = 1) +
   labs(
     title = "Majority Black Tracts",
     x = "Census Tract Income Quintile",
@@ -332,7 +335,7 @@ ggplot() +
               filter(Majority == 'White'),
             aes(
               x = Income_Quintile, y = Killed_Per_Yr, 
-              color = Victim_Race, group = Victim_Race), lwd = 1) +
+              color = Victim, group = Victim), lwd = 1) +
   labs(
     title = "Majority White Tracts",
     x = "Census Tract Income Quintile",
@@ -357,7 +360,7 @@ ggplot() +
                 filter(Majority == 'Hispanic/Latino'),
               aes(
                 x = Income_Quintile, y = Killed_Per_Yr, 
-                color = Victim_Race, group = Victim_Race), lwd = 1) +
+                color = Victim, group = Victim), lwd = 1) +
   labs(
     title = "Majority Hispanic/Latino Tracts",
     x = "Income Quintile",

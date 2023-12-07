@@ -413,14 +413,15 @@ ggplot(
   # geom_point(size = 3) +
   geom_line(linewidth = 1) +
   scale_shape_manual(values = c("LUOFs" = 16, "Population" = 17)) +
+  scale_linetype_manual(values = c("solid", "dashed")) +
   guides(
     # color = guide_legend(override.aes = list(shape = NA)),
     linetype = guide_legend(
       title = "Proportion of", override.aes = list(size = 10)),
     color = guide_legend(
-      title = "Proportion of", override.aes = list(linetype = "solid", size = 10)),
-      title = "Victim", override.aes = list(linetype = "solid", size = 10)
-  ) +
+      # title = "Proportion of", override.aes = list(linetype = "solid", size = 10),
+      title = "Victim", override.aes = list(linetype = "solid", size = 10, linewidth = 10)
+  )) +
   # scale_linetype_manual(values = c("solid", "dashed"),
   #                       name = "Proportion of") + 
   labs(title = "Distributions Within Each Racial Group",
