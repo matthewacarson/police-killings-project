@@ -360,6 +360,28 @@ assign(
   value = _,
   envir = summary_tables)
 
+### Two-way Table ####
+
+summary_tables$prop_difference <- 
+summary_tables$IncRace_pop_and_IncRace_LUOF |> 
+  pivot_wider(
+    names_from = 'Type',# c('Race', 'Type'),
+    values_from = Proportion
+  ) |> 
+  mutate(Difference = LUOFs - Population)
+
+summary_tables$prop_difference |> 
+  write_csv(
+    file = 'LUOF-proportions.csv'
+  )
+
+# reshape(
+#   data = summary_tables$IncRace_pop_and_IncRace_LUOF,
+#   idvar = "Quintile",
+#   timevar = "Interaction",
+#   direction = "wide"
+# )
+
 ############################## #
 # Line interaction plot ####
 ############################## #
@@ -386,7 +408,7 @@ ggplot(
   ) +
   labs(
     title = "Distributions Within Each Racial Group",
-    subtitle = "Proportion of LUOFs in each quintile vs. proportion of the population living in that quintile",
+    subtitle = "Proportion of LUOFs in each quintile vs. proportion of the racial group living in that quintile",
     x = "Quintile",
     y = "Proportion",
     shape = "Proportion of",
@@ -425,7 +447,7 @@ ggplot(
   # scale_linetype_manual(values = c("solid", "dashed"),
   #                       name = "Proportion of") + 
   labs(title = "Distributions Within Each Racial Group",
-       subtitle = "Proportion of LUOFs in each quintile vs. proportion of the population living in that quintile",
+       subtitle = "Proportion of LUOFs in each quintile vs. proportion of the racial group living in that quintile",
        x = "Quintile",
        y = "Proportion",
        # shape = "Proportion of"
@@ -439,6 +461,49 @@ ggsave(
   bg = 'white',
   width = 10.4,
   height = 4.81)
+
+# Just showing the differences
+
+
+ggplot(
+  summary_tables$prop_difference, 
+  aes(
+    x = Quintile, 
+    y = Difference, 
+    color = Race,
+    # shape = Type, 
+    group = Race
+  )) +
+  geom_hline(yintercept = 0, linetype = 2) + 
+  geom_point(size = 3) +
+  geom_line(linewidth = 1) +
+  # scale_color_manual(
+  # values = c(
+  # "Black" = "red", 
+  # "Hispanic/Latino" = "blue", 
+  # "White" = "green2")) +
+  scale_shape_manual(values = c("LUOFs" = 16, "Population" = 17)) +
+  # guides(
+    # color = guide_legend(override.aes = list(shape = NA))
+  # ) +
+  labs(
+    title = "Distributions Within Each Racial Group",
+    subtitle = "Difference between the proportion of LUOFs in each quintile vs. the proportion of each racial group living in that quintile",
+    x = "Census Tract Income Quintile",
+    y = "LUOF Proportion - Proportion Living There",
+    # shape = "Proportion of",
+    # color = "Victim"
+    ) +
+  theme_light() #+
+  # theme(legend.position = "right")
+
+ggsave(
+  filename = 'plots/plots_by_race/difference_in_proportions.png', 
+  dpi = 'retina', 
+  bg = 'white',
+  width = 10.4,
+  height = 4.81)
+
 
 
 # Example from another script
