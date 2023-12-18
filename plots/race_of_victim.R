@@ -7,6 +7,7 @@
 
 # Run setup file to bring in data to summarize
 source(file = "police-killings-setup.R")
+source(file = "summary_tables.R")
 
 
 # ################################### #
@@ -449,7 +450,7 @@ ggplot(
   labs(title = "Distributions Within Each Racial Group",
        subtitle = "Proportion of LUOFs in each quintile vs. proportion of the racial group living in that quintile",
        x = "Quintile",
-       y = "Proportion",
+       y = "Proportion of Race Living in That Quintile",
        # shape = "Proportion of"
        ) +
   theme_light() +
@@ -511,8 +512,8 @@ ggplot() +
   geom_line(data = summary_tables$victim_race_majority_quint_annual,
             aes(
               x = Income_Quintile, y = Annual_10_M, 
-              color = Victim_Race, linetype = Majority, 
-              group = interaction(Victim_Race, Majority)), linewidth = 1) +
+              color = Victim, linetype = Majority, 
+              group = interaction(Victim, Majority)), linewidth = 1) +
   labs(
     title = "Lethal Use of Force Interactions",
     subtitle = "Victim Race x Majority-race in Tract x Census Tract Household Income Quintile",
