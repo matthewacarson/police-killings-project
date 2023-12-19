@@ -11,8 +11,6 @@ if (!exists("all_tracts")) {all_tracts <- new.env()}
 
 if (!exists("fatal_enc")) {fatal_enc <- new.env()}
 
-if (!exists("summary_tables")) {summary_tables <- new.env()}
-
 # Download and clean tract income ####
 ## Download 2019 data ####
 

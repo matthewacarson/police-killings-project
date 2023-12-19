@@ -4,6 +4,16 @@
 # library(tidycensus)
 # library(sf)
 # library(tidyverse)
+
+####################### #
+####################### #
+# Run setup script ####
+####################### #
+####################### #
+source(file = 'setup.R')
+
+if (!exists("summary_tables")) {summary_tables <- new.env()}
+
 ######################################################### #
 # This is not a complete script of all summary tables
 ######################################################### #
@@ -261,7 +271,7 @@ summary_tables$quintile_race_proportion <-
             "Black", 
             "White", 
             "Hispanic/Latino")) |> 
-      count(Income = income_quintiles_nolab, race_imputed) |> 
+      count(Quintile = income_quintiles_nolab, race_imputed) |> 
       rename(Killings_by_Quintile_and_Race = n),
     y = fatal_enc$joined |> 
       filter(
@@ -275,8 +285,9 @@ summary_tables$quintile_race_proportion <-
     by = "race_imputed"
   ) |> 
   mutate(
-    Proportion = Killings_by_Quintile_and_Race / Killings_Race_Total
-  )
+    Proportion_LUOF = Killings_by_Quintile_and_Race / Killings_Race_Total
+  ) |> 
+  rename(Race = race_imputed)
 
 summary_tables$bin_table_race_proportion <- 
   left_join(
@@ -310,7 +321,9 @@ summary_tables$bin_table_race_proportion$Income <- as.numeric(summary_tables$bin
 ## Using 100 quantiles/percentiles ####
 ## ######################## #
 
-summary_tables$bin_table_race <-  
+
+# this used to be called summary_tables$bin_table_race
+summary_tables$race_percentiles <-  
   fatal_enc$joined |> 
   filter(
     !is.na(income_bins_100) &
@@ -322,8 +335,8 @@ summary_tables$bin_table_race <-
   rename(Killings = n) |> 
   mutate(Killings_Per_Yr = Killings / 6)
 
-summary_tables$bin_table_race$Income <- 
-  as.numeric(summary_tables$bin_table_race$Income)
+summary_tables$race_percentiles$Income <- 
+  as.numeric(summary_tables$race_percentiles$Income)
 
 ################################################# #
 ## Another plot ####
@@ -438,11 +451,11 @@ summary_tables$race_quint_xtab <-
 # quintile
 summary_tables$race_quint_proportions <- 
   left_join(
-    x = all_tracts$race_quint_xtab,
-    y = all_tracts$total_pop_by_race,
+    x = summary_tables$race_quint_xtab,
+    y = summary_tables$total_pop_by_race,
     by = join_by(Race)) |> 
-  mutate(Population = population / race_total_pop) |> 
-  select(-race_total_pop)
+  mutate(Prop_living_in_tract = population / race_total_pop) |> 
+  rename(Population_in_tracts = population)
 
 
 # making changes
@@ -450,12 +463,11 @@ right_join(
   x = summary_tables$quiniles_race_victim |> 
     rename(Quintile = Income, LUOFs = Prop),
   
-  y = all_tracts$race_quint_proportions |> 
-    select(-population),
+  y = summary_tables$race_quint_proportions,
   
   by = join_by(Quintile, Race)) |> 
   pivot_longer(
-    cols = c("LUOFs", "Population"),
+    cols = c("LUOFs", "race_total_pop"),
     names_to = "Type",
     values_to = "Proportion"
   ) |> 
@@ -472,12 +484,12 @@ summary_tables$prop_difference <-
     names_from = 'Type',# c('Race', 'Type'),
     values_from = Proportion
   ) |> 
-  mutate(Difference = LUOFs - Population)
+  mutate(Difference = LUOFs - race_total_pop)
 
-summary_tables$prop_difference |> 
-  write_csv(
-    file = 'LUOF-proportions.csv'
-  )
+# summary_tables$prop_difference |> 
+#   write_csv(
+#     file = 'LUOF-proportions.csv'
+#   )
 
 # reshape(
 #   data = summary_tables$IncRace_pop_and_IncRace_LUOF,
@@ -608,19 +620,19 @@ summary_tables$bins200_summary_1$Income <- as.numeric(summary_tables$bins200_sum
 
 summary_tables$race_and_income <- 
   fatal_enc$joined |> 
-  count(Majority, income_quintiles) |> 
+  count(Majority, income_quintiles_nolab) |> 
   rename(Killings = n)
 
 summary_tables$race_and_income_pop <- 
   all_tracts$income_population_quintiles_2020 |> 
-  aggregate(Total_popE ~ Majority + income_quintiles, FUN = sum) |> 
+  aggregate(Total_popE ~ Majority + income_quintiles_nolab, FUN = sum) |> 
   rename(Population = Total_popE)
 
 summary_tables$race_and_income_summary <- 
   left_join(
     x = summary_tables$race_and_income,
     y = summary_tables$race_and_income_pop,
-    by = c("Majority", "income_quintiles")
+    by = c("Majority", "income_quintiles_nolab")
   ) |> 
   mutate(
     Annualized_Per_10_M =
@@ -628,7 +640,7 @@ summary_tables$race_and_income_summary <-
   ) |> 
   select(
     Majority, 
-    Income = income_quintiles,
+    Income = income_quintiles_nolab,
     Population,
     Killings,
     Annualized_Per_10_M
