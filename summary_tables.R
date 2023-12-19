@@ -262,3 +262,36 @@ summary_tables$bin_table_race <-
 
 summary_tables$bin_table_race$Income <- 
   as.numeric(summary_tables$bin_table_race$Income)
+
+################################################# #
+# Another plot ####
+################################################# #
+
+
+## Race of the victim only plot ####
+summary_tables$race_freq <- 
+  table(fatal_enc$joined$race_imputed) |> 
+  as.data.frame() |> 
+  rename(Race = Var1) |> 
+  filter(Race %in% c(
+    "Black",
+    "White",
+    "Hispanic/Latino")
+  ) |> mutate(
+    Prop = Freq / nrow(fatal_enc$joined),
+    Race =
+      case_when(
+        Race == "Black" ~ "Black",
+        Race == "White" ~ "White",
+        Race == "Hispanic/Latino" ~ "Latino"
+      )
+  )
+
+summary_tables$race_freq$Race <- factor(
+  x = summary_tables$race_freq$Race,
+  levels = c(
+    "White",
+    "Black",
+    "Latino"
+  )
+)
