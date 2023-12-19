@@ -26,15 +26,15 @@ summary_tables$race_victim_majority_and_quintile <-
   filter(race_imputed != "Other/Unknown") |> 
   select(
     Victim = race_imputed,
-    Income_Quintile = income_quintiles_nolab,
+    Quintile = income_quintiles_nolab,
     Majority) |> 
-  count(Victim, Majority, Income_Quintile) |> 
+  count(Victim, Majority, Quintile) |> 
   full_join(
     x = _,
     y =   fatal_enc$joined |>
       select(
-        Income_Quintile = income_quintiles_nolab) |> 
-      count(Income_Quintile) |> 
+        Quintile = income_quintiles_nolab) |> 
+      count(Quintile) |> 
       mutate(Majority = "All", Victim = "All") |> 
       na.omit()
   )
@@ -55,10 +55,10 @@ summary_tables$race_and_income_pop <-
     `White Pop` = NH_WhiteE,
     `Black Pop` = NH_BlackE,
     `Hispanic/Latino Pop` = Hisp_LatinoE,
-    Income_Quintile = income_quintiles_nolab,
+    Quintile = income_quintiles_nolab,
     Majority
   ) %>%
-  group_by(Income_Quintile, Majority) %>%
+  group_by(Quintile, Majority) %>%
   summarize(
     White = sum(`White Pop`),
     Black = sum(`Black Pop`),
@@ -81,7 +81,7 @@ summary_tables$victim_race_majority_quint_annual <-
         Victim == 'Black' ~ n / Black / 6 * 10000000,
         Victim == 'Hispanic/Latino' ~ n / Latino / 6 * 10000000
       ),
-    Income_Quintile = as.factor(Income_Quintile),
+    Quintile = as.factor(Quintile),
     Victim = factor(Victim)
   ) # |> write_csv(file = "xtabs_race_majority_inc/xtabs_all_data.csv")
 
@@ -93,7 +93,7 @@ summary_tables$victim_race_majority_quint_annual <-
 #   select(
 #     Victim,
 #     Majority,
-#     Income_Quintile,
+#     Quintile,
 #     Killed_Per_Yr) |> 
 #   # filter(Victim == 'Black') |> 
 #   pivot_wider(
@@ -110,7 +110,7 @@ summary_tables$victim_race_majority_quint_annual <-
 #   select(
 #     Victim,
 #     Majority,
-#     Income_Quintile,
+#     Quintile,
 #     Annual_10_M) |> 
 #   # filter(Victim == 'Black') |> 
 #   pivot_wider(
@@ -120,14 +120,14 @@ summary_tables$victim_race_majority_quint_annual <-
 #   ) # |> write_csv(file = "xtabs_race_majority_inc/xtabs_victim_race_majority_inc.csv")
 
 ########################################################## #
-# total_pop_quintiles_race.R ####
+# SCRIPT: total_pop_quintiles_race.R ####
 ########################################################## #
 
 
 # Total population by race 2020
 summary_tables$total_pop_by_race <- 
   data.frame(
-    Race = c('Black', 'Hispanic/Latino', 'White'),
+    Majority = c('Black', 'Hispanic/Latino', 'White'),
     race_total_pop = c(
       sum(all_tracts$income_population_quintiles_2020$NH_BlackE),
       sum(all_tracts$income_population_quintiles_2020$Hisp_LatinoE),
@@ -144,9 +144,9 @@ summary_tables$race_quint_xtab <-
     NAME) |> 
   pivot_longer(
     cols = c('White', 'Black', 'Hispanic/Latino'),
-    names_to = 'Race',
+    names_to = 'Majority',
     values_to = "population") |> 
-  aggregate(population ~ Quintile + Race, FUN = sum)
+  aggregate(population ~ Quintile + Majority, FUN = sum)
 
 # Calculate the proportion of each racial group living in each income
 # quintile
@@ -154,9 +154,9 @@ summary_tables$race_quint_proportions <-
   left_join(
     x = summary_tables$race_quint_xtab,
     y = summary_tables$total_pop_by_race,
-    by = join_by(Race)) |> 
-  mutate(Proportion = population / race_total_pop) |> 
-  select(-race_total_pop)
+    by = join_by(Majority)) |> 
+  mutate(Proportion = population / race_total_pop) #|> 
+  # select(-race_total_pop)
 
 ################### #
 ### Save as CSV ####
@@ -167,3 +167,98 @@ summary_tables$race_quint_proportions <-
 #   pivot_wider(names_from = Race, values_from = Proportion) |> 
 #   write_csv(file = "race_quint_proportions.csv")
 
+############################################ #
+# SCRIPT: race_of_victim.R ####
+############################################ #
+
+
+# Plot quintiles of number of race of victim and quintile of census tract ####
+# they were killed in
+summary_tables$quiniles_race_victim <-  
+  fatal_enc$joined |> 
+  filter(
+    !is.na(income_quintiles_nolab) &
+      race_imputed %in% c(
+        "Black", 
+        "White", 
+        "Hispanic/Latino")) |> 
+  count(Income = income_quintiles_nolab, race_imputed) |> 
+  rename(Killings = n) |>
+  mutate(Killings_Per_Yr = Killings / 6) # |> 
+  # select(-Killings)
+
+### plots$race_100 ####
+summary_tables$quintile_race_proportion <- 
+  left_join(
+    x = fatal_enc$joined |> 
+      filter(
+        !is.na(income_quintiles_nolab) &
+          race_imputed %in% c(
+            "Black", 
+            "White", 
+            "Hispanic/Latino")) |> 
+      count(Income = income_quintiles_nolab, race_imputed) |> 
+      rename(Killings_by_Quintile_and_Race = n),
+    y = fatal_enc$joined |> 
+      filter(
+        !is.na(income_quintiles_nolab) &
+          race_imputed %in% c(
+            "Black", 
+            "White", 
+            "Hispanic/Latino")) |> 
+      count(race_imputed) |> 
+      rename(Killings_Race_Total = n),
+    by = "race_imputed"
+  ) |> 
+  mutate(
+    Proportion = Killings_by_Quintile_and_Race / Killings_Race_Total
+  )
+
+summary_tables$bin_table_race_proportion <- 
+  left_join(
+    x = fatal_enc$joined |> 
+      filter(
+        !is.na(income_bins_100) &
+          race_imputed %in% c(
+            "Black", 
+            "White", 
+            "Hispanic/Latino")) |> 
+      count(Income = income_bins_100, race_imputed) |> 
+      rename(Killings_inc_race = n),
+    y = fatal_enc$joined |> 
+      filter(
+        !is.na(income_bins_100) &
+          race_imputed %in% c(
+            "Black", 
+            "White", 
+            "Hispanic/Latino")) |> 
+      count(race_imputed) |> 
+      rename(Killings_race_only = n),
+    by = "race_imputed"
+  ) |> 
+  mutate(
+    Proportion = Killings_inc_race / Killings_race_only
+  )
+
+summary_tables$bin_table_race_proportion$Income <- as.numeric(summary_tables$bin_table_race_proportion$Income)
+
+
+## ######################## #
+## Using 100 quantiles/percentiles ####
+## ######################## #
+
+
+summary_tables$bin_table_race <-  
+  fatal_enc$joined |> 
+  filter(
+    !is.na(income_bins_100) &
+      race_imputed %in% c(
+        "Black", 
+        "White", 
+        "Hispanic/Latino")) |> 
+  count(Income = income_bins_100, race_imputed) |> 
+  rename(Killings = n) |> 
+  mutate(Killings_Per_Yr = Killings / 6)
+
+summary_tables$bin_table_race$Income <- 
+  as.numeric(summary_tables$bin_table_race$Income)
