@@ -7,51 +7,15 @@
 
 # Run setup file to bring in data to summarize
 source(file = "police-killings-setup.R")
-################################################ #
-# Begin Summary Tables  ########################
-################################################ #
+source(file = "summary_tables.R")
 
 # ############################## #
 # Grouped by Race/Ethnicity ####
 # ############################## #
 
-# table(fatal_enc$joined$Majority, fatal_enc$joined$income_quintiles)
-
-summary_tables$race_and_income <- 
-  fatal_enc$joined |> 
-  count(Majority, income_quintiles) |> 
-  rename(Killings = n)
-
-summary_tables$race_and_income_pop <- 
-  all_tracts$income_population_quintiles_2020 |> 
-  aggregate(Total_popE ~ Majority + income_quintiles, FUN = sum) |> 
-  rename(Population = Total_popE)
-
-summary_tables$race_and_income_summary <- 
-  left_join(
-    x = summary_tables$race_and_income,
-    y = summary_tables$race_and_income_pop,
-    by = c("Majority", "income_quintiles")
-  ) |> 
-  mutate(
-    Annualized_Per_10_M =
-      Killings / Population * 10000000 / 6
-  ) |> 
-  select(
-    Majority, 
-    Income = income_quintiles,
-    Population,
-    Killings,
-    Annualized_Per_10_M
-  ) |> add_row(
-    summary_tables$summary_1 |>
-      select(-Killings_Per_Yr)
-  ) |> na.omit() |> 
-  mutate(
-    Income = factor(Income, ordered = TRUE),
-    Majority = factor(Majority, ordered = TRUE))
-
-# plots$quintile_by_race
+######################## #  
+# plots$quintile_by_race ####
+######################## #
 ggplot(
   summary_tables$race_and_income_summary
   ,aes(x = Majority, y = Annualized_Per_10_M, fill = Income)) +

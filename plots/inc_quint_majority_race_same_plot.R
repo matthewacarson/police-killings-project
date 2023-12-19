@@ -7,6 +7,7 @@
 
 # Run setup file to bring in data to summarize
 source(file = "police-killings-setup.R")
+source(file = "summary_tables.R")
 
 ############################## #
 ## Create quintile bar plot ####
@@ -50,34 +51,6 @@ income_quintiles_only <-
 # plot.title = element_text(size = 30),
 # plot.subtitle = element_text(size = 20)
 
-
-################## #
-# Majority Race ####
-################## #
-# This needs to be assigned to an object for cowplot
-summary_tables$majority_table_1 <-  fatal_enc$joined %>%
-  count(Majority = Majority) %>% rename(Killings = n) %>% 
-  filter(!is.na(Majority)) %>% mutate(Killings_Per_Yr = Killings / 6)
-
-summary_tables$majority_pop_table_1 <- tapply(
-  all_tracts$income_population_quintiles_2020$Total_popE, 
-  all_tracts$income_population_quintiles_2020$Majority,
-  sum, na.rm = TRUE) %>% 
-  data.frame(Majority = rownames(.), Population = .)
-
-summary_tables$majority_summary_1 <- 
-  left_join(
-    x = summary_tables$majority_table_1,
-    y = summary_tables$majority_pop_table_1,
-    by = "Majority"
-  )
-
-summary_tables$majority_summary_1 <- 
-  summary_tables$majority_summary_1 |> 
-  mutate(
-    Annualized_Per_10_M =
-      Killings_Per_Yr / Population * 10000000
-  )
 
 ####################### #
 # Majority Race Plot ####
