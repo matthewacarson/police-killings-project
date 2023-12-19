@@ -90,50 +90,7 @@ ggsave(
 # Distribution by quintile within race ####
 #################################################### #
 
-summary_tables$quiniles_race_victim <- 
-  left_join(
-    x = fatal_enc$joined |> 
-      filter(
-        !is.na(income_quintiles_nolab) &
-          race_imputed %in% c(
-            "Black", 
-            "White", 
-            "Hispanic/Latino")) |>
-      count(Income = income_quintiles_nolab,Race = race_imputed) |>
-      rename(Killings_race_inc = n),
-    y =   fatal_enc$joined |> 
-      filter(
-        !is.na(income_quintiles_nolab) &
-          race_imputed %in% c(
-            "Black", 
-            "White", 
-            "Hispanic/Latino")) |> 
-      count(Race = race_imputed) |> 
-      rename(Killed_race = n),
-    by = "Race"
-  ) |> mutate(
-    Prop = Killings_race_inc / Killed_race
-  ) |> select(Income, Race, Prop)
 
-summary_tables$quiniles_race_victim <- 
-  summary_tables$quiniles_race_victim |> 
-  add_row(
-    summary_tables$summary_1 |> 
-      select(Income, Race = Majority,Killings_quintile = Killings) |> 
-      mutate(Total_Killed = sum(Killings_quintile)) |> 
-      mutate(Prop = Killings_quintile / Total_Killed) |> 
-      select(Income, Race, Prop) |> 
-      mutate(Income = factor(Income, ordered = T))
-  )
-# summary_tables$race_and_income_summary
-
-### Reordering Race factors ####
-###
-summary_tables$quiniles_race_victim$Race <- 
-  factor(
-    summary_tables$quiniles_race_victim$Race, 
-    levels = c("All", "Black",
-               "White", "Hispanic/Latino"))
 
 ggplot(
   data = summary_tables$quiniles_race_victim,
@@ -186,80 +143,6 @@ summary_tables$quiniles_race_victim[1:20,] |>
 # LUOF and race population distribution ####
 ############################################ #
 
-all_tracts$total_pop_by_race <- 
-  data.frame(
-    Race = c('Black', 'Hispanic/Latino', 'White'),
-    race_total_pop = c(
-      sum(all_tracts$income_population_quintiles_2020$NH_BlackE),
-      sum(all_tracts$income_population_quintiles_2020$Hisp_LatinoE),
-      sum(all_tracts$income_population_quintiles_2020$NH_WhiteE)))
-
-# Calculating the total population by Race in each income quintile
-all_tracts$race_quint_xtab <- 
-  all_tracts$income_population_quintiles_2020 |> 
-  select(
-    "White" = NH_WhiteE, 
-    "Black" = NH_BlackE, 
-    "Hispanic/Latino" = Hisp_LatinoE, 
-    Quintile = income_quintiles_nolab,
-    NAME) |> 
-  pivot_longer(
-    cols = c('White', 'Black', 'Hispanic/Latino'),
-    names_to = 'Race',
-    values_to = "population") |> 
-  aggregate(population ~ Quintile + Race, FUN = sum)
-
-# Calculate the proportion of each racial group living in each income
-# quintile
-all_tracts$race_quint_proportions <- 
-  left_join(
-    x = all_tracts$race_quint_xtab,
-    y = all_tracts$total_pop_by_race,
-    by = join_by(Race)) |> 
-  mutate(Population = population / race_total_pop) |> 
-  select(-race_total_pop)
-
-
-# making changes
-right_join(
-  x = summary_tables$quiniles_race_victim |> 
-    rename(Quintile = Income, LUOFs = Prop),
-  
-  y = all_tracts$race_quint_proportions |> 
-    select(-population),
-  
-  by = join_by(Quintile, Race)) |> 
-  pivot_longer(
-    cols = c("LUOFs", "Population"),
-    names_to = "Type",
-    values_to = "Proportion"
-  ) |> 
-assign(
-  "IncRace_pop_and_IncRace_LUOF",
-  value = _,
-  envir = summary_tables)
-
-### Two-way Table ####
-
-summary_tables$prop_difference <- 
-summary_tables$IncRace_pop_and_IncRace_LUOF |> 
-  pivot_wider(
-    names_from = 'Type',# c('Race', 'Type'),
-    values_from = Proportion
-  ) |> 
-  mutate(Difference = LUOFs - Population)
-
-summary_tables$prop_difference |> 
-  write_csv(
-    file = 'LUOF-proportions.csv'
-  )
-
-# reshape(
-#   data = summary_tables$IncRace_pop_and_IncRace_LUOF,
-#   idvar = "Quintile",
-#   timevar = "Interaction",
-#   direction = "wide"
-# )
 
 ############################## #
 # Line interaction plot ####
