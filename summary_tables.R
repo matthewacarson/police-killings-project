@@ -119,10 +119,11 @@ summary_tables$victim_race_majority_quint_annual <-
 #     values_from = Annual_10_M
 #   ) # |> write_csv(file = "xtabs_race_majority_inc/xtabs_victim_race_majority_inc.csv")
 
-########################################################## #
+############################################### #
+############################################### #
 # SCRIPT: total_pop_quintiles_race.R ####
-########################################################## #
-
+############################################### #
+############################################### #
 
 # Total population by race 2020
 summary_tables$total_pop_by_race <- 
@@ -167,9 +168,11 @@ summary_tables$race_quint_proportions <-
 #   pivot_wider(names_from = Race, values_from = Proportion) |> 
 #   write_csv(file = "race_quint_proportions.csv")
 
-############################################ #
+############################################### #
+############################################### #
 # SCRIPT: race_of_victim.R ####
-############################################ #
+############################################### #
+############################################### #
 
 
 # Plot quintiles of number of race of victim and quintile of census tract ####
@@ -423,3 +426,71 @@ summary_tables$prop_difference |>
 #   timevar = "Interaction",
 #   direction = "wide"
 # )
+
+############################################### #
+############################################### #
+# SCRIPT: 15_quantile_plot.R ####
+############################################### #
+############################################### #
+
+# ############################## #
+# Grouped by Race/Ethnicity ####
+# ############################## #
+
+# Note: this script uses 15 tract income quantiles.
+# The reasons for choosing 15 quantiles is that it lets
+# us divide quintiles into tertiles of each quintile. 
+# So by looking at the three lowest of 15 quantiles, 
+# we are looking at the tertiles of the lowest quintile.
+
+summary_tables$quant15_table <- 
+  fatal_enc$joined |> 
+  count(Majority, income_15_quant) |> 
+  rename(Killings = n) |> 
+  na.omit() |> 
+  add_row(
+    fatal_enc$joined |> 
+      count(income_15_quant) |> 
+      rename(Killings = n) |> 
+      na.omit() |> 
+      mutate(Majority = 'All')
+  )
+
+summary_tables$quant15_pop <- 
+  # Black
+  all_tracts$income_population_quintiles_2020 |> 
+  filter(Majority == 'Black') |> 
+  aggregate(NH_BlackE ~ Majority + income_15_quant, FUN = sum) |> 
+  rename(Population = NH_BlackE) |> 
+  add_row(
+    # White
+    all_tracts$income_population_quintiles_2020 |> 
+      filter(Majority == 'White') |> 
+      aggregate(NH_WhiteE ~ Majority + income_15_quant, FUN = sum) |> 
+      rename(Population = NH_WhiteE)) |> 
+  add_row(
+    # Latino
+    all_tracts$income_population_quintiles_2020 |> 
+      filter(Majority == 'Hispanic/Latino') |> 
+      aggregate(Hisp_LatinoE ~ Majority + income_15_quant, FUN = sum) |> 
+      rename(Population = Hisp_LatinoE)) |> 
+  add_row(
+    all_tracts$income_population_quintiles_2020 |> 
+      aggregate(Total_popE ~ income_15_quant, FUN = sum) |> 
+      rename(Population = Total_popE) |> mutate(Majority = 'All')
+  )
+
+summary_tables$quant15_joined <- 
+  left_join(
+    x = summary_tables$quant15_table,
+    y = summary_tables$quant15_pop,
+    by = join_by(Majority, income_15_quant))
+
+summary_tables$quant15_summary <- 
+  summary_tables$quant15_joined |> 
+  mutate(
+    Annualized_Per_10_M = 
+      Killings / Population * 10000000 / 6,
+    Majority = factor(Majority, ordered = TRUE)
+  ) |> 
+  rename(Income = income_15_quant)
