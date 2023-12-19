@@ -119,3 +119,51 @@ summary_tables$victim_race_majority_quint_annual <-
 #     values_from = Annual_10_M
 #   ) # |> write_csv(file = "xtabs_race_majority_inc/xtabs_victim_race_majority_inc.csv")
 
+########################################################## #
+# total_pop_quintiles_race.R ####
+########################################################## #
+
+
+# Total population by race 2020
+summary_tables$total_pop_by_race <- 
+  data.frame(
+    Race = c('Black', 'Hispanic/Latino', 'White'),
+    race_total_pop = c(
+      sum(all_tracts$income_population_quintiles_2020$NH_BlackE),
+      sum(all_tracts$income_population_quintiles_2020$Hisp_LatinoE),
+      sum(all_tracts$income_population_quintiles_2020$NH_WhiteE)))
+
+# Calculating the total population by Race in each income quintile
+summary_tables$race_quint_xtab <- 
+  all_tracts$income_population_quintiles_2020 |> 
+  select(
+    "White" = NH_WhiteE, 
+    "Black" = NH_BlackE, 
+    "Hispanic/Latino" = Hisp_LatinoE, 
+    Quintile = income_quintiles_nolab,
+    NAME) |> 
+  pivot_longer(
+    cols = c('White', 'Black', 'Hispanic/Latino'),
+    names_to = 'Race',
+    values_to = "population") |> 
+  aggregate(population ~ Quintile + Race, FUN = sum)
+
+# Calculate the proportion of each racial group living in each income
+# quintile
+summary_tables$race_quint_proportions <- 
+  left_join(
+    x = summary_tables$race_quint_xtab,
+    y = summary_tables$total_pop_by_race,
+    by = join_by(Race)) |> 
+  mutate(Proportion = population / race_total_pop) |> 
+  select(-race_total_pop)
+
+################### #
+### Save as CSV ####
+################### #
+
+# summary_tables$race_quint_proportions |> select(-population) |>  
+#   mutate(Proportion = Proportion * 100) |>
+#   pivot_wider(names_from = Race, values_from = Proportion) |> 
+#   write_csv(file = "race_quint_proportions.csv")
+

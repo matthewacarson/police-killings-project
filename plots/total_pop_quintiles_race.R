@@ -7,55 +7,13 @@
 
 # Run setup file to bring in data to summarize
 source(file = "police-killings-setup.R")
-
-# Total population by race 2020
-all_tracts$total_pop_by_race <- 
-  data.frame(
-    Race = c('Black', 'Hispanic/Latino', 'White'),
-    race_total_pop = c(
-      sum(all_tracts$income_population_quintiles_2020$NH_BlackE),
-      sum(all_tracts$income_population_quintiles_2020$Hisp_LatinoE),
-      sum(all_tracts$income_population_quintiles_2020$NH_WhiteE)))
-
-# Calculating the total population by Race in each income quintile
-all_tracts$race_quint_xtab <- 
-  all_tracts$income_population_quintiles_2020 |> 
-  select(
-    "White" = NH_WhiteE, 
-    "Black" = NH_BlackE, 
-    "Hispanic/Latino" = Hisp_LatinoE, 
-    Quintile = income_quintiles_nolab,
-    NAME) |> 
-  pivot_longer(
-    cols = c('White', 'Black', 'Hispanic/Latino'),
-    names_to = 'Race',
-    values_to = "population") |> 
-  aggregate(population ~ Quintile + Race, FUN = sum)
-
-# Calculate the proportion of each racial group living in each income
-# quintile
-all_tracts$race_quint_proportions <- 
-  left_join(
-    x = all_tracts$race_quint_xtab,
-    y = all_tracts$total_pop_by_race,
-    by = join_by(Race)) |> 
-  mutate(Proportion = population / race_total_pop) |> 
-  select(-race_total_pop)
-
-################### #
-### Save as CSV ####
-################### #
-
-all_tracts$race_quint_proportions |> select(-population) |>  
-  mutate(Proportion = Proportion * 100) |>
-  pivot_wider(names_from = Race, values_from = Proportion) |> 
-  write_csv(file = "race_quint_proportions.csv")
+source(file = "summary_tables.R", )
 
 
 ############### #
 # Plot ####
 ############### #
-ggplot(data = all_tracts$race_quint_proportions,
+ggplot(data = summary_tables$race_quint_proportions,
        aes(x = Race, 
            y = Proportion, 
            fill = Quintile)) +
