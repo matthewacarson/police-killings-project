@@ -4,7 +4,7 @@
 # library(tidycensus)
 # library(sf)
 # library(tidyverse)
-
+library(patchwork)
 ################################################# #
 # Run setup file to bring in data to summarize ####
 ################################################# #
@@ -303,12 +303,6 @@ ggsave(
 # Plots using Annualized but NOT PER CAPITA rates ####
 ################################################################ #
 
-############################################################## #
-# All (without respect to race) ####
-############################################################## #
-
-
-
 
 ############################################################## #
 # Majority Black Tracts by Victim Race and Income Quintile ####
@@ -391,3 +385,94 @@ ggsave(
   height = 4.81
 )
 
+
+######################################################### #
+# Plot everything together ####
+######################################################### #
+(
+ggplot() + 
+  geom_line(data = summary_tables$victim_race_majority_quint_annual |> 
+              filter(Majority == 'Black'),
+            aes(
+              x = Income_Quintile, y = Killed_Per_Yr, 
+              color = Victim, group = Victim, linetype = Victim), 
+            lwd = 1, show.legend = FALSE) +
+  labs(
+    subtitle = "Majority Black Tracts",
+    x = NULL,
+    # x = "Census Tract Income Quintile",
+    y = "Number of Persons Killed",
+  ) + guides(color = guide_legend(title = "Victim's Race")) +
+  scale_y_continuous(
+    breaks = seq(0, 125, by = 25),
+    limits = c(0, 130)) +
+  scale_x_discrete(labels = c("Quintile 1", "Quintile 2", "Quintile 3", "Quintile 4", "Quintile 5")) +
+  theme_light() + 
+  theme(
+    axis.text.x = element_text(color = 'black'),
+    axis.text.y = element_text(color = 'black')) +
+  
+  # Next plot
+  ggplot() + 
+  geom_line(data = summary_tables$victim_race_majority_quint_annual |> 
+              filter(Majority == 'White'),
+            aes(
+              x = Income_Quintile, y = Killed_Per_Yr, 
+              color = Victim, group = Victim, linetype = Victim), 
+            lwd = 1, show.legend = TRUE) +
+  labs(
+    subtitle = "Majority White Tracts",
+    x = NULL,
+    # x = "Census Tract Income Quintile",
+    y = NULL,
+    color = "Victim's Race",
+    linetype = "Victim's Race"
+  ) + guides(color = guide_legend(
+    title = "Victim's Race")) +
+  scale_y_continuous(
+    breaks = seq(0, 125, by = 25),
+    limits = c(0, 130)) +
+  scale_x_discrete(labels = c("Quintile 1", "Quintile 2", "Quintile 3", "Quintile 4", "Quintile 5")) +
+  theme_light() + 
+  theme(
+    legend.key.size = unit(3, 'lines'),
+    legend.position = 'bottom',
+    axis.text.x = element_text(color = 'black'),
+    axis.text.y = element_blank()) +
+  
+  # Add last plot
+  ggplot() + 
+  geom_line(  data = summary_tables$victim_race_majority_quint_annual |> 
+                filter(Majority == 'Hispanic/Latino'),
+              aes(
+                x = Income_Quintile, y = Killed_Per_Yr, 
+                color = Victim, group = Victim, linetype = Victim), 
+              lwd = 1, show.legend = FALSE) +
+  labs(
+    subtitle = "Majority Hispanic/Latino Tracts",
+    # x = "Census Tract Income Quintile",
+    x = NULL,
+    y = NULL
+  ) +
+  scale_y_continuous(
+    breaks = seq(0, 125, by = 25), limits = c(0, 130), position = "right") +
+  scale_x_discrete(labels = c("Quintile 1", "Quintile 2", "Quintile 3", "Quintile 4", "Quintile 5")) +
+  theme_light() + 
+  theme(
+    axis.text.x = element_text(color = 'black'),
+    # axis.text.y = element_blank()
+    )
+
+) +
+  plot_annotation(
+    title = "Majority Race in Tract by Median Household Income Quintile",
+    # theme = theme(plot.title = element_text(hjust = 0.5))
+  )
+
+
+ggsave(
+  filename = "plots/xtabs_race_majority_inc/not_per_capita/all_plots.png",
+  dpi = 'retina',
+  width = 10.4,
+  height = 4.81
+)

@@ -28,7 +28,16 @@ summary_tables$race_victim_majority_and_quintile <-
     Victim = race_imputed,
     Income_Quintile = income_quintiles_nolab,
     Majority) |> 
-  count(Victim, Majority, Income_Quintile)
+  count(Victim, Majority, Income_Quintile) |> 
+  full_join(
+    x = _,
+    y =   fatal_enc$joined |>
+      select(
+        Income_Quintile = income_quintiles_nolab) |> 
+      count(Income_Quintile) |> 
+      mutate(Majority = "All", Victim = "All") |> 
+      na.omit()
+  )
 
 # summary_tables$race_and_income_pop <- 
 # all_tracts$income_population_quintiles_2020 |> 
@@ -65,12 +74,7 @@ summary_tables$victim_race_majority_quint <-
 summary_tables$victim_race_majority_quint_annual <-
   summary_tables$victim_race_majority_quint |> 
   mutate(
-    Killed_Per_Yr =
-      case_when(
-        Victim == 'White' ~ n / 6 ,
-        Victim == 'Black' ~ n / 6,
-        Victim == 'Hispanic/Latino' ~ n /  6
-      ),
+    Killed_Per_Yr = n / 6,
     Annual_10_M = 
       case_when(
         Victim == 'White' ~ n / White / 6 * 10000000,
@@ -85,33 +89,33 @@ summary_tables$victim_race_majority_quint_annual <-
 # Annualized -- NOT PER CAPITA! ####
 ##################################################### #
 
-summary_tables$victim_race_majority_quint_annual |> # print(n = 99)
-  select(
-    Victim,
-    Majority,
-    Income_Quintile,
-    Killed_Per_Yr) |> 
-  # filter(Victim == 'Black') |> 
-  pivot_wider(
-    names_from = Victim,
-    names_prefix = "Victim_",
-    values_from = Killed_Per_Yr
-  )
+# summary_tables$victim_race_majority_quint_annual |> # print(n = 99)
+#   select(
+#     Victim,
+#     Majority,
+#     Income_Quintile,
+#     Killed_Per_Yr) |> 
+#   # filter(Victim == 'Black') |> 
+#   pivot_wider(
+#     names_from = Victim,
+#     names_prefix = "Victim_",
+#     values_from = Killed_Per_Yr
+#   )
 
 ###################################################### #
 # Annualized, Per capita rates ####
 ###################################################### #
 
-summary_tables$victim_race_majority_quint_annual |> # print(n = 99)
-  select(
-    Victim,
-    Majority,
-    Income_Quintile,
-    Annual_10_M) |> 
-  # filter(Victim == 'Black') |> 
-  pivot_wider(
-    names_from = Victim,
-    names_prefix = "Victim_",
-    values_from = Annual_10_M
-  ) # |> write_csv(file = "xtabs_race_majority_inc/xtabs_victim_race_majority_inc.csv")
+# summary_tables$victim_race_majority_quint_annual |> # print(n = 99)
+#   select(
+#     Victim,
+#     Majority,
+#     Income_Quintile,
+#     Annual_10_M) |> 
+#   # filter(Victim == 'Black') |> 
+#   pivot_wider(
+#     names_from = Victim,
+#     names_prefix = "Victim_",
+#     values_from = Annual_10_M
+#   ) # |> write_csv(file = "xtabs_race_majority_inc/xtabs_victim_race_majority_inc.csv")
 
