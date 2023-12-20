@@ -321,7 +321,6 @@ summary_tables$bin_table_race_proportion$Income <- as.numeric(summary_tables$bin
 ## Using 100 quantiles/percentiles ####
 ## ######################## #
 
-
 # this used to be called summary_tables$bin_table_race
 summary_tables$race_percentiles <-  
   fatal_enc$joined |> 
@@ -341,7 +340,6 @@ summary_tables$race_percentiles$Income <-
 ################################################# #
 ## Another plot ####
 ################################################# #
-
 
 ## Race of the victim only plot ####
 summary_tables$race_freq <- 
@@ -753,7 +751,6 @@ summary_tables$decile_race_denom <-
 
 # all_tracts$income_population_quintiles_2020 |> 
 # aggregate(Total_popE ~ Majority + income_decile, FUN = sum)
-
 ######################################### #
 
 summary_tables$decile_race_denom <- 
@@ -864,8 +861,97 @@ summary_tables$race_income_summary_race_denom <-
          Majority = factor(Majority, ordered = TRUE)) |> 
   rename(Income = income_quintiles)
 
+######################################### #
+######################################### #
+# SCRIPT: rescaling.R ####
+######################################### #
+######################################### #
+
+summary_tables$race_LUOF_Rescale <-
+  full_join(
+    x = summary_tables$race_quint_proportions,
+    y = summary_tables$quintile_race_proportion,
+    by = join_by(Race, Quintile)
+  )
+
+
+summary_tables$race_LUOF_Rescale_s <-
+  summary_tables$race_LUOF_Rescale |> 
+  arrange(Quintile) |> 
+  rename(
+    pop_quint_race = Population_in_tracts,
+    LUOF_Quint_Race = Killings_by_Quintile_and_Race,
+    LUOF_RaceTotal = Killings_Race_Total
+  )
+
+
+summary_tables$race_LUOF_Rescale_s$Rate <- 
+summary_tables$race_LUOF_Rescale_s$LUOF_Quint_Race / 
+  summary_tables$race_LUOF_Rescale_s$pop_quint_race *
+  10000000 / 6
+
+summary_tables$race_LUOF_Rescale_White <-
+  summary_tables$race_LUOF_Rescale_s[
+    summary_tables$race_LUOF_Rescale_s$Race == "White",]
+
+summary_tables$race_LUOF_Rescale_filter <-
+  summary_tables$race_LUOF_Rescale_s[
+    summary_tables$race_LUOF_Rescale_s$Race != "White",]
+
+# merge(
+  # summary_tables$race_LUOF_Rescale_White[,c('Quintile', 'Prop_living_in_tract')],
+  # summary_tables$race_LUOF_Rescale_s,
+  # by = "Quintile"
+# )
+
+summary_tables$race_LUOF_Rescale_filter$white_prop <-
+  summary_tables$race_LUOF_Rescale_White$Prop_living_in_tract[match(
+    summary_tables$race_LUOF_Rescale_filter$Quintile,
+    summary_tables$race_LUOF_Rescale_White$Quintile
+  )]
+
+summary_tables$race_LUOF_Rescale_filter$prop_x_rate <-
+  summary_tables$race_LUOF_Rescale_filter$Prop_living_in_tract *
+  summary_tables$race_LUOF_Rescale_filter$Rate
+
+summary_tables$race_LUOF_Rescale_rounded <-
+  apply(
+    summary_tables$race_LUOF_Rescale_filter[, 3:11],
+    2,
+    FUN = function(x)
+      round(x = x, digits = 2)
+  ) |> as.data.frame()
+
+summary_tables$race_LUOF_Rescale_rounded <- cbind(
+  summary_tables$race_LUOF_Rescale_filter[, 1:2],
+  summary_tables$race_LUOF_Rescale_rounded
+)
+
+
+write_csv(
+  x = summary_tables$race_LUOF_Rescale_rounded, 
+  file = "reweighting.csv")
+
+# summary_tables$race_LUOF_Rescale_filter$rescaled <- 
+#   summary_tables$race_LUOF_Rescale_filter$Rate * 
+#   (summary_tables$race_LUOF_Rescale_filter$white_prop /
+#      summary_tables$race_LUOF_Rescale_filter$Prop_living_in_tract)
+
+rownames(summary_tables$race_LUOF_Rescale_White) <- NULL
+summary_tables$race_LUOF_Rescale_White
+
+# rownames(summary_tables$race_LUOF_Rescale_filter) <- NULL
+# summary_tables$race_LUOF_Rescale_filter |> 
+#   select(-LUOF_Quint_Race, -Killings_Race_Total)
 
 
 
+summary_tables$race_LUOF_Rescale_s$rescale <-
+summary_tables$race_LUOF_Rescale_s$Rate *
+summary_tables$race_LUOF_Rescale_s$Prop_living_in_tract
+
+summary_tables$race_LUOF_Rescale_s
+
+# tapply(summary_tables$race_LUOF_Rescale_s$Prop_living_in_tract, summary_tables$race_LUOF_Rescale_s$Race, sum)
 
 
