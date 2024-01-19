@@ -867,6 +867,8 @@ summary_tables$race_income_summary_race_denom <-
 ######################################### #
 ######################################### #
 
+# These tables use the race of the victim.
+
 summary_tables$race_LUOF_Rescale <-
   full_join(
     x = summary_tables$race_quint_proportions,
@@ -876,8 +878,8 @@ summary_tables$race_LUOF_Rescale <-
 
 
 summary_tables$race_LUOF_Rescale_s <-
-  summary_tables$race_LUOF_Rescale |> 
-  arrange(Quintile) |> 
+  summary_tables$race_LUOF_Rescale |>
+  arrange(Quintile) |>
   rename(
     pop_quint_race = Population_in_tracts,
     LUOF_Quint_Race = Killings_by_Quintile_and_Race,
@@ -885,18 +887,15 @@ summary_tables$race_LUOF_Rescale_s <-
   )
 
 
-summary_tables$race_LUOF_Rescale_s$Rate <- 
-summary_tables$race_LUOF_Rescale_s$LUOF_Quint_Race / 
-  summary_tables$race_LUOF_Rescale_s$pop_quint_race *
-  10000000 / 6
+summary_tables$race_LUOF_Rescale_s$Rate <-
+  summary_tables$race_LUOF_Rescale_s$LUOF_Quint_Race /
+  summary_tables$race_LUOF_Rescale_s$pop_quint_race * 10000000 / 6
 
 summary_tables$race_LUOF_Rescale_White <-
-  summary_tables$race_LUOF_Rescale_s[
-    summary_tables$race_LUOF_Rescale_s$Race == "White",]
+  summary_tables$race_LUOF_Rescale_s[summary_tables$race_LUOF_Rescale_s$Race == "White",]
 
 summary_tables$race_LUOF_Rescale_filter <-
-  summary_tables$race_LUOF_Rescale_s[
-    summary_tables$race_LUOF_Rescale_s$Race != "White",]
+  summary_tables$race_LUOF_Rescale_s[summary_tables$race_LUOF_Rescale_s$Race != "White",]
 
 # merge(
   # summary_tables$race_LUOF_Rescale_White[,c('Quintile', 'Prop_living_in_tract')],
