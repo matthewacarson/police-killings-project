@@ -915,11 +915,8 @@ summary_tables$race_LUOF_Rescale_filter$prop_x_rate <-
 
 summary_tables$race_LUOF_Rescale_rounded <-
   apply(
-    summary_tables$race_LUOF_Rescale_filter[, 3:11],
-    2,
-    FUN = function(x)
-      round(x = x, digits = 2)
-  ) |> as.data.frame()
+    summary_tables$race_LUOF_Rescale_filter[, 3:11], MARGIN = 2,
+    FUN = function(x) round(x = x, digits = 2)) |> as.data.frame()
 
 summary_tables$race_LUOF_Rescale_rounded <- cbind(
   summary_tables$race_LUOF_Rescale_filter[, 1:2],
@@ -931,10 +928,9 @@ write_csv(
   x = summary_tables$race_LUOF_Rescale_rounded, 
   file = "reweighting.csv")
 
-# summary_tables$race_LUOF_Rescale_filter$rescaled <- 
-#   summary_tables$race_LUOF_Rescale_filter$Rate * 
-#   (summary_tables$race_LUOF_Rescale_filter$white_prop /
-#      summary_tables$race_LUOF_Rescale_filter$Prop_living_in_tract)
+summary_tables$race_LUOF_Rescale_filter$rescaled <-
+  summary_tables$race_LUOF_Rescale_filter$Rate * 
+  summary_tables$race_LUOF_Rescale_filter$white_prop
 
 rownames(summary_tables$race_LUOF_Rescale_White) <- NULL
 summary_tables$race_LUOF_Rescale_White
@@ -947,7 +943,7 @@ summary_tables$race_LUOF_Rescale_White
 
 summary_tables$race_LUOF_Rescale_s$rescale <-
 summary_tables$race_LUOF_Rescale_s$Rate *
-summary_tables$race_LUOF_Rescale_s$Prop_living_in_tract
+summary_tables$race_LUOF_Rescale_s$
 
 summary_tables$race_LUOF_Rescale_s
 
