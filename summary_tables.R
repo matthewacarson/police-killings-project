@@ -880,13 +880,14 @@ summary_tables$race_LUOF_Rescale_s <-
   summary_tables$race_LUOF_Rescale |>
   arrange(Quintile) |>
   rename(
+    quintile = Quintile,
     pop_quint_race = Population_in_tracts,
-    LUOF_Quint_Race = Killings_by_Quintile_and_Race,
-    LUOF_RaceTotal = Killings_Race_Total
+    LUOF_count_quint_race = Killings_by_Quintile_and_Race,
+    LUOF_race_total_us = Killings_Race_Total
   )
 
 summary_tables$race_LUOF_Rescale_s$Rate <-
-  summary_tables$race_LUOF_Rescale_s$LUOF_Quint_Race /
+  summary_tables$race_LUOF_Rescale_s$LUOF_count_quint_race /
   summary_tables$race_LUOF_Rescale_s$pop_quint_race * 10000000 / 6
 
 summary_tables$race_LUOF_Rescale_White <-
@@ -918,3 +919,5 @@ summary_tables$race_LUOF_Rescale_rounded <- cbind(
 summary_tables$race_LUOF_Rescale_filter$rescaled <-
   summary_tables$race_LUOF_Rescale_filter$Rate * 
   summary_tables$race_LUOF_Rescale_filter$white_prop
+
+summary_tables$race_LUOF_Rescale_filter
