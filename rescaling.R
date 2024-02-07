@@ -96,9 +96,9 @@ summary_tables$race_LUOF_Rescale_rounded <-
 
 # Calculating overall white rate
 
-mean(
-  summary_tables$race_LUOF_Rescale_White$rate
-)
+mean(summary_tables$race_LUOF_Rescale_White$rate)
 
 # ############ #
-# Calculating overall counterfactual rate
+# Calculating overall black counterfactual rate 
+
+summary_tables$race_LUOF_Rescale_POC
