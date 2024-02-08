@@ -94,6 +94,9 @@ mean(summary_tables$race_LUOF_counterfactual_White$rate)
 # Calculating overall black counterfactual rate 
 
 summary_tables$race_LUOF_counterfactual_POC |> 
+  aggregate(rate ~ race, FUN = mean)
+
+summary_tables$race_LUOF_counterfactual_POC |> 
   aggregate(counterfactual ~ race, FUN = mean)
 
 # 2/7/2024: I'm not sure if this is right because the black & Latino 
