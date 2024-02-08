@@ -1,3 +1,5 @@
+# setwd("C:/Users/madou/OneDrive - UCLA IT Services/PS-Honors/police-killings-github")
+
 # Load Libraries ####
 # library(tidycensus)
 # library(sf)
@@ -5,6 +7,12 @@
 
 # Run summary file to bring in data to summarize
 source(file = "summary_tables.R")
+
+######################################### #
+######################################### #
+# SCRIPT: rescaling.R ####
+######################################### #
+######################################### #
 
 # These tables use the race of the victim.
 
