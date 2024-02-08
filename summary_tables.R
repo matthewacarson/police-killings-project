@@ -452,8 +452,8 @@ summary_tables$race_quint_proportions <-
     x = summary_tables$race_quint_xtab,
     y = summary_tables$total_pop_by_race,
     by = join_by(Race)) |> 
-  mutate(Prop_living_in_tract = population / race_total_pop) |> 
-  rename(Population_in_tracts = population)
+  mutate(Population = population / race_total_pop) |> 
+  select(-population, -race_total_pop)
 
 
 # making changes
@@ -465,7 +465,7 @@ right_join(
   
   by = join_by(Quintile, Race)) |> 
   pivot_longer(
-    cols = c("LUOFs", "race_total_pop"),
+    cols = c("LUOFs", "Population"),
     names_to = "Type",
     values_to = "Proportion"
   ) |> 
