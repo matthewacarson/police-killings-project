@@ -6,7 +6,6 @@
 # library(tidyverse)
 
 # Run setup file to bring in data to summarize
-source(file = "police-killings-setup.R")
 source(file = "summary_tables.R")
 
 
@@ -209,9 +208,9 @@ ggplot(
   # scale_linetype_manual(values = c("solid", "dashed"),
   #                       name = "Proportion of") + 
   labs(title = "Distributions Within Each Racial Group",
-       subtitle = "Proportion of LUOFs in each quintile vs. proportion of the racial group living in that quintile",
+       subtitle = "Proportion of LUOFs in each quintile by race vs. proportion of the race living in that quintile",
        x = "Quintile",
-       y = "Proportion of Race Living in That Quintile",
+       y = "Proportion",
        # shape = "Proportion of"
        ) +
   theme_light() +
