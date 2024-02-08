@@ -6,3 +6,7 @@ RData/
 .Ruserdata
 Bitmap.RData
 do-not-upload/
+.pkl
+.spydata
+.csv
+.spyproject/
