@@ -53,12 +53,13 @@ os.getcwd()
 # but rather pulls them as necessary. This will save a lot of space but compromises speed.
 #%% 2 
 # Data files
-dtype_dict = {col: float for col in range(11, 51)}
+# dtype_dict = {col: float for col in range(11, 51)}
 census_90 = pd.read_csv('R13437364_SL140_1990.csv') #, dtype=dtype_dict)
 # census_90 = pd.read_csv('R13437364_SL140_subset.csv', index_col = 0)
-dtype_dict = {col: float for col in range(1, 51)}
+# census_90['state'] = census_90.iloc[:, 1].apply(lambda x: x.split(', ')[2] if isinstance(x, str) else x)
+# dtype_dict = {col: float for col in range(1, 51)}
 census_00 = pd.read_csv('merged_2000.csv')#, dtype=dtype_dict)
-
+# census_00['state'] = census_00['NAME'].apply(lambda x: x.split(', ')[2] if isinstance(x, str) else x)
 # Crosswalk files
 dtype_dict = {col: float for col in range(0, 51)}
 xwalk_90_10 = pd.read_csv(input_path+'crosswalk_1990_2010.csv')#, dtype=dtype_dict)

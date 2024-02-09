@@ -6,40 +6,60 @@ UDP_Recode <- read_csv("UDP_Recode.csv")
 # 2018 5-year ACS variables
 UDP_Recode_2018 <- UDP_Recode |> 
   filter(Year == 2018)
-names(UDP_Recode_2018$OriginalCode) <- UDP_Recode_2018$Recode
-UDP_Recode_2018$OriginalCode
+# names(UDP_Recode_2018$OriginalCode) <- UDP_Recode_2018$Recode
+# UDP_Recode_2018$OriginalCode
 
-states <- c("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", 
-            "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA",
-            "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY",
-            "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX",
-            "UT", "VT", "VA", "WA", "WV", "WI", "WY")
+states <- c("AL", "AK", "AZ", "AR", "CA", "CO", "CT", 
+            "DE", "DC", "FL", "GA", "HI", "ID", "IL", 
+            "IN", "IA", "KS", "KY", "LA", "ME", "MD", 
+            "MA", "MI", "MN", "MS", "MO", "MT", "NE", 
+            "NV", "NH", "NJ", "NM", "NY", "NC", "ND", 
+            "OH", "OK", "OR", "PA", "RI", "SC", "SD", 
+            "TN", "TX", "UT", "VT", "VA", "WA", "WV", 
+            "WI", "WY")
+acs_2018 <- new.env()
+for (state in states) {
+  get_acs(
+    geography = "tract",
+    state = state,
+    variables = UDP_Recode_2018$OriginalCode,
+    year = 2018,
+    survey = "acs5",
+    output = "wide",
+    geometry = FALSE
+  ) |> assign(
+    state,
+    value = _,
+    envir = acs_2018
+  )
+}
+  
+acs_2018_noGEO <- st_drop_geometry(acs_2018)
 
-# acs_2018 <- get_acs(
-#   geography = "tract",
-#   state = states,
-#   variables = UDP_Recode_2018$OriginalCode,
-#   year = 2018,
-#   survey = "acs5",
-#   output = "wide",
-#   geometry = FALSE
-# )
-# acs_2018_noGEO <- st_drop_geometry(acs_2018)
 # 2012 5-year ACS variables
 UDP_Recode_2012 <- UDP_Recode |> 
   filter(Year == 2012)
-names(UDP_Recode_2012$OriginalCode) <- UDP_Recode_2012$Recode
-UDP_Recode_2012$OriginalCode
-# acs_2012 <- get_acs(
-#   geography = "tract",
-#   state = states,
-#   variables = UDP_Recode_2012$OriginalCode,
-#   year = 2012,
-#   survey = "acs5",
-#   output = "wide",
-#   geometry = FALSE
-# )
-# acs_2012_noGEO <- st_drop_geometry(acs_2012)
+# names(UDP_Recode_2012$OriginalCode) <- UDP_Recode_2012$Recode
+# UDP_Recode_2012$OriginalCode
+acs_2012 <- new.env()
+for (state in states) {
+  get_acs(
+    geography = "tract",
+    state = state,
+    variables = UDP_Recode_2012$OriginalCode,
+    year = 2012,
+    survey = "acs5",
+    output = "wide",
+    geometry = FALSE
+  ) |>   assign(
+    state,
+    value = _,
+    envir = acs_2012)
+}
+
+acs_2012_noGEO <- st_drop_geometry(acs_2012)
+
+
 # Merge 2012 and 2018 (same geometries)
 merged_2012_2018 <- full_join(
   x = acs_2012_noGEO,

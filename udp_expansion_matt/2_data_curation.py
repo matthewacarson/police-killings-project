@@ -12,41 +12,37 @@
 # Import Libraries
 # ==========================================================================
 
-# import census
+import census
 import pandas as pd
-# import numpy as np
+import numpy as np
 import sys
-# from pathlib import Path
-# import geopandas as gpd
-# from shapely.geometry import Point
-# from pyproj import Proj
-# import matplotlib.pyplot as plt
+from pathlib import Path
+import geopandas as gpd
+from shapely.geometry import Point
+from pyproj import Proj
+import matplotlib.pyplot as plt
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 pd.options.display.float_format = '{:.2f}'.format # avoid scientific notation
 
-import os
-os.chdir(home)
-os.getcwd()
-# home = "C:/Users/madou/OneDrive - UCLA IT Services/1)_PS-Honors/police_killings_github/udp_expansion_matt"  # str(Path.home())
-input_path = home+'/data/inputs/'
-output_path = home+'/data/outputs/'
-
+home = str(Path.home())
+input_path = home+'/git/displacement-typologies/data/inputs/'
+output_path = home+'/git/displacement-typologies/data/outputs/'
 
 # ==========================================================================
 # Set API Key + Select City to Run (inputs needed)
 # ==========================================================================
 # Note: Make sure to input your own API key in the * below
 
-# key = '4c26aa6ebbaef54a55d3903212eabbb506ade381'
-# c = census.Census(key)
+key = '4c26aa6ebbaef54a55d3903212eabbb506ade381'
+c = census.Census(key)
 
 # Choose City and run census tracts of interest
 # --------------------------------------------------------------------------
 # For command line operation (e.g. python3 2_data_curation.py Atlanta),
 # uncomment the following (default)
-# city_name = str(sys.argv[1])
+city_name = str(sys.argv[1])
 
 # For testing different cities while working within the code,
 # uncomment the following and rename city as needed

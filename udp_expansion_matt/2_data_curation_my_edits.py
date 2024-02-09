@@ -9,13 +9,13 @@
 # Import Libraries
 # ==========================================================================
 
-import census
+# import census
 import pandas as pd
 import numpy as np
-# import sys
+import sys
 # from pathlib import Path
-import geopandas as gpd
-from shapely.geometry import Point
+# import geopandas as gpd
+# from shapely.geometry import Point
 # from pyproj import Proj
 # import matplotlib.pyplot as plt
 # %whos # List variables in the workspace
@@ -51,14 +51,14 @@ os.getcwd()
 # but rather pulls them as necessary. This will save a lot of space but compromises speed.
 #%% 2 
 # Data files
-dtype_dict = {col: float for col in range(11, 51)}
+# dtype_dict = {col: float for col in range(11, 51)}
 census_90 = pd.read_csv('R13437364_SL140_1990.csv') #, dtype=dtype_dict)
 # census_90 = pd.read_csv('R13437364_SL140_subset.csv', index_col = 0)
-dtype_dict = {col: float for col in range(1, 51)}
+# dtype_dict = {col: float for col in range(1, 51)}
 census_00 = pd.read_csv('merged_2000.csv')#, dtype=dtype_dict)
 
 # Crosswalk files
-dtype_dict = {col: float for col in range(0, 51)}
+# dtype_dict = {col: float for col in range(0, 51)}
 xwalk_90_10 = pd.read_csv(input_path+'crosswalk_1990_2010.csv')#, dtype=dtype_dict)
 xwalk_00_10 = pd.read_csv(input_path+'crosswalk_2000_2010.csv')#, dtype=dtype_dict)
 
@@ -191,9 +191,9 @@ lihtc = pd.read_csv(input_path+'LowIncome_Housing_Tax_Credit_Properties.csv')#, 
 
 warnings = [90, 98, 103, 109, 110, 113, 114]
 lihtc_columns_with_warnings = lihtc.iloc[:, warnings]
-lihtc_columns_with_warnings.iloc[8000, :] # These are all NaN; need to fix
-lihtc.columns[warnings]
-lihtc_columns_with_warnings['NECTA_NM'].dtype
+# lihtc_columns_with_warnings.iloc[8000, :] # These are all NaN; need to fix
+# lihtc.columns[warnings]
+# lihtc_columns_with_warnings['NECTA_NM'].dtype
 def has_multiple_data_types(column):
     unique_data_types = column.apply(type).unique()
     return len(unique_data_types) > 1
@@ -206,11 +206,11 @@ data_type_counts = data_types_series.value_counts()
 
 # Create a DataFrame to display the results
 data_type_info = pd.DataFrame({'Data Type': unique_data_types, 'Count': data_type_counts})
-data_type_counts
+# data_type_counts
 
-lihtc_columns_with_warnings[lihtc_columns_with_warnings['NECTA_NM'].notna()].index
+# lihtc_columns_with_warnings[lihtc_columns_with_warnings['NECTA_NM'].notna()].index
 lihtc_NECTA_NM_unique = lihtc_columns_with_warnings['NECTA_NM'].unique()
-lihtc_columns_with_warnings['NECTA_NM'].value_counts()
+# lihtc_columns_with_warnings['NECTA_NM'].value_counts()
 lihtc_columns_with_warnings['NECTA_NM'].nunique()
 lihtc_columns_with_warnings['NECTA_NM'].isna().sum()
 lihtc_columns_with_warnings['NECTA_NM'].notna().sum()
@@ -267,24 +267,24 @@ census.loc[census['hinc_18'] < 0, 'hinc_18'] = np.nan
 census.loc[census['hinc_00'] < 0, 'hinc_00'] = np.nan
 census.loc[census['hinc_90'] < 0, 'hinc_90'] = np.nan
 
-census['hinc_18'].head(9)
-census['hinc_18'].value_counts()
-census['hinc_18'].nunique()
-census['hinc_18'].isna().sum()
-census['hinc_18'].notna().sum()
+# census['hinc_18'].head(9)
+# census['hinc_18'].value_counts().head()
+# census['hinc_18'].nunique()
+# census['hinc_18'].isna().sum()
+# census['hinc_18'].notna().sum()
 
 
-census['hinc_00'].head(9)
-census['hinc_00'].value_counts()
-census['hinc_00'].nunique()
-census['hinc_00'].isna().sum()
-census['hinc_00'].notna().sum()
+# census['hinc_00'].head(9)
+# census['hinc_00'].value_counts().head()
+# census['hinc_00'].nunique()
+# census['hinc_00'].isna().sum()
+# census['hinc_00'].notna().sum()
 
-census['hinc_90'].head(9)
-census['hinc_90'].value_counts()
-census['hinc_90'].nunique()
-census['hinc_90'].isna().sum()
-census['hinc_90'].notna().sum()
+# census['hinc_90'].head(9)
+# census['hinc_90'].value_counts().head()
+# census['hinc_90'].nunique()
+# census['hinc_90'].isna().sum()
+# census['hinc_90'].notna().sum()
 
 
 census.shape
@@ -306,7 +306,7 @@ rm_hinc_90 = np.nanmedian(census['hinc_90'])
 rm_iinc_18 = np.nanmedian(census['iinc_18'])
 rm_iinc_12 = np.nanmedian(census['iinc_12'])
 #%% 15
-print(rm_hinc_18, rm_hinc_00, rm_hinc_90, rm_iinc_18, rm_iinc_12)
+# print(rm_hinc_18, rm_hinc_00, rm_hinc_90, rm_iinc_18, rm_iinc_12)
 
 ## Income Interpolation Function
 ## This function interpolates population counts using income buckets provided by the Census
@@ -347,147 +347,15 @@ def income_interpolation (census, year, cutoff, mhinc, tot_var, var_suffix, out)
     df = df.drop(columns = prop_col)
     census = census.merge (df[['FIPS', income]], on = 'FIPS')
     return census
-#%% 17
-# Attempting to use chunking instead.
 
-# Define your income_interpolation function to accept a chunk
-def income_interpolation_chunk(chunk, year, cutoff, mhinc, tot_var, var_suffix, out):
-    name = []
-    for c in list(chunk.columns):
-        if (c[0] == var_suffix):
-            if c.split('_')[2] == year:
-                name.append(c)
-    name.append('FIPS')
-    name.append(tot_var)
-    income_cat = chunk[name]
-    income_group = income_cat.drop(columns=['FIPS', tot_var]).columns
-    income_group = income_group.str.split('_')
-    number = []
-    for i in range(0, len(income_group)):
-        number.append(income_group[i][1])
-    column = []
-    for i in number:
-        column.append('prop_'+str(i))
-        income_cat['prop_'+str(i)] = income_cat[var_suffix+'_'+str(i)+'_'+year]/income_cat[tot_var]
-    reg_median_cutoff = cutoff*mhinc
-    cumulative = out+str(int(cutoff*100))+'_cumulative'
-    income = out+str(int(cutoff*100))+'_'+year
-    df = income_cat
-    df[cumulative] = 0
-    df[income] = 0
-    for i in range(0, (len(number)-1)):
-        a = (number[i])
-        b = float(number[i+1])-0.01
-        prop = str(number[i+1])
-        df[cumulative] = df[cumulative]+df['prop_'+a]
-        if (reg_median_cutoff >= int(a)) and (reg_median_cutoff < b):
-            df[income] = ((reg_median_cutoff - int(a))/(b-int(a)))*df['prop_'+prop] + df[cumulative]
-    df = df.drop(columns=[cumulative])
-    prop_col = df.columns[df.columns.str[0:4] == 'prop']
-    df = df.drop(columns=prop_col)
-    chunk = chunk.merge(df[['FIPS', income]], on='FIPS')
-    return chunk
-#%% 18
-# # Define the chunk size (the number of rows to process at a time)
-# chunk_size = 1000  # Adjust this based on your memory constraints
+census = income_interpolation (census, '18', 0.8, rm_hinc_18, 'hh_18', 'I', 'inc')
+census = income_interpolation (census, '18', 1.2, rm_hinc_18, 'hh_18', 'I', 'inc')
+census = income_interpolation (census, '00', 0.8, rm_hinc_00, 'hh_00', 'I', 'inc')
+census = income_interpolation (census, '00', 1.2, rm_hinc_00, 'hh_00', 'I', 'inc')
+census = income_interpolation (census, '90', 0.8, rm_hinc_90, 'hh_00', 'I', 'inc')
 
-# # Create an example DataFrame (replace this with your actual data)
-# data = {'Column1': range(10000)}  # Creating a DataFrame with 10,000 rows
-# census = pd.DataFrame(data)
-
-# # Process the DataFrame in chunks
-# for chunk in pd.read_csv('your_large_file.csv', chunksize=chunk_size):
-#     # Perform income interpolation on each chunk
-#     chunk = income_interpolation_chunk(chunk, '18', 0.8, rm_hinc_18, 'hh_18', 'I', 'inc')
-#     # Append the results to another DataFrame or perform aggregations as needed
-#     # You can also write the results to a file if required
-
-# # Continue processing or aggregating results as needed
-
-
-# del[zillow, zillow_xwalk,lihtc_columns_with_warnings, lihtc_NECTA_NM_unique, data_types_series, hinc_columns]
-
-#%% 19 ERROR is happening here (9/24/2023)
-# MemoryError: Unable to allocate 20.5 TiB for an array with shape (2821109980532,) and data type int64
-import pickle
-#%% 20
-# I'm going to save the 'census' variable at this point to .pkl file to assess how large it is.
-
-with open('census_before_added_cols.pkl', 'wb') as file:
-      
-    # A new file will be created
-    pickle.dump(census, file)
-
-# Saving each output to a pickle file
-# Initally, all these output were added to the 'census' variable but now are saved to a binary pickle file
-#%% 21
-myvar = income_interpolation (census, '18', 0.8, rm_hinc_18, 'hh_18', 'I', 'inc')
-# Open a file and use dump()
-with open('census_added_cols.pkl', 'wb') as file:
-      
-    # A new file will be created
-    pickle.dump(myvar, file)
-del myvar
-#%% 22
-myvar = income_interpolation (census, '18', 1.2, rm_hinc_18, 'hh_18', 'I', 'inc')
-with open('census_added_cols.pkl', 'ab') as file:
-      
-    # A new file will be created
-    pickle.dump(myvar, file)
-del myvar
-#%% 23
-myvar = income_interpolation (census, '00', 0.8, rm_hinc_00, 'hh_00', 'I', 'inc')
-with open('census_added_cols.pkl', 'ab') as file:
-      
-    # A new file will be created
-    pickle.dump(myvar, file)
-del myvar
-#%% 24
-myvar = income_interpolation (census, '00', 1.2, rm_hinc_00, 'hh_00', 'I', 'inc')
-
-# Open a file and use dump()
-with open('census_added_cols.pkl', 'ab') as file:
-	
-	# A new file will be created
-	pickle.dump(myvar, file)
-del myvar
-#%% 25
-myvar = income_interpolation (census, '90', 0.8, rm_hinc_90, 'hh_00', 'I', 'inc')
-
-
-# Open a file and use dump()
-with open('census_added_cols.pkl', 'ab') as file:
-	
-	# A new file will be created
-	pickle.dump(myvar, file)
-del myvar
-#%% 26
 income_col = census.columns[census.columns.str[0:2]=='I_']
-#%% 27
-# Trying to load original 'census' object
-
-# import pickle
-
-# Open the file in binary mode
-with open('census_before_added_cols.pkl', 'rb') as file:
-	
-	# Call load method to deserialze
-	census_old = pickle.load(file)
-
-# print(myvar)
-#%% 28
-# del census
-# Loading pickle file 'census_added_cols.pkl' to see how much RAM it uses.
-# import pickle
-# Open the file in binary mode
-with open('census_added_cols.pkl', 'rb') as file:
-	
-	# Call load method to deserialze
- 	# myvar = pickle.load(file)
-    census = pickle.load(file)
-
-
-# print(myvar)
+census = census.drop(columns = income_col)
 
 #%% 29 STOP HERE FOR NOW!!!!
 # Not sure what to do with the line below yet (9/25/23)

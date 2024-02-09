@@ -16,83 +16,126 @@
 # Import Libraries
 # ==========================================================================
 
-# import census
+import census
 import pandas as pd
 import numpy as np
 import sys
-# from pathlib import Path
-# import geopandas as gpd
-# from shapely.geometry import Point
-# from pyproj import Proj
-# import matplotlib.pyplot as plt
+from pathlib import Path
+import geopandas as gpd
+from shapely.geometry import Point
+from pyproj import Proj
+import matplotlib.pyplot as plt
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 pd.options.display.float_format = '{:.2f}'.format # avoid scientific notation
 
-home = "C:/Users/madou/OneDrive - UCLA IT Services/1)_PS-Honors/police_killings_github/udp_expansion_matt"  # str(Path.home())
-input_path = home+'/data/inputs/'
-output_path = home+'/data/outputs/'
-
-os.chdir(home)
-os.getcwd()
+home = str(Path.home())
+input_path = home+'/git/displacement-typologies/data/inputs/'
+output_path = home+'/git/displacement-typologies/data/outputs/'
 
 # ==========================================================================
 # Set API Key
 # ==========================================================================
 
-# key = '4c26aa6ebbaef54a55d3903212eabbb506ade381' #insert your API key here!
-# c = census.Census(key)
+key = '4c26aa6ebbaef54a55d3903212eabbb506ade381' #insert your API key here!
+c = census.Census(key)
 
+# ==========================================================================
+# Choose Cities
+# ==========================================================================
 
-#%%
-# FIPS codes for all US states
-states = ['01', '02', '04', '05', '06', '08', '09'] + [str(x) for x in range(10, 14)] + \
-         [str(x) for x in range(15, 43)] + [str(x) for x in range(44, 52)] + \
-         [str(x) for x in range(53, 57)]
+# Choose City and Census Tracts of Interest
+# --------------------------------------------------------------------------
+# To get city data, run the following code in the terminal
+# `python data.py <city name>`
+# Example: python data.py Atlanta
 
-# Converting into format usable for API call
-sql_query_list = []
-for i in range(len(states)):
-    sql_query_list.append('state:{} county:*'.format(states[i]))
+city_name = str(sys.argv[1])
+# city_name = 'Atlanta'
+#If reproducing for another city, add elif for
+#that city & desired counties after last line
 
-print(sql_query_list) # Checking what the list looks like
-#%%
-# =================================================================
+if city_name == 'Chicago':
+    state = '17'
+    FIPS = ['031', '043', '089', '093', '097', '111', '197']
+elif city_name == 'Atlanta':
+    state = '13'
+    FIPS = ['057', '063', '067', '089', '097', '113', '121', '135', '151', '247']
+elif city_name == 'Denver':
+    state = '08'
+    FIPS = ['001', '005', '013', '014', '019', '031', '035', '047', '059']
+elif city_name == 'Memphis':
+    state = ['28', '47']
+    FIPS = {'28':['033', '093'], '47': ['047', '157']}
+elif city_name == 'Los Angeles':
+    state = '06'
+    FIPS = ['037', '059', '073']
+elif city_name == 'San Francisco':
+    state = '06'
+    FIPS = ['001', '013', '041', '055', '067', '075', '077', '081', '085', '087', '095', '097', '113']
+elif city_name == 'Seattle':
+    state = '53'
+    FIPS = ['033', '053', '061']
+elif city_name == 'Cleveland':
+    state = '39'
+    FIPS = ['035', '055', '085', '093', '103']
+elif city_name == 'Boston':
+    state = ['25', '33']
+    FIPS = {'25': ['009', '017', '021', '023', '025'], '33': ['015', '017']}
+else:
+    print ('There is not information for the selected city')
+
+if (city_name not in ('Memphis', 'Boston')):
+    sql_query='state:{} county:*'.format(state)
+else:
+    sql_query_1='state:{} county:*'.format(state[0])
+    sql_query_2='state:{} county:*'.format(state[1])
+
+# Create Filter Function
+# --------------------------------------------------------------------------
+# Note - Memphis and Boston is different
+# because they're located in 2 states
+
+def filter_FIPS(df):
+    if (city_name not in ('Memphis', 'Boston')):
+        df = df[df['county'].isin(FIPS)]
+    else:
+        fips_list = []
+        for i in state:
+            county = FIPS[i]
+            a = list((df['FIPS'][(df['county'].isin(county))&(df['state']==i)]))
+            fips_list = fips_list + a
+        df = df[df['FIPS'].isin(fips_list)]
+    return df
+
+# ==========================================================================
 # Download Raw Data
 # ==========================================================================
 
 # Download ACS 2018 5-Year Estimates
 # --------------------------------------------------------------------------
 
-df_vars_18=[
-  'B03002_001E', # Estimate!!Total	HISPANIC OR LATINO ORIGIN BY RACE
-  'B03002_003E', # Estimate!!Total!!Not Hispanic or Latino!!White alone
-  'B19001_001E', # HOUSEHOLD INCOME IN THE PAST 12 MONTHS (IN 2017 INFLATION-ADJUSTED DOLLARS)
-  'B19013_001E', # Estimate!!Median household income in the past 12 months
-  'B25077_001E', # Estimate!!Median value (dollars)
-  'B25077_001M', # MOE:Estimate!!Median value (dollars)
-  'B25064_001E', # Estimate!!Median gross rent
-  'B25064_001M', # MOE:	Estimate!!Median gross rent
-  'B15003_001E', # EDUCATIONAL ATTAINMENT FOR THE POPULATION 25 YEARS AND OVER
-  'B15003_022E',
-  'B15003_023E',
-  'B15003_024E',
-  'B15003_025E',
-  'B25034_001E',
-  'B25034_010E',
-  'B25034_011E',
-  'B25003_002E',
-  'B25003_003E',
-  'B25105_001E',
-  'B06011_001E'
-]
-#%%
-
-# Saving the above list to a csv so I can track the variables in Sheets
-# I added this
-# df_vars_18_df = pd.DataFrame(df_vars_18, columns=['Variable'])
-# df_vars_18_df.to_csv("df_vars_18.csv", index=False)
+df_vars_18=['B03002_001E',
+            'B03002_003E',
+            'B19001_001E',
+            'B19013_001E',
+            'B25077_001E',
+            'B25077_001M',
+            'B25064_001E',
+            'B25064_001M',
+            'B15003_001E',
+            'B15003_022E',
+            'B15003_023E',
+            'B15003_024E',
+            'B15003_025E',
+            'B25034_001E',
+            'B25034_010E',
+            'B25034_011E',
+            'B25003_002E',
+            'B25003_003E',
+            'B25105_001E',
+            'B06011_001E']
 
 # Income categories - see notes
 var_str = 'B19001'
@@ -108,28 +151,34 @@ for i in list(range(25,34))+list(range(36, 45))+list(range(47, 56))+list(range(5
     var_list.append(var_str+'_'+str(i).zfill(3)+'E')
 df_vars_18 = df_vars_18 + var_list
 
-#%%
+
 # Run API query
 # --------------------------------------------------------------------------
-for i in range(len(sql_query_list)):
-    if i == 0:
-        merged_states = c.acs5.get(df_vars_18, geo = {'for': 'tract:*', 'in': sql_query_list[i]}, year=2018)
-        merged_states = pd.DataFrame.from_dict(merged_states)
-        #merged_states['FIPS']=merged_states['state']+merged_states['county']+merged['tract']
-    if i >= 1:
-        state_1 = c.acs5.get(df_vars_18, geo = {'for': 'tract:*', 'in': sql_query_list[i]}, year=2018)
-        state_1 = pd.DataFrame.from_dict(state_1)
-        #state_1['FIPS']=state_1['state']+state_1['county']+state_1['tract']
-        merged_states = state_1.merge(merged_states, on ='FIPS')
-        
+# NOTE: Memphis is located in two states so the query looks different
+# same for Boston
 
-#%%
+if (city_name not in ('Memphis', 'Boston')):
+    var_dict_acs5 = c.acs5.get(df_vars_18, geo = {'for': 'tract:*',
+                                 'in': sql_query}, year=2018)
+else:
+    var_dict_1 = c.acs5.get(df_vars_18, geo = {'for': 'tract:*',
+                                 'in': sql_query_1} , year=2018)
+    var_dict_2 = (c.acs5.get(df_vars_18, geo = {'for': 'tract:*',
+                                 'in': sql_query_2}, year=2018))
+    var_dict_acs5 = var_dict_1+var_dict_2
+
 # Convert and Rename Variables
 # --------------------------------------------------------------------------
 
+### Converts variables into dataframe and filters only FIPS of interest
+
+df_vars_18 = pd.DataFrame.from_dict(var_dict_acs5)
+df_vars_18['FIPS']=df_vars_18['state']+df_vars_18['county']+df_vars_18['tract']
+df_vars_18 = filter_FIPS(df_vars_18)
+
 ### Renames variables
 
-merged_states = merged_states.rename(columns = {'B03002_001E':'pop_18',
+df_vars_18 = df_vars_18.rename(columns = {'B03002_001E':'pop_18',
                                           'B03002_003E':'white_18',
                                           'B19001_001E':'hh_18',
                                           'B19013_001E':'hinc_18',
@@ -201,7 +250,7 @@ merged_states = merged_states.rename(columns = {'B03002_001E':'pop_18',
                                           'B19001_015E':'I_150000_18',
                                           'B19001_016E':'I_200000_18',
                                           'B19001_017E':'I_201000_18'})
-#%%
+
 # Download ACS 2012 5-Year Estimates
 # --------------------------------------------------------------------------
 # Note: If additional cities are added, make sure to change create_lag_vars.r
@@ -251,25 +300,20 @@ df_vars_12=['B25077_001E',
             'B07010_066E',
             'B06011_001E']
 
-
-#%%
 # Run API query
 # --------------------------------------------------------------------------
 # NOTE: Memphis is located in two states so the query looks different
-# Fix the code for 2012 below!! It's not ready
-# =================================================
-for i in range(len(sql_query_list)):
-    if i == 0:
-        merged_states = c.acs5.get(df_vars_18, geo = {'for': 'tract:*', 'in': sql_query_list[i]}, year=2018)
-        merged_states = pd.DataFrame.from_dict(merged_states)
-        #merged_states['FIPS']=merged_states['state']+merged_states['county']+merged['tract']
-    if i >= 1:
-        state_1 = c.acs5.get(df_vars_18, geo = {'for': 'tract:*', 'in': sql_query_list[i]}, year=2018)
-        state_1 = pd.DataFrame.from_dict(state_1)
-        #state_1['FIPS']=state_1['state']+state_1['county']+state_1['tract']
-        merged_states = state_1.merge(merged_states, on ='FIPS')
 
-#%%
+if (city_name not in ('Memphis', 'Boston')):
+    var_dict_acs5 = c.acs5.get(df_vars_12, geo = {'for': 'tract:*',
+                                 'in': sql_query}, year=2012)
+else:
+    var_dict_1 = c.acs5.get(df_vars_12, geo = {'for': 'tract:*',
+                                 'in': sql_query_1} , year=2012)
+    var_dict_2 = (c.acs5.get(df_vars_12, geo = {'for': 'tract:*',
+                                 'in': sql_query_2}, year=2012))
+    var_dict_acs5 = var_dict_1+var_dict_2
+
 # Convert and Rename Variabls
 # --------------------------------------------------------------------------
 
@@ -279,7 +323,6 @@ df_vars_12 = pd.DataFrame.from_dict(var_dict_acs5)
 df_vars_12['FIPS']=df_vars_12['state']+df_vars_12['county']+df_vars_12['tract']
 df_vars_12 = filter_FIPS(df_vars_12)
 
-#%%
 ### Renames variables
 
 df_vars_12 = df_vars_12.rename(columns = {'B25077_001E':'mhval_12',
@@ -323,12 +366,6 @@ df_vars_12 = df_vars_12.rename(columns = {'B25077_001E':'mhval_12',
                                           'B07010_065E':'mov_fa_75000_12',
                                           'B07010_066E':'mov_fa_76000_more_12',
                                           'B06011_001E':'iinc_12'})
-#%%
-# Saving the above list to a csv so I can track the variables in Sheets
-# I added this
-# df_vars_12_df = pd.DataFrame(df_vars_12, columns=['Variable'])
-
-# df_vars_12_df.to_csv("df_vars_12.csv", index=False)
 
 ### Decennial Census 2000 Variables
 
@@ -359,59 +396,52 @@ for i in range (2, 18):
 
 var_sf3 = var_sf3 + var_list
 
-#%%
 # Run API query
 # --------------------------------------------------------------------------
 # NOTE: on certain days, Census API may argue about too many queries and this section
 # may get hung up.
 
 # SF1
-# Make sure to modify code below so that it is setup for sf1
-for i in range(len(sql_query_list)):
-    if i == 0:
-        sf1_merged_states_2000 = c.sf1.get(var_sf1, geo = {'for': 'tract:*',
-                                     'in': sql_query_list[i]}, year=2000)
-        sf1_merged_states_2000 = pd.DataFrame.from_dict(sf1_merged_states_2000)
-    if i >= 1:
-        state_1 = c.sf1.get(var_sf1, geo = {'for': 'tract:*',
-                                     'in': sql_query_list[i]}, year=2000)
-        state_1 = pd.DataFrame.from_dict(state_1)
-        sf1_merged_states_2000 = pd.concat([sf1_merged_states_2000, state_1])#, on ='FIPS')
-        del state_1
+if (city_name not in ('Memphis', 'Boston')):
+    var_dict_sf1 = c.sf1.get(var_sf1, geo = {'for': 'tract:*',
+                                 'in': sql_query}, year=2000)
+else:
+    var_dict_1 = c.sf1.get(var_sf1, geo = {'for': 'tract:*',
+                                 'in': sql_query_1}, year=2000)
+    var_dict_2 = (c.sf1.get(var_sf1, geo = {'for': 'tract:*',
+                                 'in': sql_query_2}, year=2000))
+    var_dict_sf1 = var_dict_1+var_dict_2
 
-sf1_merged_states_2000['FIPS']=sf1_merged_states_2000['state']+sf1_merged_states_2000['county']+sf1_merged_states_2000['tract']
-#%%
-sf1_merged_states_2000 = sf1_merged_states_2000.rename(columns = {'P004001':'pop_00',
-                                                                'P004005':'white_00',
-                                                                'H004001':'hu_00',
-                                                                'H004002':'ohu_00',
-                                                                'H004003':'rhu_00'})
+# SF3
+if (city_name not in ('Memphis', 'Boston')):
+    var_dict_sf3 = c.sf3.get(var_sf3, geo = {'for': 'tract:*',
+                                 'in': sql_query}, year=2000)
+else:
+    var_dict_1 = c.sf3.get(var_sf3, geo = {'for': 'tract:*',
+                                 'in': sql_query_1}, year=2000)
+    var_dict_2 = (c.sf3.get(var_sf3, geo = {'for': 'tract:*',
+                                 'in': sql_query_2}, year=2000))
+    var_dict_sf3 = var_dict_1+var_dict_2
 
-#%%
-# Saving the above list to a csv so I can track the variables in Sheets
-# I added this
-sf1_merged_states_2000.to_csv("sf1_merged_states_2000.csv", index=False)
-
-#%%
-# SF3: This is not working for some reasion. The census library does not include sf3 according to the website.
-for i in range(len(sql_query_list)):
-    if i == 0:
-        sf3_merged_states_2000 = c.sf3.get(var_sf3, geo = {'for': 'tract:*',
-                                     'in': sql_query_list[i]}, year=2000)
-        sf3_merged_states_2000 = pd.DataFrame.from_dict(sf3_merged_states_2000)
-    if i >= 1:
-        state_1 = c.sf3.get(var_sf3, geo = {'for': 'tract:*',
-                                     'in': sql_query_list[i]}, year=2000)
-        state_1 = pd.DataFrame.from_dict(state_1)
-        sf3_merged_states_2000 = pd.concat([sf3_merged_states_2000, state_1])#, on ='FIPS')
-        del state_1
-
-# c.sf
-#%%    
 # Convert and Rename Variables
 # --------------------------------------------------------------------------
+
+### Converts variables into dataframe and filters only FIPS of interest
+
+df_vars_sf1 = pd.DataFrame.from_dict(var_dict_sf1)
+df_vars_sf3 = pd.DataFrame.from_dict(var_dict_sf3)
+df_vars_sf1['FIPS']=df_vars_sf1['state']+df_vars_sf1['county']+df_vars_sf1['tract']
+df_vars_sf3['FIPS']=df_vars_sf3['state']+df_vars_sf3['county']+df_vars_sf3['tract']
+df_vars_sf1 = filter_FIPS(df_vars_sf1)
+df_vars_sf3 = filter_FIPS(df_vars_sf3)
+
 ### Renames variables
 
+df_vars_sf1 = df_vars_sf1.rename(columns = {'P004001':'pop_00',
+                                            'P004005':'white_00',
+                                            'H004001':'hu_00',
+                                            'H004002':'ohu_00',
+                                            'H004003':'rhu_00'})
 
 df_vars_sf3 = df_vars_sf3.rename(columns = {'P037001':'total_25_00',
                                             'P037015':'male_25_col_bd_00',
