@@ -236,7 +236,7 @@ pub_hous = pd.read_csv(input_path+'Public_Housing_Buildings.csv.gz')
 # Changed the data frame names below because I did not filter regions of interest. I used all FIPS codes.
 census = census_2012_2018.merge(census_00_xwalked, on = 'FIPS', how = 'outer').merge(census_90_xwalked, on = 'FIPS', how = 'outer')
 
-del [census_00, census_2012_2018, census_00_xwalked, census_90, census_90_xwalked, pub_hous, pums, pums_o, pums_r, rail, university, xwalk_00_10, xwalk_90_10, xwalk_fips_base, xwalk_fips_horizon, lihtc, hospitals]
+# del [census_00, census_2012_2018, census_00_xwalked, census_90, census_90_xwalked, pub_hous, pums, pums_o, pums_r, rail, university, xwalk_00_10, xwalk_90_10, xwalk_fips_base, xwalk_fips_horizon, lihtc, hospitals]
 
 ## CPI indexing values
 ## This is based on the yearly CPI average
@@ -594,21 +594,21 @@ len(census)
 # Housing Affordability Variables
 # ==========================================================================
 
-def filter_PUMS(df, FIPS):
-    if (city_name not in ('Memphis', 'Boston')):
-        FIPS = [int(x) for x in FIPS]
-        df = df[(df['STATEA'] == int(state))&(df['COUNTYA'].isin(FIPS))].reset_index(drop = True)
-    else:
-        fips_list = []
-        for i in state:
-            county = FIPS[i]
-            county = [int(x) for x in county]
-            a = list((df['GISJOIN'][(pums['STATEA']==int(i))&(df['COUNTYA'].isin(county))]))
-            fips_list += a
-            df = df[df['GISJOIN'].isin(fips_list)].reset_index(drop = True)
-    return df
-
-pums = filter_PUMS(pums, FIPS)
+# def filter_PUMS(df, FIPS):
+#     if (city_name not in ('Memphis', 'Boston')):
+#         FIPS = [int(x) for x in FIPS]
+#         df = df[(df['STATEA'] == int(state))&(df['COUNTYA'].isin(FIPS))].reset_index(drop = True)
+#     else:
+#         fips_list = []
+#         for i in state:
+#             county = FIPS[i]
+#             county = [int(x) for x in county]
+#             a = list((df['GISJOIN'][(pums['STATEA']==int(i))&(df['COUNTYA'].isin(county))]))
+#             fips_list += a
+#             df = df[df['GISJOIN'].isin(fips_list)].reset_index(drop = True)
+#     return df
+# 
+# pums = filter_PUMS(pums, FIPS)
 pums['FIPS'] = ((pums['STATEA'].astype(str).str.zfill(2))+
                 (pums['COUNTYA'].astype(str).str.zfill(3))+
                 (pums['TRACTA'].astype(str).str.zfill(6)))
@@ -797,17 +797,17 @@ len(census)
 # Load Zillow Data
 # --------------------------------------------------------------------------
 
-def filter_ZILLOW(df, FIPS):
-    if (city_name not in ('Memphis', 'Boston')):
-        FIPS_pre = [state+county for county in FIPS]
-        df = df[(df['FIPS'].astype(str).str.zfill(11).str[:5].isin(FIPS_pre))].reset_index(drop = True)
-    else:
-        fips_list = []
-        for i in state:
-            county = FIPS[str(i)]
-            FIPS_pre = [str(i)+county for county in county]
-        df = df[(df['FIPS'].astype(str).str.zfill(11).str[:5].isin(FIPS_pre))].reset_index(drop = True)
-    return df
+# def filter_ZILLOW(df, FIPS):
+#     if (city_name not in ('Memphis', 'Boston')):
+#         FIPS_pre = [state+county for county in FIPS]
+#         df = df[(df['FIPS'].astype(str).str.zfill(11).str[:5].isin(FIPS_pre))].reset_index(drop = True)
+#     else:
+#         fips_list = []
+#         for i in state:
+#             county = FIPS[str(i)]
+#             FIPS_pre = [str(i)+county for county in county]
+#         df = df[(df['FIPS'].astype(str).str.zfill(11).str[:5].isin(FIPS_pre))].reset_index(drop = True)
+#     return df
 
 ## Import Zillow data
 zillow = pd.read_csv(input_path+'Zip_Zhvi_AllHomes.csv', encoding = "ISO-8859-1")
@@ -819,12 +819,12 @@ zillow_xwalk = pd.read_csv(input_path+'TRACT_ZIP_032015.csv')
 ## Compute change over time
 zillow['ch_zillow_12_18'] = zillow['2018-01'] - zillow['2012-01']*CPI_12_18
 zillow['per_ch_zillow_12_18'] = zillow['ch_zillow_12_18']/zillow['2012-01']
-zillow = zillow[zillow['State'].isin(state_init)].reset_index(drop = True)
+# zillow = zillow[zillow['State'].isin(state_init)].reset_index(drop = True)
 zillow = zillow_xwalk[['TRACT', 'ZIP', 'RES_RATIO']].merge(zillow[['RegionName', 'ch_zillow_12_18', 'per_ch_zillow_12_18']], left_on = 'ZIP', right_on = 'RegionName', how = "outer")
 zillow = zillow.rename(columns = {'TRACT':'FIPS'})
 
 # Filter only data of interest
-zillow = filter_ZILLOW(zillow, FIPS)
+# zillow = filter_ZILLOW(zillow, FIPS)
 
 ## Keep only data for largest xwalk value, based on residential ratio
 zillow = zillow.sort_values(by = ['FIPS', 'RES_RATIO'], ascending = False).groupby('FIPS').first().reset_index(drop = False)
