@@ -10,3 +10,4 @@ Bitmap.RData
 *.Ruserdata
 *.spydata
 *.csv
+*.Rproj
