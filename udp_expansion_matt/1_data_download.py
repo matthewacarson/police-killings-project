@@ -16,30 +16,33 @@
 # Import Libraries
 # ==========================================================================
 
-import census
+# import census
 import pandas as pd
 import numpy as np
 import sys
-from pathlib import Path
-import geopandas as gpd
-from shapely.geometry import Point
-from pyproj import Proj
-import matplotlib.pyplot as plt
+# from pathlib import Path
+# import geopandas as gpd
+# from shapely.geometry import Point
+# from pyproj import Proj
+# import matplotlib.pyplot as plt
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 pd.options.display.float_format = '{:.2f}'.format # avoid scientific notation
 
-home = "C:/Users/madou/OneDrive - UCLA IT Services/1)_2023_Summer/PS-Honors/Summer23 R Code and Plots/UDP_forks/"  # str(Path.home())
-input_path = home+'/displacement-typologies/data/inputs/'
-output_path = home+'/displacement-typologies/data/outputs/'
+home = "C:/Users/madou/OneDrive - UCLA IT Services/1)_PS-Honors/police_killings_github/udp_expansion_matt"  # str(Path.home())
+input_path = home+'/data/inputs/'
+output_path = home+'/data/outputs/'
+
+os.chdir(home)
+os.getcwd()
 
 # ==========================================================================
 # Set API Key
 # ==========================================================================
 
-key = '4c26aa6ebbaef54a55d3903212eabbb506ade381' #insert your API key here!
-c = census.Census(key)
+# key = '4c26aa6ebbaef54a55d3903212eabbb506ade381' #insert your API key here!
+# c = census.Census(key)
 
 
 #%%

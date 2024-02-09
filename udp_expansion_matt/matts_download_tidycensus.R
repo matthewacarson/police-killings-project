@@ -62,15 +62,15 @@ UDP_Recode_2000_sf1
 
 # download 2000 sf1 data
 
-sf1_2000 <- get_decennial(
-  geography = "tract",
-  state = states,
-  variables = UDP_Recode_2000_sf1$OriginalCode,
-  sumfile = unique(UDP_Recode_2000_sf1$sumfile),
-  year = unique(UDP_Recode_2000_sf1$Year),
-  output = "wide",
-  geometry = FALSE
-)
+# sf1_2000 <- get_decennial(
+#   geography = "tract",
+#   state = states,
+#   variables = UDP_Recode_2000_sf1$OriginalCode,
+#   sumfile = unique(UDP_Recode_2000_sf1$sumfile),
+#   year = unique(UDP_Recode_2000_sf1$Year),
+#   output = "wide",
+#   geometry = FALSE
+# )
 
 # sf1_2000_noGEO <- st_drop_geometry(sf1_2000)
 
@@ -82,15 +82,15 @@ tail(UDP_Recode_2000_sf3)
 
 # Download sf3; year 2000
 
-sf3_2000 <- get_decennial(
-  geography = "tract",
-  state = states,
-  variables = UDP_Recode_2000_sf3$OriginalCode,
-  sumfile = unique(UDP_Recode_2000_sf3$sumfile),
-  year = unique(UDP_Recode_2000_sf3$Year),
-  output = "wide",
-  geometry = FALSE
-)
+# sf3_2000 <- get_decennial(
+#   geography = "tract",
+#   state = states,
+#   variables = UDP_Recode_2000_sf3$OriginalCode,
+#   sumfile = unique(UDP_Recode_2000_sf3$sumfile),
+#   year = unique(UDP_Recode_2000_sf3$Year),
+#   output = "wide",
+#   geometry = FALSE
+# )
 
 # sf3_2000_noGEO <- st_drop_geometry(sf3_2000)
 
