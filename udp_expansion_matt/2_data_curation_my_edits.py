@@ -13,6 +13,7 @@
 import pandas as pd
 import numpy as np
 import sys
+import os
 # from pathlib import Path
 # import geopandas as gpd
 # from shapely.geometry import Point
@@ -194,26 +195,26 @@ lihtc_columns_with_warnings = lihtc.iloc[:, warnings]
 # lihtc_columns_with_warnings.iloc[8000, :] # These are all NaN; need to fix
 # lihtc.columns[warnings]
 # lihtc_columns_with_warnings['NECTA_NM'].dtype
-def has_multiple_data_types(column):
-    unique_data_types = column.apply(type).unique()
-    return len(unique_data_types) > 1
-has_multiple_data_types(lihtc_columns_with_warnings['NECTA_NM'])
-
-data_types_series = lihtc_columns_with_warnings['NECTA_NM'].apply(type)
-# Get unique data types and their incidence
-unique_data_types = data_types_series.unique()
-data_type_counts = data_types_series.value_counts()
-
-# Create a DataFrame to display the results
-data_type_info = pd.DataFrame({'Data Type': unique_data_types, 'Count': data_type_counts})
-# data_type_counts
-
-# lihtc_columns_with_warnings[lihtc_columns_with_warnings['NECTA_NM'].notna()].index
-lihtc_NECTA_NM_unique = lihtc_columns_with_warnings['NECTA_NM'].unique()
-# lihtc_columns_with_warnings['NECTA_NM'].value_counts()
-lihtc_columns_with_warnings['NECTA_NM'].nunique()
-lihtc_columns_with_warnings['NECTA_NM'].isna().sum()
-lihtc_columns_with_warnings['NECTA_NM'].notna().sum()
+# def has_multiple_data_types(column):
+#     unique_data_types = column.apply(type).unique()
+#     return len(unique_data_types) > 1
+# has_multiple_data_types(lihtc_columns_with_warnings['NECTA_NM'])
+# 
+# data_types_series = lihtc_columns_with_warnings['NECTA_NM'].apply(type)
+# # Get unique data types and their incidence
+# unique_data_types = data_types_series.unique()
+# data_type_counts = data_types_series.value_counts()
+# 
+# # Create a DataFrame to display the results
+# data_type_info = pd.DataFrame({'Data Type': unique_data_types, 'Count': data_type_counts})
+# # data_type_counts
+# 
+# # lihtc_columns_with_warnings[lihtc_columns_with_warnings['NECTA_NM'].notna()].index
+# lihtc_NECTA_NM_unique = lihtc_columns_with_warnings['NECTA_NM'].unique()
+# # lihtc_columns_with_warnings['NECTA_NM'].value_counts()
+# lihtc_columns_with_warnings['NECTA_NM'].nunique()
+# lihtc_columns_with_warnings['NECTA_NM'].isna().sum()
+# lihtc_columns_with_warnings['NECTA_NM'].notna().sum()
 ## Public housing
 pub_hous = pd.read_csv(input_path+'Public_Housing_Buildings.csv.gz')
 #%% 11
@@ -423,16 +424,8 @@ def income_categories (df, year, mhinc, hinc):
     df.loc[df['hinc_'+year]==0, 'high_pdmt_medhhinc_'+year] = np.nan
     df.loc[df['hinc_'+year]==0, 'inc_cat_medhhinc_'+year] = np.nan
     return census
-#%% 32
 
-# Are some columns missing?
-census_column_names = pd.DataFrame({
-    'Census_Columns': census.columns.tolist() + [''] * (len(census_old.columns) - len(census.columns)),
-    'Census_Old_Columns': census_old.columns.tolist() + [''] * (len(census.columns) - len(census_old.columns))
-})
 
-# I'm gonna have to figure out what to do here since I saved all the outputs above using pickle
-# KeyError: 'inc120_18'
 census = income_categories(census, '18', rm_hinc_18, 'hinc_18')
 census = income_categories(census, '00', rm_hinc_00, 'hinc_00')
 

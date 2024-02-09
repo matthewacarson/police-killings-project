@@ -1,0 +1,11 @@
+2/9/2023
+Working through issues with 2_data_curation_my_edits.py
+- encountering issues at line 431:
+
+  >>> census_column_names = pd.DataFrame({
+...     'Census_Columns': census.columns.tolist() + [''] * (len(census_old.columns) - len(census.columns)),
+...     'Census_Old_Columns': census_old.columns.tolist() + [''] * (len(census.columns) - len(census_old.columns))
+... })
+Traceback (most recent call last):
+  File "<string>", line 2, in <module>
+NameError: name 'census_old' is not defined. Did you mean: 'census_90'?
