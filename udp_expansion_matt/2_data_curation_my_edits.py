@@ -1,9 +1,6 @@
-# ==========================================================================
-# ==========================================================================
+#%% 1
 # ==========================================================================
 # DATA CURATION
-# ==========================================================================
-# ==========================================================================
 # ==========================================================================
 # Note: (input needed) in title bars indicates that in order to bring in new city information
 # users must input new code in the section
@@ -12,28 +9,26 @@
 # Import Libraries
 # ==========================================================================
 
-# import census
+import census
 import pandas as pd
-# import numpy as np
-import sys
+import numpy as np
+# import sys
 # from pathlib import Path
-# import geopandas as gpd
-# from shapely.geometry import Point
+import geopandas as gpd
+from shapely.geometry import Point
 # from pyproj import Proj
 # import matplotlib.pyplot as plt
-
+# %whos # List variables in the workspace
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 pd.options.display.float_format = '{:.2f}'.format # avoid scientific notation
 
-import os
-os.chdir(home)
-os.getcwd()
-# home = "C:/Users/madou/OneDrive - UCLA IT Services/1)_PS-Honors/police_killings_github/udp_expansion_matt"  # str(Path.home())
+home = "C:/Users/madou/OneDrive - UCLA IT Services/1)_PS-Honors/police_killings_github/udp_expansion_matt"  # str(Path.home())
 input_path = home+'/data/inputs/'
 output_path = home+'/data/outputs/'
 
-
+os.chdir(home)
+os.getcwd()
 # ==========================================================================
 # Set API Key + Select City to Run (inputs needed)
 # ==========================================================================
@@ -42,22 +37,9 @@ output_path = home+'/data/outputs/'
 # key = '4c26aa6ebbaef54a55d3903212eabbb506ade381'
 # c = census.Census(key)
 
-# Choose City and run census tracts of interest
-# --------------------------------------------------------------------------
-# For command line operation (e.g. python3 2_data_curation.py Atlanta),
-# uncomment the following (default)
-# city_name = str(sys.argv[1])
 
-# For testing different cities while working within the code,
-# uncomment the following and rename city as needed
-# city_name = "Atlanta"
-
-# ==========================================================================
-# ==========================================================================
 # ==========================================================================
 # Crosswalk Files
-# ==========================================================================
-# ==========================================================================
 # ==========================================================================
 
 # ==========================================================================
@@ -67,72 +49,24 @@ output_path = home+'/data/outputs/'
 # UDP suggests downloading [Google's Drive File Stream](https://support.google.com/a/answer/7491144?utm_medium=et&utm_source=aboutdrive&utm_content=getstarted&utm_campaign=en_us)
 # app, which doesn't download all Google Drive items to your computer
 # but rather pulls them as necessary. This will save a lot of space but compromises speed.
-
+#%% 2 
 # Data files
-census_90 = pd.read_csv(output_path+'downloads/'+city_name.replace(" ", "")+'census_90_2018.csv', index_col = 0)
-census_00 = pd.read_csv(output_path+'downloads/'+city_name.replace(" ", "")+'census_00_2018.csv', index_col = 0)
+dtype_dict = {col: float for col in range(11, 51)}
+census_90 = pd.read_csv('R13437364_SL140_1990.csv') #, dtype=dtype_dict)
+# census_90 = pd.read_csv('R13437364_SL140_subset.csv', index_col = 0)
+dtype_dict = {col: float for col in range(1, 51)}
+census_00 = pd.read_csv('merged_2000.csv')#, dtype=dtype_dict)
 
 # Crosswalk files
-xwalk_90_10 = pd.read_csv(input_path+'crosswalk_1990_2010.csv')
-xwalk_00_10 = pd.read_csv(input_path+'crosswalk_2000_2010.csv')
-
-# ==========================================================================
-# Choose Census Tract (inputs needed)
-# ==========================================================================
-# Note: In order to add your city below, add a 'elif' statement similar
-# to those already written
-
-if city_name == 'Chicago':
-    state = '17'
-    FIPS = ['031', '043', '089', '093', '097', '111', '197'] # county fips
-elif city_name == 'Atlanta':
-    state = '13'
-    FIPS = ['057', '063', '067', '089', '097', '113', '121', '135', '151', '247']
-elif city_name == 'Denver':
-    state = '08'
-    FIPS = ['001', '005', '013', '014', '019', '031', '035', '047', '059']
-elif city_name == 'Memphis':
-    state = ['28', '47']
-    FIPS = {'28':['033', '093'], '47': ['047', '157']}
-elif city_name == 'Los Angeles':
-    state = '06'
-    FIPS = ['037', '059', '073']
-elif city_name == 'San Francisco':
-    state = '06'
-    FIPS = ['001', '013', '041', '055', '067', '075', '077', '081', '085', '087', '095', '097', '113']
-elif city_name == 'Seattle':
-    state = '53'
-    FIPS = ['033', '053', '061']
-elif city_name == 'Cleveland':
-    state = '39'
-    FIPS = ['035', '055', '085', '093', '103']
-elif city_name == 'Boston':
-    state = ['25', '33']
-    FIPS = {'25': ['009', '017', '021', '023', '025'], '33': ['015', '017']}
-else:
-    print ('There is not information for the selected city')
+dtype_dict = {col: float for col in range(0, 51)}
+xwalk_90_10 = pd.read_csv(input_path+'crosswalk_1990_2010.csv')#, dtype=dtype_dict)
+xwalk_00_10 = pd.read_csv(input_path+'crosswalk_2000_2010.csv')#, dtype=dtype_dict)
 
 # ==========================================================================
 # Create Crosswalk Functions / Files
 # ==========================================================================
 
-# Create a Filter Function
-# --------------------------------------------------------------------------
-# Note - Memphis and Boston are different bc they are located in 2 states
-
-def filter_FIPS(df):
-    if (city_name not in ('Memphis', 'Boston')):
-        df = df[df['county'].isin(FIPS)].reset_index(drop = True)
-    else:
-        fips_list = []
-        for i in state:
-            county = FIPS[i]
-            a = list((df['FIPS'][(df['county'].isin(county))&(df['state']==i)]))
-            fips_list = fips_list + a
-        df = df[df['FIPS'].isin(fips_list)].reset_index(drop = True)
-    return df
-
-
+#%% 3
 def crosswalk_files (df, xwalk, counts, medians, df_fips_base, xwalk_fips_base, xwalk_fips_horizon):
     # merge dataframe with xwalk file
     df_merge = df.merge(xwalk[['weight', xwalk_fips_base, xwalk_fips_horizon]], left_on = df_fips_base, right_on = xwalk_fips_base, how='left')
@@ -154,31 +88,32 @@ def crosswalk_files (df, xwalk, counts, medians, df_fips_base, xwalk_fips_base, 
     df = df.drop(columns = ['weight'])
     return df
 
+#%% 4
 # Crosswalking
 # --------------------------------------------------------------------------
-
+# 9/11: I am running into some problems with multiplying non-integers (see error message below)
+# TypeError: can't multiply sequence by non-int of type 'float'
+# Use .dtypes to check the data storage types
+# Check lists with type(list_name)
 ## 1990 Census Data
 
-counts = census_90.columns.drop(['county', 'state', 'tract', 'mrent_90', 'mhval_90', 'hinc_90', 'FIPS'])
+counts = census_90.columns.drop(['mrent_90', 'mhval_90', 'hinc_90', "NAME", "QName", "SUMLEV", "GEOCOMP", "REGION", "DIVISION", "FIPS", "state", "county", "tract"])
 medians = ['mrent_90', 'mhval_90', 'hinc_90']
 df_fips_base = 'FIPS'
 xwalk_fips_base = 'trtid90'
 xwalk_fips_horizon = 'trtid10'
 census_90_xwalked = crosswalk_files (census_90, xwalk_90_10,  counts, medians, df_fips_base, xwalk_fips_base, xwalk_fips_horizon )
-
+#%% 5
 ## 2000 Census Data
 
-counts = census_00.columns.drop(['county', 'state', 'tract', 'mrent_00', 'mhval_00', 'hinc_00', 'FIPS'])
+counts = census_00.columns.drop(['mrent_00', 'mhval_00', 'hinc_00', 'NAME', 'FIPS'])
 medians = ['mrent_00', 'mhval_00', 'hinc_00']
 df_fips_base = 'FIPS'
 xwalk_fips_base = 'trtid00'
 xwalk_fips_horizon = 'trtid10'
 census_00_xwalked = crosswalk_files (census_00, xwalk_00_10,  counts, medians, df_fips_base, xwalk_fips_base, xwalk_fips_horizon )
+#%% 6
 
-## Filters and exports data
-
-census_90_filtered = filter_FIPS(census_90_xwalked)
-census_00_filtered = filter_FIPS(census_00_xwalked)
 
 
 # ==========================================================================
@@ -198,17 +133,22 @@ census_00_filtered = filter_FIPS(census_00_xwalked)
 # You will need to redesignate this path if you have a Windows
 # output_path = output_path
 
-shp_folder = input_path+'shp/'+city_name.replace(" ", "")+'/'
-data_1990 = census_90_filtered
-data_2000 = census_00_filtered
-acs_data = pd.read_csv(output_path+'downloads/'+city_name.replace(" ", "")+'census_summ_2018.csv', index_col = 0)
-acs_data = acs_data.drop(columns = ['county_y', 'state_y', 'tract_y'])
-acs_data = acs_data.rename(columns = {'county_x': 'county',
-                                    'state_x': 'state',
-                                    'tract_x': 'tract'})
+# ################################################################ #
+# I named the merged 2012 and 2018 acs files to merged_2012_2018.csv
+# The data below was downloaded using matts_download_tidycensus.R
+# ################################################################ #
 
+census_2012_2018 = pd.read_csv('merged_2012_2018.csv')#, index_col = 0)
+# census_2012_2018 = census_2012_2018.drop(columns = ['county_y', 'state_y', 'tract_y'])
+#%% 7
+census_2012_2018 = census_2012_2018.rename(columns = {'county_x': 'county',
+                                    'state_x': 'state',
+                                    'tract_x': 'tract',
+                                    'GEOID': 'FIPS'}) # 9/11/23: I added this because tidycensus downloaded as GEOID
+#%% 8
 # Bring in PUMS data
 # --------------------------------------------------------------------------
+
 
 pums_r = pd.read_csv(input_path+'nhgis0002_ds233_20175_2017_tract.csv', encoding = "ISO-8859-1")
 pums_o = pd.read_csv(input_path+'nhgis0002_ds234_20175_2017_tract.csv', encoding = "ISO-8859-1")
@@ -221,7 +161,7 @@ pums = pums.rename(columns = {'YEAR_x':'YEAR',
                                'TRACTA_x':'TRACTA',
                                'NAME_E_x':'NAME_E'})
 pums = pums.dropna(axis = 1)
-
+#%% 9
 # Bring in Zillow, Rail, Hospital, Unversity, LIHTC, PH dat
 # --------------------------------------------------------------------------
 # Note: Make sure your city/county is included in these overlay files
@@ -229,7 +169,13 @@ pums = pums.dropna(axis = 1)
 ## Zillow data
 zillow = pd.read_csv(input_path+'Zip_Zhvi_AllHomes.csv', encoding = "ISO-8859-1")
 zillow_xwalk = pd.read_csv(input_path+'TRACT_ZIP_032015.csv')
-
+#%% 10
+# Warnings:
+    # runcell('10', 'C:/Users/madou/OneDrive - UCLA IT Services/1)_2023_Summer/PS-Honors/Summer23 R Code and Plots/UDP_forks/displacement-typologies/code/udp-expansion-matt/2_data_curation.py')
+    # c:\users\madou\onedrive - ucla it services\1)_2023_summer\ps-honors\summer23 r code and plots\udp_forks\displacement-typologies\code\udp-expansion-matt\2_data_curation.py:181: DtypeWarning: Columns (90,98,103,109,110,113,114) have mixed types. Specify dtype option on import or set low_memory=False.
+    #   lihtc = pd.read_csv(input_path+'LowIncome_Housing_Tax_Credit_Properties.csv')#, na_values=[''])
+    # c:\users\madou\onedrive - ucla it services\1)_2023_summer\ps-honors\summer23 r code and plots\udp_forks\displacement-typologies\code\udp-expansion-matt\2_data_curation.py:209: DtypeWarning: Columns (99,104,109) have mixed types. Specify dtype option on import or set low_memory=False.
+    #   pub_hous = pd.read_csv(input_path+'Public_Housing_Buildings.csv.gz')
 ## Rail data
 rail = pd.read_csv(input_path+'tod_database_download.csv')
 
@@ -240,10 +186,38 @@ hospitals = pd.read_csv(input_path+'Hospitals.csv')
 university = pd.read_csv(input_path+'university_HD2016.csv')
 
 ## LIHTC
-lihtc = pd.read_csv(input_path+'LowIncome_Housing_Tax_Credit_Properties.csv')
+# dtype_dict = {col: float for col in range(0, 51)}
+lihtc = pd.read_csv(input_path+'LowIncome_Housing_Tax_Credit_Properties.csv')#, na_values=[''])
 
+warnings = [90, 98, 103, 109, 110, 113, 114]
+lihtc_columns_with_warnings = lihtc.iloc[:, warnings]
+lihtc_columns_with_warnings.iloc[8000, :] # These are all NaN; need to fix
+lihtc.columns[warnings]
+lihtc_columns_with_warnings['NECTA_NM'].dtype
+def has_multiple_data_types(column):
+    unique_data_types = column.apply(type).unique()
+    return len(unique_data_types) > 1
+has_multiple_data_types(lihtc_columns_with_warnings['NECTA_NM'])
+
+data_types_series = lihtc_columns_with_warnings['NECTA_NM'].apply(type)
+# Get unique data types and their incidence
+unique_data_types = data_types_series.unique()
+data_type_counts = data_types_series.value_counts()
+
+# Create a DataFrame to display the results
+data_type_info = pd.DataFrame({'Data Type': unique_data_types, 'Count': data_type_counts})
+data_type_counts
+
+lihtc_columns_with_warnings[lihtc_columns_with_warnings['NECTA_NM'].notna()].index
+lihtc_NECTA_NM_unique = lihtc_columns_with_warnings['NECTA_NM'].unique()
+lihtc_columns_with_warnings['NECTA_NM'].value_counts()
+lihtc_columns_with_warnings['NECTA_NM'].nunique()
+lihtc_columns_with_warnings['NECTA_NM'].isna().sum()
+lihtc_columns_with_warnings['NECTA_NM'].notna().sum()
 ## Public housing
 pub_hous = pd.read_csv(input_path+'Public_Housing_Buildings.csv.gz')
+#%% 11
+# pub_hous.head(9)
 
 # ==========================================================================
 # Read Shapefile Data (inputs needed)
@@ -252,97 +226,16 @@ pub_hous = pd.read_csv(input_path+'Public_Housing_Buildings.csv.gz')
 # Pull cartographic boundary files from here:
 # https://www.census.gov/geographies/mapping-files/time-series/geo/carto-boundary-file.2017.html
 
-if city_name == 'Memphis':
-    shp_name = 'cb_2018_47_tract_500k.shp'
-elif city_name == 'Chicago':
-    shp_name = 'cb_2018_17_tract_500k.shp'
-elif city_name == 'Atlanta':
-    shp_name = 'cb_2018_13_tract_500k.shp'
-elif city_name == 'Denver':
-    shp_name = 'cb_2018_08_tract_500k.shp'
-elif city_name == 'Los Angeles':
-    shp_name = 'cb_2018_06_tract_500k.shp'
-elif city_name == 'San Francisco':
-    shp_name = 'cb_2018_06_tract_500k.shp'
-elif city_name == 'Seattle':
-    shp_name = 'cb_2018_53_tract_500k.shp'
-elif city_name == 'Cleveland':
-    shp_name = 'cb_2018_39_tract_500k.shp'
-elif city_name == 'Boston':
-    shp_name = 'cb_2018_25_tract_500k.shp'
-
-city_shp = gpd.read_file(shp_folder+shp_name)
-
-# Define City Specific Variables
-# --------------------------------------------------------------------------
-# Note: Choose city and define city specific variables
-# Add a new 'elif' for your city here
-
-if city_name == 'Chicago':
-    state = '17'
-    state_init = ['IL']
-    FIPS = ['031', '043', '089', '093', '097', '111', '197']
-    rail_agency = ['CTA']
-    zone = '16T'
-elif city_name == 'Atlanta':
-    state = '13'
-    state_init = ['GA']
-    FIPS = ['057', '063', '067', '089', '097', '113', '121', '135', '151', '247']
-    rail_agency = ['MARTA']
-    zone = '16S'
-elif city_name == 'Denver':
-    state = '08'
-    state_init = ['CO']
-    FIPS = ['001', '005', '013', '014', '019', '031', '035', '047', '059']
-    rail_agency = ['RTD']
-    zone = '13S'
-elif city_name == 'Memphis':
-    state = ['28', '47']
-    state_init = ['MS', 'TN']
-    FIPS = {'28':['033', '093'], '47': ['047', '157']}
-    rail_agency = [np.nan]
-    zone = '15S'
-elif city_name == 'Los Angeles':
-    state = '06'
-    state_init = ['CA']
-    FIPS = ['037', '059', '073']
-    rail_agency = ['Metro', 'MTS', 'Metrolink']
-    zone = '11S'
-elif city_name == 'San Francisco':
-    state = '06'
-    state_init = ['CA']
-    FIPS = ['001', '013', '041', '055', '067', '075', '077', '081', '085', '087', '095', '097', '113']
-    rail_agency = ['ACE ', 'ACE , Capitol Corridor Joint Powers Authority', 'BART', 'Caltrain', 'Capitol Corridor Joint Powers Authority', 'RT', 'San Francisco Municipal Transportation Agency', 'VTA', 'Alameda/Oakland Ferry', 'Blue & Gold Fleet', 'Golden Gate Ferry', 'Harbor Bay Ferry', 'Baylink']
-    zone = '10S'
-elif city_name == 'Seattle':
-    state = '53'
-    state_init = ['WA']
-    FIPS = ['033', '053', '061']
-    rail_agency = ['City of Seattle', 'Sound Transit', 'Washington State Ferries', 'King County Marine Division']
-    zone = '10T'
-elif city_name == 'Cleveland':
-    state = '39'
-    state_init = ['OH']
-    FIPS = ['035', '055', '085', '093', '103']
-    rail_agency = ['GCRTA']
-    zone = '17T'
-elif city_name == 'Boston':
-    state = ['25', '33']
-    state_init = ['MA', 'NH']
-    FIPS = {'25': ['009', '017', '021', '023', '025'], '33': ['015', '017']}
-    rail_agency = ['MBTA', 'Amtrak', 'Salem Ferry', 'Boston Harbor Islands Ferries']
-    zone = '19T'
-else:
-    print ('There is no information for the selected city')
-
 # ==========================================================================
 # Income Interpolation
 # ==========================================================================
 
 # Merge census data in single file
 # --------------------------------------------------------------------------
+# Changed the data frame names below because I did not filter regions of interest. I used all FIPS codes.
+census = census_2012_2018.merge(census_00_xwalked, on = 'FIPS', how = 'outer').merge(census_90_xwalked, on = 'FIPS', how = 'outer')
 
-census = acs_data.merge(data_2000, on = 'FIPS', how = 'outer').merge(data_1990, on = 'FIPS', how = 'outer')
+del [census_00, census_2012_2018, census_00_xwalked, census_90, census_90_xwalked, pub_hous, pums, pums_o, pums_r, rail, university, xwalk_00_10, xwalk_90_10, xwalk_fips_base, xwalk_fips_horizon, lihtc, hospitals]
 
 ## CPI indexing values
 ## This is based on the yearly CPI average
@@ -353,13 +246,58 @@ CPI_12_18 = 1.11
 
 ## This is used for the Zillow data, where january values are compared
 CPI_0115_0119 = 1.077
-
+#%% 12
+# import dill
+# dill.dump_session('./your_bk_dill.pkl')
+# dill.load_session('./your_bk_dill.pkl')
+# dill.detect('./your_bk_dill.pkl')
 # Income Interpolation
 # --------------------------------------------------------------------------
+#%% 13
+# ########################################################### #
+# Don't use the lines of code immediately below. They throw a wanring"
+# SettingWithCopyWarning: 
+# A value is trying to be set on a copy of a slice from a DataFrame
+# ########################################################### #
+# census['hinc_18'][census['hinc_18']<0]=np.nan
+# census['hinc_00'][census['hinc_00']<0]=np.nan
+# census['hinc_90'][census['hinc_90']<0]=np.nan
 
-census['hinc_18'][census['hinc_18']<0]=np.nan
-census['hinc_00'][census['hinc_00']<0]=np.nan
-census['hinc_90'][census['hinc_90']<0]=np.nan
+census.loc[census['hinc_18'] < 0, 'hinc_18'] = np.nan
+census.loc[census['hinc_00'] < 0, 'hinc_00'] = np.nan
+census.loc[census['hinc_90'] < 0, 'hinc_90'] = np.nan
+
+census['hinc_18'].head(9)
+census['hinc_18'].value_counts()
+census['hinc_18'].nunique()
+census['hinc_18'].isna().sum()
+census['hinc_18'].notna().sum()
+
+
+census['hinc_00'].head(9)
+census['hinc_00'].value_counts()
+census['hinc_00'].nunique()
+census['hinc_00'].isna().sum()
+census['hinc_00'].notna().sum()
+
+census['hinc_90'].head(9)
+census['hinc_90'].value_counts()
+census['hinc_90'].nunique()
+census['hinc_90'].isna().sum()
+census['hinc_90'].notna().sum()
+
+
+census.shape
+
+hinc_columns = census.filter(like='hinc')
+# SettingWithCopyWarning: 
+# A value is trying to be set on a copy of a slice from a DataFrame
+
+# See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+
+#%% 14
+
 
 ## Calculate regional medians (note that these are not indexed)
 rm_hinc_18 = np.nanmedian(census['hinc_18'])
@@ -367,12 +305,12 @@ rm_hinc_00 = np.nanmedian(census['hinc_00'])
 rm_hinc_90 = np.nanmedian(census['hinc_90'])
 rm_iinc_18 = np.nanmedian(census['iinc_18'])
 rm_iinc_12 = np.nanmedian(census['iinc_12'])
-
+#%% 15
 print(rm_hinc_18, rm_hinc_00, rm_hinc_90, rm_iinc_18, rm_iinc_12)
 
 ## Income Interpolation Function
 ## This function interpolates population counts using income buckets provided by the Census
-
+#%% 16 
 def income_interpolation (census, year, cutoff, mhinc, tot_var, var_suffix, out):
     name = []
     for c in list(census.columns):
@@ -409,23 +347,160 @@ def income_interpolation (census, year, cutoff, mhinc, tot_var, var_suffix, out)
     df = df.drop(columns = prop_col)
     census = census.merge (df[['FIPS', income]], on = 'FIPS')
     return census
+#%% 17
+# Attempting to use chunking instead.
 
-census = income_interpolation (census, '18', 0.8, rm_hinc_18, 'hh_18', 'I', 'inc')
-census = income_interpolation (census, '18', 1.2, rm_hinc_18, 'hh_18', 'I', 'inc')
-census = income_interpolation (census, '00', 0.8, rm_hinc_00, 'hh_00', 'I', 'inc')
-census = income_interpolation (census, '00', 1.2, rm_hinc_00, 'hh_00', 'I', 'inc')
-census = income_interpolation (census, '90', 0.8, rm_hinc_90, 'hh_00', 'I', 'inc')
+# Define your income_interpolation function to accept a chunk
+def income_interpolation_chunk(chunk, year, cutoff, mhinc, tot_var, var_suffix, out):
+    name = []
+    for c in list(chunk.columns):
+        if (c[0] == var_suffix):
+            if c.split('_')[2] == year:
+                name.append(c)
+    name.append('FIPS')
+    name.append(tot_var)
+    income_cat = chunk[name]
+    income_group = income_cat.drop(columns=['FIPS', tot_var]).columns
+    income_group = income_group.str.split('_')
+    number = []
+    for i in range(0, len(income_group)):
+        number.append(income_group[i][1])
+    column = []
+    for i in number:
+        column.append('prop_'+str(i))
+        income_cat['prop_'+str(i)] = income_cat[var_suffix+'_'+str(i)+'_'+year]/income_cat[tot_var]
+    reg_median_cutoff = cutoff*mhinc
+    cumulative = out+str(int(cutoff*100))+'_cumulative'
+    income = out+str(int(cutoff*100))+'_'+year
+    df = income_cat
+    df[cumulative] = 0
+    df[income] = 0
+    for i in range(0, (len(number)-1)):
+        a = (number[i])
+        b = float(number[i+1])-0.01
+        prop = str(number[i+1])
+        df[cumulative] = df[cumulative]+df['prop_'+a]
+        if (reg_median_cutoff >= int(a)) and (reg_median_cutoff < b):
+            df[income] = ((reg_median_cutoff - int(a))/(b-int(a)))*df['prop_'+prop] + df[cumulative]
+    df = df.drop(columns=[cumulative])
+    prop_col = df.columns[df.columns.str[0:4] == 'prop']
+    df = df.drop(columns=prop_col)
+    chunk = chunk.merge(df[['FIPS', income]], on='FIPS')
+    return chunk
+#%% 18
+# # Define the chunk size (the number of rows to process at a time)
+# chunk_size = 1000  # Adjust this based on your memory constraints
 
+# # Create an example DataFrame (replace this with your actual data)
+# data = {'Column1': range(10000)}  # Creating a DataFrame with 10,000 rows
+# census = pd.DataFrame(data)
+
+# # Process the DataFrame in chunks
+# for chunk in pd.read_csv('your_large_file.csv', chunksize=chunk_size):
+#     # Perform income interpolation on each chunk
+#     chunk = income_interpolation_chunk(chunk, '18', 0.8, rm_hinc_18, 'hh_18', 'I', 'inc')
+#     # Append the results to another DataFrame or perform aggregations as needed
+#     # You can also write the results to a file if required
+
+# # Continue processing or aggregating results as needed
+
+
+# del[zillow, zillow_xwalk,lihtc_columns_with_warnings, lihtc_NECTA_NM_unique, data_types_series, hinc_columns]
+
+#%% 19 ERROR is happening here (9/24/2023)
+# MemoryError: Unable to allocate 20.5 TiB for an array with shape (2821109980532,) and data type int64
+import pickle
+#%% 20
+# I'm going to save the 'census' variable at this point to .pkl file to assess how large it is.
+
+with open('census_before_added_cols.pkl', 'wb') as file:
+      
+    # A new file will be created
+    pickle.dump(census, file)
+
+# Saving each output to a pickle file
+# Initally, all these output were added to the 'census' variable but now are saved to a binary pickle file
+#%% 21
+myvar = income_interpolation (census, '18', 0.8, rm_hinc_18, 'hh_18', 'I', 'inc')
+# Open a file and use dump()
+with open('census_added_cols.pkl', 'wb') as file:
+      
+    # A new file will be created
+    pickle.dump(myvar, file)
+del myvar
+#%% 22
+myvar = income_interpolation (census, '18', 1.2, rm_hinc_18, 'hh_18', 'I', 'inc')
+with open('census_added_cols.pkl', 'ab') as file:
+      
+    # A new file will be created
+    pickle.dump(myvar, file)
+del myvar
+#%% 23
+myvar = income_interpolation (census, '00', 0.8, rm_hinc_00, 'hh_00', 'I', 'inc')
+with open('census_added_cols.pkl', 'ab') as file:
+      
+    # A new file will be created
+    pickle.dump(myvar, file)
+del myvar
+#%% 24
+myvar = income_interpolation (census, '00', 1.2, rm_hinc_00, 'hh_00', 'I', 'inc')
+
+# Open a file and use dump()
+with open('census_added_cols.pkl', 'ab') as file:
+	
+	# A new file will be created
+	pickle.dump(myvar, file)
+del myvar
+#%% 25
+myvar = income_interpolation (census, '90', 0.8, rm_hinc_90, 'hh_00', 'I', 'inc')
+
+
+# Open a file and use dump()
+with open('census_added_cols.pkl', 'ab') as file:
+	
+	# A new file will be created
+	pickle.dump(myvar, file)
+del myvar
+#%% 26
 income_col = census.columns[census.columns.str[0:2]=='I_']
-census = census.drop(columns = income_col)
+#%% 27
+# Trying to load original 'census' object
 
+# import pickle
+
+# Open the file in binary mode
+with open('census_before_added_cols.pkl', 'rb') as file:
+	
+	# Call load method to deserialze
+	census_old = pickle.load(file)
+
+# print(myvar)
+#%% 28
+# del census
+# Loading pickle file 'census_added_cols.pkl' to see how much RAM it uses.
+# import pickle
+# Open the file in binary mode
+with open('census_added_cols.pkl', 'rb') as file:
+	
+	# Call load method to deserialze
+ 	# myvar = pickle.load(file)
+    census = pickle.load(file)
+
+
+# print(myvar)
+
+#%% 29 STOP HERE FOR NOW!!!!
+# Not sure what to do with the line below yet (9/25/23)
+# census = census.drop(columns = income_col)
+census.to_csv('census_data.csv', index=False)
+#%% 30
 # ==========================================================================
 # Generate Income Categories
 # ==========================================================================
 
 # Create Category Function + Run
 # --------------------------------------------------------------------------
-
+#%% 31
 def income_categories (df, year, mhinc, hinc):
     df['hinc_'+year] = np.where(df['hinc_'+year]<0, 0, df['hinc_'+year])
     reg_med_inc80 = 0.8*mhinc
@@ -480,7 +555,16 @@ def income_categories (df, year, mhinc, hinc):
     df.loc[df['hinc_'+year]==0, 'high_pdmt_medhhinc_'+year] = np.nan
     df.loc[df['hinc_'+year]==0, 'inc_cat_medhhinc_'+year] = np.nan
     return census
+#%% 32
 
+# Are some columns missing?
+census_column_names = pd.DataFrame({
+    'Census_Columns': census.columns.tolist() + [''] * (len(census_old.columns) - len(census.columns)),
+    'Census_Old_Columns': census_old.columns.tolist() + [''] * (len(census.columns) - len(census_old.columns))
+})
+
+# I'm gonna have to figure out what to do here since I saved all the outputs above using pickle
+# KeyError: 'inc120_18'
 census = income_categories(census, '18', rm_hinc_18, 'hinc_18')
 census = income_categories(census, '00', rm_hinc_00, 'hinc_00')
 
@@ -496,9 +580,9 @@ census ['per_all_li_18'] = census['inc80_18']
 census['all_li_count_90'] = census['per_all_li_90']*census['hh_90']
 census['all_li_count_00'] = census['per_all_li_00']*census['hh_00']
 census['all_li_count_18'] = census['per_all_li_18']*census['hh_18']
-
+#%% 
 len(census)
-
+#%%
 # ==========================================================================
 # Rent, Median income, Home Value Data
 # ==========================================================================
