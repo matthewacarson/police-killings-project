@@ -1022,13 +1022,15 @@ pub_hous = gpd.GeoDataFrame(pub_hous, geometry=[Point(xy) for xy in zip (pub_hou
 
 ## Public housing
 # pub_hous = pub_hous[pub_hous['geometry'].within(city_poly.loc[0, 'geometry'])].reset_index(drop = True)
-
+del [census, census_00, census_00_xwalked, census_2012_2018, census_90, pums_r]
+del [hinc_columns, university, df, xwalk_00_10, xwalk_90_10]
+del [xwalk_fips_base, xwalk_fips_horizon, census_90_xwalked, rail, pums, pums_o]
 ## Merge Datasets
-presence_ph_LIHTC = lihtc[['geometry']].append(pub_hous[['geometry']])
+# presence_ph_LIHTC = lihtc[['geometry']].append(pub_hous[['geometry']])
 
 ## check whether census_zillow tract contains public housing or LIHTC station
 ## and create public housing flag
-city_shp['presence_ph_LIHTC'] = city_shp.intersects(presence_ph_LIHTC.unary_union)
+# city_shp['presence_ph_LIHTC'] = city_shp.intersects(presence_ph_LIHTC.unary_union)
 
 ####
 # Begin Map Plot
@@ -1045,15 +1047,15 @@ city_shp['presence_ph_LIHTC'] = city_shp.intersects(presence_ph_LIHTC.unary_unio
 # Merge Census and Zillow Data
 # ==========================================================================
 
-city_shp['GEOID'] = city_shp['GEOID'].astype('int64')
+# city_shp['GEOID'] = city_shp['GEOID'].astype('int64')
 
-census_zillow = census_zillow.merge(city_shp[['GEOID','geometry','rail',
+# census_zillow = census_zillow.merge(city_shp[['GEOID','geometry','rail',
 	# 'anchor_institution',
-	'presence_ph_LIHTC']], right_on = 'GEOID', left_on = 'FIPS')
-census_zillow.query("FIPS == 13121011100")
+# 	'presence_ph_LIHTC']], right_on = 'GEOID', left_on = 'FIPS')
+# census_zillow.query("FIPS == 13121011100")
 # ==========================================================================
 # Export Data
 # ==========================================================================
 
-census_zillow.to_csv(output_path+'databases/'+city_name.replace(" ", "")+'_database_2018.csv')
+census_zillow.to_csv(output_path+'databases/zillow_database_2018.csv')
 # pq.write_table(output_path+'downloads/'+city_name.replace(" ", "")+'_database.parquet')
