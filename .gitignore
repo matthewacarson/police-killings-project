@@ -12,3 +12,4 @@ Bitmap.RData
 *.Rproj
 udp_expansion_matt/data/inputs/Public_Housing_Buildings.csv.gz
 udp_expansion_matt/census_data.csv
+udp_expansion_matt/data/outputs/databases/zillow_database_2018.csv
