@@ -12,7 +12,7 @@
 # import census
 import pandas as pd
 import numpy as np
-import sys
+# import sys
 import os
 # from pathlib import Path
 import geopandas as gpd
@@ -29,7 +29,7 @@ input_path = home+'/data/inputs/'
 output_path = home+'/data/outputs/'
 
 os.chdir(home)
-os.getcwd()
+# os.getcwd()
 # =====================================================
 # Crosswalk Files
 # =====================================================
@@ -165,7 +165,7 @@ zillow_xwalk = pd.read_csv(input_path+'TRACT_ZIP_032015.csv')
 #%% 10
 
 ## Rail data
-rail = pd.read_csv(input_path+'tod_database_download.csv')
+# rail = pd.read_csv(input_path+'tod_database_download.csv')
 
 ## Hospitals (not using)
 # hospitals = pd.read_csv(input_path+'Hospitals.csv')
@@ -175,8 +175,7 @@ rail = pd.read_csv(input_path+'tod_database_download.csv')
 
 ## LIHTC
 # dtype_dict = {col: float for col in range(0, 51)}
-lihtc = pd.read_csv(input_path+'LowIncome_Housing_Tax_Credit_Properties.csv')#, na_values=[''])
-
+lihtc = pd.read_csv(input_path+'LowIncome_Housing_Tax_Credit_Properties.csv', na_values=[''])
 # warnings = [90, 98, 103, 109, 110, 113, 114]
 # lihtc_columns_with_warnings = lihtc.iloc[:, warnings]
 # lihtc_columns_with_warnings.iloc[8000, :] # These are all NaN; need to fix
@@ -223,7 +222,7 @@ pub_hous = pd.read_csv(input_path+'Public_Housing_Buildings.csv.gz')
 # Changed the data frame names below because I did not filter regions of interest. I used all FIPS codes.
 census = census_2012_2018.merge(census_00_xwalked, on = 'FIPS', how = 'outer').merge(census_90_xwalked, on = 'FIPS', how = 'outer')
 
-del census_2012_2018
+del [census_2012_2018, census_00_xwalked, census_90_xwalked]
 ## CPI indexing values
 ## This is based on the yearly CPI average
 ## Add in new CPI based on current year: https://www.bls.gov/data/inflation_calculator.htm
@@ -234,21 +233,12 @@ CPI_12_18 = 1.11
 ## This is used for the Zillow data, where january values are compared
 CPI_0115_0119 = 1.077
 #%% 12
-# import dill
-# dill.dump_session('./your_bk_dill.pkl')
-# dill.load_session('./your_bk_dill.pkl')
-# dill.detect('./your_bk_dill.pkl')
+
 # Income Interpolation
-# =====================================================
-#%% 13
-# ########################################################### #
-# Don't use the lines of code immediately below. They throw a wanring"
-# SettingWithCopyWarning: 
-# A value is trying to be set on a copy of a slice from a DataFrame
-# ######################################################### #
-# census['hinc_18'][census['hinc_18']<0]=np.nan
-# census['hinc_00'][census['hinc_00']<0]=np.nan
-# census['hinc_90'][census['hinc_90']<0]=np.nan
+
+census['hinc_18'][census['hinc_18']<0]=np.nan
+census['hinc_00'][census['hinc_00']<0]=np.nan
+census['hinc_90'][census['hinc_90']<0]=np.nan
 
 census.loc[census['hinc_18'] < 0, 'hinc_18'] = np.nan
 census.loc[census['hinc_00'] < 0, 'hinc_00'] = np.nan
@@ -339,7 +329,7 @@ census = census.drop(columns = income_col)
 #%% 29 STOP HERE FOR NOW!!!!
 # Not sure what to do with the line below yet (9/25/23)
 # census = census.drop(columns = income_col)
-census.to_csv('census_data.csv', index=False)
+
 #%% 30
 # =====================================================
 # Generate Income Categories
@@ -407,9 +397,9 @@ def income_categories (df, year, mhinc, hinc):
 census = income_categories(census, '18', rm_hinc_18, 'hinc_18')
 census = income_categories(census, '00', rm_hinc_00, 'hinc_00')
 
-census.groupby('inc_cat_medhhinc_00').count()['FIPS']
+# census.groupby('inc_cat_medhhinc_00').count()['FIPS']
 
-census.groupby('inc_cat_medhhinc_18').count()['FIPS']
+# census.groupby('inc_cat_medhhinc_18').count()['FIPS']
 
 ## Percentage & total low-income households - under 80% AMI
 census ['per_all_li_90'] = census['inc80_90']
@@ -420,7 +410,7 @@ census['all_li_count_90'] = census['per_all_li_90']*census['hh_90']
 census['all_li_count_00'] = census['per_all_li_00']*census['hh_00']
 census['all_li_count_18'] = census['per_all_li_18']*census['hh_18']
 #%% 
-len(census)
+# len(census)
 #%%
 # =====================================================
 # Rent, Median income, Home Value Data
@@ -566,7 +556,7 @@ def income_interpolation_movein (census, year, cutoff, rm_iinc):
 census = income_interpolation_movein (census, '18', 0.8, rm_iinc_18)
 census = income_interpolation_movein (census, '12', 0.8, rm_iinc_12)
 
-len(census)
+# len(census)
 
 # =====================================================
 # Housing Affordability Variables
@@ -717,11 +707,11 @@ pums.loc[pums['lmh_flag_encoded']==4, 'lmh_flag_category'] = 'aff_mix_low'
 pums.loc[pums['lmh_flag_encoded']==5, 'lmh_flag_category'] = 'aff_mix_mod'
 pums.loc[pums['lmh_flag_encoded']==6, 'lmh_flag_category'] = 'aff_mix_high'
 
-pums.groupby('lmh_flag_category').count()['FIPS']
+# pums.groupby('lmh_flag_category').count()['FIPS']
 
 census = census.merge(pums[['FIPS', 'lmh_flag_encoded', 'lmh_flag_category']], on = 'FIPS')
 
-len(census)
+# len(census)
 del [pums]
 # =====================================================
 # Setting 'Market Types'
@@ -762,11 +752,11 @@ census.loc[census['change_flag_encoded']==1, 'change_flag_category'] = 'ch_decre
 census.loc[census['change_flag_encoded']==2, 'change_flag_category'] = 'ch_increase'
 census.loc[census['change_flag_encoded']==3, 'change_flag_category'] = 'ch_rapid_increase'
 
-census.groupby('change_flag_category').count()['FIPS']
+# census.groupby('change_flag_category').count()['FIPS']
 
-census.groupby(['change_flag_category', 'lmh_flag_category']).count()['FIPS']
+# census.groupby(['change_flag_category', 'lmh_flag_category']).count()['FIPS']
 
-len(census)
+# len(census)
 
 # =====================================================
 # Zillow Data
@@ -809,7 +799,7 @@ zillow = zillow.sort_values(by = ['FIPS', 'RES_RATIO'], ascending = False).group
 
 ## Compute 90th percentile change in region
 percentile_90 = zillow['per_ch_zillow_12_18'].quantile(q = 0.9)
-print(percentile_90)
+# print(percentile_90)
 
 # Create Flags
 # --------------------------------------------------
@@ -821,8 +811,8 @@ zillow['ab_50pct_ch'] = np.where(zillow['per_ch_zillow_12_18']>0.5, 1, 0)
 zillow['ab_90percentile_ch'] = np.where(zillow['per_ch_zillow_12_18']>percentile_90, 1, 0)
 census_zillow = census.merge(zillow[['FIPS', 'per_ch_zillow_12_18', 'ab_50pct_ch', 'ab_90percentile_ch']], on = 'FIPS')
 # census_zillow.head()
-census_zillow.info()
-census.info()
+# census_zillow.info()
+# census.info()
 
 ## Create 90th percentile for rent -
 # census['rent_percentile_90'] = census['pctch_real_mrent_12_18'].quantile(q = 0.9)
@@ -947,7 +937,7 @@ census_zillow_tract_list = census_zillow['FIPS'].astype(str).str.zfill(11)
 # city_poly = city_shp.dissolve(by = 'STATEFP')
 # city_poly = city_poly.reset_index(drop = True)
 
-census_zillow_tract_list.describe()
+# census_zillow_tract_list.describe()
 
 # =====================================================
 # Overlay Variables (Rail + Housing)
@@ -961,10 +951,10 @@ census_zillow_tract_list.describe()
 
 ## Filter by city
 # rail = rail[rail['Agency'].isin(rail_agency)].reset_index(drop = True)
-rail = gpd.GeoDataFrame(rail, geometry=[Point(xy) for xy in zip (rail['Longitude'], rail['Latitude'])])
+# rail = gpd.GeoDataFrame(rail, geometry=[Point(xy) for xy in zip (rail['Longitude'], rail['Latitude'])])
 
 ## sets coordinate system to WGS84
-rail.crs = {'init' :'epsg:4269'}
+# rail.crs = {'init' :'epsg:4269'}
 
 ## creates UTM projection
 ## zone is defined under define city specific variables
@@ -1035,3 +1025,5 @@ pub_hous = gpd.GeoDataFrame(pub_hous, geometry=[Point(xy) for xy in zip (pub_hou
 
 census_zillow.to_csv(output_path+'databases/zillow_database_2018.csv')
 # pq.write_table(output_path+'downloads/'+city_name.replace(" ", "")+'_database.parquet')
+census.to_csv(output_path+'databases/all_cities_2018.csv', index=False)
+length(census)
