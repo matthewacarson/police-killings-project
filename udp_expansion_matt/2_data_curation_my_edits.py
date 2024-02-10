@@ -1,13 +1,13 @@
 #%% 1
-# ==========================================================================
+# =====================================================
 # DATA CURATION
-# ==========================================================================
+# =====================================================
 # Note: (input needed) in title bars indicates that in order to bring in new city information
 # users must input new code in the section
 
-# ==========================================================================
+# =====================================================
 # Import Libraries
-# ==========================================================================
+# =====================================================
 
 # import census
 import pandas as pd
@@ -30,22 +30,13 @@ output_path = home+'/data/outputs/'
 
 os.chdir(home)
 os.getcwd()
-# ==========================================================================
-# Set API Key + Select City to Run (inputs needed)
-# ==========================================================================
-# Note: Make sure to input your own API key in the * below
-
-# key = '4c26aa6ebbaef54a55d3903212eabbb506ade381'
-# c = census.Census(key)
-
-
-# ==========================================================================
+# =====================================================
 # Crosswalk Files
-# ==========================================================================
+# =====================================================
 
-# ==========================================================================
+# =====================================================
 # Read Files
-# ==========================================================================
+# =====================================================
 # Note: Most of the input files are located on google drive.
 # UDP suggests downloading [Google's Drive File Stream](https://support.google.com/a/answer/7491144?utm_medium=et&utm_source=aboutdrive&utm_content=getstarted&utm_campaign=en_us)
 # app, which doesn't download all Google Drive items to your computer
@@ -63,9 +54,9 @@ census_00 = pd.read_csv('merged_2000.csv')#, dtype=dtype_dict)
 xwalk_90_10 = pd.read_csv(input_path+'crosswalk_1990_2010.csv')#, dtype=dtype_dict)
 xwalk_00_10 = pd.read_csv(input_path+'crosswalk_2000_2010.csv')#, dtype=dtype_dict)
 
-# ==========================================================================
+# =====================================================
 # Create Crosswalk Functions / Files
-# ==========================================================================
+# =====================================================
 
 #%% 3
 def crosswalk_files (df, xwalk, counts, medians, df_fips_base, xwalk_fips_base, xwalk_fips_horizon):
@@ -91,7 +82,7 @@ def crosswalk_files (df, xwalk, counts, medians, df_fips_base, xwalk_fips_base, 
 
 #%% 4
 # Crosswalking
-# --------------------------------------------------------------------------
+# --------------------------------------------------
 # 9/11: I am running into some problems with multiplying non-integers (see error message below)
 # TypeError: can't multiply sequence by non-int of type 'float'
 # Use .dtypes to check the data storage types
@@ -121,17 +112,12 @@ del [census_00, xwalk_00_10]
 
 
 
-# ==========================================================================
-# ==========================================================================
-# ==========================================================================
+# =====================================================
 # Variable Creation
-# ==========================================================================
-# ==========================================================================
-# ==========================================================================
-
-# ==========================================================================
+# =====================================================
+# =====================================================
 # Setup / Read Files (inputs needed)
-# ==========================================================================
+# =====================================================
 # Note: Below is the Google File Drive Stream pathway for a Mac.
 # input_path = '~/git/displacement-typologies/data/inputs/'
 # Use this to draw in the 'input_path' variable needed below
@@ -152,7 +138,7 @@ census_2012_2018 = census_2012_2018.rename(columns = {'county_x': 'county',
                                     'GEOID': 'FIPS'}) # 9/11/23: I added this because tidycensus downloaded as GEOID
 #%% 8
 # Bring in PUMS data
-# --------------------------------------------------------------------------
+# =====================================================
 
 
 pums_r = pd.read_csv(input_path+'nhgis0002_ds233_20175_2017_tract.csv', encoding = "ISO-8859-1")
@@ -170,7 +156,7 @@ pums = pums.dropna(axis = 1)
 del [pums_r, pums_o]
 #%% 9
 # Bring in Zillow, Rail, Hospital, Unversity, LIHTC, PH dat
-# --------------------------------------------------------------------------
+# =====================================================
 # Note: Make sure your city/county is included in these overlay files
 
 ## Zillow data
@@ -221,19 +207,19 @@ pub_hous = pd.read_csv(input_path+'Public_Housing_Buildings.csv.gz')
 #%% 11
 # pub_hous.head(9)
 
-# ==========================================================================
+# =====================================================
 # Read Shapefile Data (inputs needed)
-# ==========================================================================
+# =====================================================
 # Note: Similar to above, add a 'elif' for you city here
 # Pull cartographic boundary files from here:
 # https://www.census.gov/geographies/mapping-files/time-series/geo/carto-boundary-file.2017.html
 
-# ==========================================================================
+# =====================================================
 # Income Interpolation
-# ==========================================================================
+# =====================================================
 
 # Merge census data in single file
-# --------------------------------------------------------------------------
+# =====================================================
 # Changed the data frame names below because I did not filter regions of interest. I used all FIPS codes.
 census = census_2012_2018.merge(census_00_xwalked, on = 'FIPS', how = 'outer').merge(census_90_xwalked, on = 'FIPS', how = 'outer')
 
@@ -253,13 +239,13 @@ CPI_0115_0119 = 1.077
 # dill.load_session('./your_bk_dill.pkl')
 # dill.detect('./your_bk_dill.pkl')
 # Income Interpolation
-# --------------------------------------------------------------------------
+# =====================================================
 #%% 13
 # ########################################################### #
 # Don't use the lines of code immediately below. They throw a wanring"
 # SettingWithCopyWarning: 
 # A value is trying to be set on a copy of a slice from a DataFrame
-# ########################################################### #
+# ######################################################### #
 # census['hinc_18'][census['hinc_18']<0]=np.nan
 # census['hinc_00'][census['hinc_00']<0]=np.nan
 # census['hinc_90'][census['hinc_90']<0]=np.nan
@@ -287,19 +273,11 @@ census.loc[census['hinc_90'] < 0, 'hinc_90'] = np.nan
 # census['hinc_90'].isna().sum()
 # census['hinc_90'].notna().sum()
 
-
 census.shape
 
 hinc_columns = census.filter(like='hinc')
-# SettingWithCopyWarning: 
-# A value is trying to be set on a copy of a slice from a DataFrame
-
-# See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-
 
 #%% 14
-
-
 ## Calculate regional medians (note that these are not indexed)
 rm_hinc_18 = np.nanmedian(census['hinc_18'])
 rm_hinc_00 = np.nanmedian(census['hinc_00'])
@@ -363,12 +341,12 @@ census = census.drop(columns = income_col)
 # census = census.drop(columns = income_col)
 census.to_csv('census_data.csv', index=False)
 #%% 30
-# ==========================================================================
+# =====================================================
 # Generate Income Categories
-# ==========================================================================
+# =====================================================
 
 # Create Category Function + Run
-# --------------------------------------------------------------------------
+# --------------------------------------------------
 #%% 31
 def income_categories (df, year, mhinc, hinc):
     df['hinc_'+year] = np.where(df['hinc_'+year]<0, 0, df['hinc_'+year])
@@ -444,9 +422,9 @@ census['all_li_count_18'] = census['per_all_li_18']*census['hh_18']
 #%% 
 len(census)
 #%%
-# ==========================================================================
+# =====================================================
 # Rent, Median income, Home Value Data
-# ==========================================================================
+# =====================================================
 
 census['real_mhval_90'] = census['mhval_90']*CPI_89_18
 census['real_mrent_90'] = census['mrent_90']*CPI_89_18
@@ -464,14 +442,14 @@ census['real_mhval_18'] = census['mhval_18']
 census['real_mrent_18'] = census['mrent_18']
 census['real_hinc_18'] = census['hinc_18']
 
-# ==========================================================================
+# =====================================================
 # Demographic Data
-# ==========================================================================
+# =====================================================
 
 df = census
 
 # % of non-white
-# --------------------------------------------------------------------------
+# =====================================================
 
 ## 1990
 df['per_nonwhite_90'] = 1 - df['white_90']/df['pop_90']
@@ -483,7 +461,7 @@ df['per_nonwhite_00'] = 1 - df['white_00']/df['pop_00']
 df['per_nonwhite_18'] = 1 - df['white_18']/df['pop_18']
 
 # % of owner and renter-occupied housing units
-# --------------------------------------------------------------------------
+# =====================================================
 
 ## 1990
 df['hu_90'] = df['ohu_90']+df['rhu_90']
@@ -497,7 +475,7 @@ df['hu_18'] = df['ohu_18']+df['rhu_18']
 df['per_rent_18'] = df['rhu_18']/df['hu_18']
 
 # % of college educated
-# --------------------------------------------------------------------------
+# =====================================================
 
 ## 1990
 var_list = ['total_25_col_9th_90',
@@ -527,7 +505,7 @@ df['per_col_18'] = (df['total_25_col_bd_18']+
                     df['total_25_col_phd_18'])/df['total_25_18']
 
 # Housing units built
-# --------------------------------------------------------------------------
+# =====================================================
 
 df['per_units_pre50_18'] = (df['units_40_49_built_18']+df['units_39_early_built_18'])/df['tot_units_built_18']
 
@@ -590,9 +568,9 @@ census = income_interpolation_movein (census, '12', 0.8, rm_iinc_12)
 
 len(census)
 
-# ==========================================================================
+# =====================================================
 # Housing Affordability Variables
-# ==========================================================================
+# =====================================================
 
 # def filter_PUMS(df, FIPS):
 #     if (city_name not in ('Memphis', 'Boston')):
@@ -687,7 +665,7 @@ pums['pct_mod_18'] = pums['mod_tot_18']/pums['hu_tot_18']
 pums['pct_high_18'] = pums['high_tot_18']/pums['hu_tot_18']
 
 # Classifying tracts by housing afforablde by income
-# --------------------------------------------------------------------------
+# =====================================================
 
 ## Low income
 pums['predominantly_LI'] = np.where((pums['pct_low_18']>=0.55)&
@@ -745,7 +723,7 @@ census = census.merge(pums[['FIPS', 'lmh_flag_encoded', 'lmh_flag_category']], o
 
 len(census)
 del [pums]
-# ==========================================================================
+# =====================================================
 # Setting 'Market Types'
 # ==========================================================================
 
@@ -790,12 +768,12 @@ census.groupby(['change_flag_category', 'lmh_flag_category']).count()['FIPS']
 
 len(census)
 
-# ==========================================================================
+# =====================================================
 # Zillow Data
-# ==========================================================================
+# =====================================================
 
 # Load Zillow Data
-# --------------------------------------------------------------------------
+# --------------------------------------------------
 
 # def filter_ZILLOW(df, FIPS):
 #     if (city_name not in ('Memphis', 'Boston')):
@@ -814,7 +792,7 @@ zillow = pd.read_csv(input_path+'Zip_Zhvi_AllHomes.csv', encoding = "ISO-8859-1"
 zillow_xwalk = pd.read_csv(input_path+'TRACT_ZIP_032015.csv')
 
 # Calculate Zillow Measures
-# --------------------------------------------------------------------------
+# --------------------------------------------------
 
 ## Compute change over time
 zillow['ch_zillow_12_18'] = zillow['2018-01'] - zillow['2012-01']*CPI_12_18
@@ -834,7 +812,7 @@ percentile_90 = zillow['per_ch_zillow_12_18'].quantile(q = 0.9)
 print(percentile_90)
 
 # Create Flags
-# --------------------------------------------------------------------------
+# --------------------------------------------------
 
 ## Change over 50% of change in region
 zillow['ab_50pct_ch'] = np.where(zillow['per_ch_zillow_12_18']>0.5, 1, 0)
@@ -851,12 +829,12 @@ census.info()
 census_zillow['rent_50pct_ch'] = np.where(census_zillow['pctch_real_mrent_12_18']>=0.5, 1, 0)
 census_zillow['rent_90percentile_ch'] = np.where(census_zillow['pctch_real_mrent_12_18']>=0.9, 1, 0)
 
-# ==========================================================================
+# =====================================================
 # Calculate Regional Medians
-# ==========================================================================
+# =====================================================
 
 # Calculate medians necessary for typology designation
-# --------------------------------------------------------------------------
+# --------------------------------------------------
 
 rm_per_all_li_90 = np.nanmedian(census_zillow['per_all_li_90'])
 rm_per_all_li_00 = np.nanmedian(census_zillow['per_all_li_00'])
@@ -922,7 +900,7 @@ ch_rm_per_col_90_00 = rm_per_col_00-rm_per_col_90
 ch_rm_per_col_00_18 = rm_per_col_18-rm_per_col_00
 
 # Calculate flags
-# --------------------------------------------------------------------------
+# --------------------------------------------------
 
 df = census_zillow
 df['pop00flag'] = np.where(df['pop_00']>500, 1, 0)
@@ -959,7 +937,7 @@ df['aboverm_ch_per_col_00_18'] = np.where(df['ch_per_col_00_18']>ch_rm_per_col_0
 df['aboverm_per_units_pre50_18'] = np.where(df['per_units_pre50_18']>rm_per_units_pre50_18, 1, 0)
 
 # Shapefiles
-# --------------------------------------------------------------------------
+# --------------------------------------------------
 
 ## Filter only census_zillow tracts of interest from shp
 census_zillow_tract_list = census_zillow['FIPS'].astype(str).str.zfill(11)
@@ -971,12 +949,12 @@ census_zillow_tract_list = census_zillow['FIPS'].astype(str).str.zfill(11)
 
 census_zillow_tract_list.describe()
 
-# ==========================================================================
+# =====================================================
 # Overlay Variables (Rail + Housing)
-# ==========================================================================
+# =====================================================
 
 # Rail
-# --------------------------------------------------------------------------
+# --------------------------------------------------
 
 ## Filter only existing rail
 # rail = rail[rail['Year Opened']=='Pre-2000'].reset_index(drop = True)
@@ -1005,7 +983,7 @@ rail.crs = {'init' :'epsg:4269'}
 # city_shp['rail'] = np.where(city_shp.intersects(rail_buffer_wgs.unary_union) == True, 1, 0)
 
 # Subsidized Housing
-# --------------------------------------------------------------------------
+# --------------------------------------------------
 
 ## LIHTC
 lihtc = pd.read_csv(input_path+'LowIncome_Housing_Tax_Credit_Properties.csv')
@@ -1041,9 +1019,9 @@ pub_hous = gpd.GeoDataFrame(pub_hous, geometry=[Point(xy) for xy in zip (pub_hou
 # End Map Plot
 ####
 
-# ==========================================================================
+# =====================================================
 # Merge Census and Zillow Data
-# ==========================================================================
+# =====================================================
 
 # city_shp['GEOID'] = city_shp['GEOID'].astype('int64')
 
@@ -1051,9 +1029,9 @@ pub_hous = gpd.GeoDataFrame(pub_hous, geometry=[Point(xy) for xy in zip (pub_hou
 	# 'anchor_institution',
 # 	'presence_ph_LIHTC']], right_on = 'GEOID', left_on = 'FIPS')
 # census_zillow.query("FIPS == 13121011100")
-# ==========================================================================
+# =====================================================
 # Export Data
-# ==========================================================================
+# =====================================================
 
 census_zillow.to_csv(output_path+'databases/zillow_database_2018.csv')
 # pq.write_table(output_path+'downloads/'+city_name.replace(" ", "")+'_database.parquet')
