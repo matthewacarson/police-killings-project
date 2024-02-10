@@ -15,8 +15,8 @@ import numpy as np
 import sys
 import os
 # from pathlib import Path
-# import geopandas as gpd
-# from shapely.geometry import Point
+import geopandas as gpd
+from shapely.geometry import Point
 # from pyproj import Proj
 # import matplotlib.pyplot as plt
 # %whos # List variables in the workspace
@@ -842,7 +842,7 @@ zillow['ab_50pct_ch'] = np.where(zillow['per_ch_zillow_12_18']>0.5, 1, 0)
 ## Change over 90th percentile change
 zillow['ab_90percentile_ch'] = np.where(zillow['per_ch_zillow_12_18']>percentile_90, 1, 0)
 census_zillow = census.merge(zillow[['FIPS', 'per_ch_zillow_12_18', 'ab_50pct_ch', 'ab_90percentile_ch']], on = 'FIPS')
-census_zillow.head()
+# census_zillow.head()
 census_zillow.info()
 census.info()
 
@@ -963,11 +963,11 @@ df['aboverm_per_units_pre50_18'] = np.where(df['per_units_pre50_18']>rm_per_unit
 
 ## Filter only census_zillow tracts of interest from shp
 census_zillow_tract_list = census_zillow['FIPS'].astype(str).str.zfill(11)
-city_shp = city_shp[city_shp['GEOID'].isin(census_zillow_tract_list)].reset_index(drop = True)
+# city_shp = city_shp[city_shp['GEOID'].isin(census_zillow_tract_list)].reset_index(drop = True)
 
 ## Create single region polygon
-city_poly = city_shp.dissolve(by = 'STATEFP')
-city_poly = city_poly.reset_index(drop = True)
+# city_poly = city_shp.dissolve(by = 'STATEFP')
+# city_poly = city_poly.reset_index(drop = True)
 
 census_zillow_tract_list.describe()
 
@@ -979,10 +979,10 @@ census_zillow_tract_list.describe()
 # --------------------------------------------------------------------------
 
 ## Filter only existing rail
-rail = rail[rail['Year Opened']=='Pre-2000'].reset_index(drop = True)
+# rail = rail[rail['Year Opened']=='Pre-2000'].reset_index(drop = True)
 
 ## Filter by city
-rail = rail[rail['Agency'].isin(rail_agency)].reset_index(drop = True)
+# rail = rail[rail['Agency'].isin(rail_agency)].reset_index(drop = True)
 rail = gpd.GeoDataFrame(rail, geometry=[Point(xy) for xy in zip (rail['Longitude'], rail['Latitude'])])
 
 ## sets coordinate system to WGS84
@@ -1018,10 +1018,10 @@ lihtc = gpd.GeoDataFrame(lihtc, geometry=[Point(xy) for xy in zip (lihtc['X'], l
 pub_hous = gpd.GeoDataFrame(pub_hous, geometry=[Point(xy) for xy in zip (pub_hous['X'], pub_hous['Y'])])
 
 ## LIHTC clean
-lihtc = lihtc[lihtc['geometry'].within(city_poly.loc[0, 'geometry'])].reset_index(drop = True)
+# lihtc = lihtc[lihtc['geometry'].within(city_poly.loc[0, 'geometry'])].reset_index(drop = True)
 
 ## Public housing
-pub_hous = pub_hous[pub_hous['geometry'].within(city_poly.loc[0, 'geometry'])].reset_index(drop = True)
+# pub_hous = pub_hous[pub_hous['geometry'].within(city_poly.loc[0, 'geometry'])].reset_index(drop = True)
 
 ## Merge Datasets
 presence_ph_LIHTC = lihtc[['geometry']].append(pub_hous[['geometry']])
