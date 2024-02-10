@@ -13,3 +13,10 @@ Bitmap.RData
 udp_expansion_matt/data/inputs/Public_Housing_Buildings.csv.gz
 udp_expansion_matt/census_data.csv
 udp_expansion_matt/data/outputs/databases/zillow_database_2018.csv
+udp_expansion_matt/data/outputs/databases/pums.csv
+udp_expansion_matt/data/outputs/databases/LosAngeles_database.csv
+udp_expansion_matt/data/outputs/databases/lihtc.csv
+udp_expansion_matt/data/outputs/databases/hinc_columns.csv
+udp_expansion_matt/data/outputs/databases/early_backup.csv
+udp_expansion_matt/data/outputs/databases/df.csv
+udp_expansion_matt/data/outputs/databases/all_cities.csv
