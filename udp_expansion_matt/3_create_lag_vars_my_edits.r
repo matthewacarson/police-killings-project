@@ -1,80 +1,48 @@
-# ==========================================================================
-# ==========================================================================
-# ==========================================================================
+# =====================================================
+# =====================================================
 # DISPLACEMENT TYPOLOGY SET UP
-# ==========================================================================
-# ==========================================================================
-# ==========================================================================
+# =====================================================
+# =====================================================
 
-if(!require(pacman)) install.packages("pacman")
-pacman::p_load(colorout, googledrive, bit64, fs, data.table, tigris, tidycensus, tidyverse, spdep)
+if (!require(pacman)) install.packages("pacman")
+pacman::p_load(googledrive, bit64, fs, data.table, tigris, tidycensus, tidyverse, spdep)
+
+# 2/9/2024: I could not find this package.
+# install.packages('colorout')
+
 # options(width = Sys.getenv('COLUMNS'))
 
-### Set API key
-census_api_key('4c26aa6ebbaef54a55d3903212eabbb506ade381') #enter your own key here
-
-# ==========================================================================
+# =====================================================
 # Pull in data
-# ==========================================================================
+# =====================================================
 # Note: Adjust the cities below if there are additional cities - 
 # add your city here by importing corresponding database 
 # you will need to update the 'data_dir' variable to the directory
 # you're using
 
-data_dir <- "~/git/displacement-typologies/data/outputs/databases/"
-csv_files <- fs::dir_ls(data_dir, regexp = "2018.csv$")
+data_dir <- 'C:\\Users\\madou\\OneDrive - UCLA IT Services\\1)_PS-Honors\\police_killings_github\\udp_expansion_matt\\data\\outputs\\databases\\'
+# csv_files <- fs::dir_ls(data_dir, regexp = "2018.csv$")
+df <- read_csv(file = paste0(data_dir, 'zillow_database_2018.csv'))
 
-df <- 
-    bind_rows(
-            read_csv("~/git/displacement-typologies/data/outputs/databases/Atlanta_database_2018.csv") %>% 
-            select(!X1) %>% 
-            mutate(city = "Atlanta") %>% 
-            mutate_at(vars(state_y:tract_y, state:tract), list(as.numeric)),
-            read_csv("~/git/displacement-typologies/data/outputs/databases/Denver_database_2018.csv") %>% 
-            select(!X1) %>% 
-            mutate(city = "Denver") %>% 
-            mutate_at(vars(state_y:tract_y, state:tract), list(as.numeric)),
-            read_csv("~/git/displacement-typologies/data/outputs/databases/Chicago_database_2018.csv") %>% 
-            select(!X1) %>% 
-            mutate(city = "Chicago") %>% 
-            mutate_at(vars(state_y:tract_y, state:tract), list(as.numeric)),
-            read_csv("~/git/displacement-typologies/data/outputs/databases/LosAngeles_database_2018.csv") %>% 
-            select(!X1) %>% 
-            mutate(city = "Los Angeles") %>% 
-            mutate_at(vars(state_y:tract_y, state:tract), list(as.numeric)), # temp fix
-            read_csv("~/git/displacement-typologies/data/outputs/databases/SanFrancisco_database_2018.csv") %>% 
-            select(!X1) %>% 
-            mutate(city = "San Francisco") %>% 
-            mutate_at(vars(state_y:tract_y, state:tract), list(as.numeric)),
-            read_csv("~/git/displacement-typologies/data/outputs/databases/Seattle_database_2018.csv") %>% 
-            select(!X1) %>% 
-            mutate(city = "Seattle") %>% 
-            mutate_at(vars(state_y:tract_y, state:tract), list(as.numeric)),
-            read_csv("~/git/displacement-typologies/data/outputs/databases/Cleveland_database_2018.csv") %>% 
-            select(!X1) %>% 
-            mutate(city = "Cleveland") %>% 
-            mutate_at(vars(state_y:tract_y, state:tract), list(as.numeric))#,
-            # read_csv("~/git/displacement-typologies/data/outputs/databases/Memphis_database_2018.csv") %>% 
-            # select(!X1) %>% 
-            # mutate(city = "Memphis"),
-            # read_csv("~/git/displacement-typologies/data/outputs/databases/Boston_database.csv") %>%
-            # select(!X1) %>%
-            # mutate(city = "Boston")
-    )
-
-# ==========================================================================
+# =====================================================
 # Create rent gap and extra local change in rent
-# ==========================================================================
-
+# =====================================================
 #
 # Tract data
-# --------------------------------------------------------------------------
+# -----------------------------------------------------
 # Note: Make sure to extract tracts that surround cities. For example, in 
 # Memphis and Chicago, TN, MO, MS, and AL are within close proximity of 
 # Memphis and IN is within close proximity of Chicago. 
 
 ### Tract data extraction function: add your state here
-st <- c("IL","GA","AR","TN","CO","MS","AL","KY","MO","IN", "CA", "WA", "OH", "MA", "NH")
+st <- c("AL", "AK", "AZ", "AR", "CA", "CO", "CT", 
+        "DE", "DC", "FL", "GA", "HI", "ID", "IL", 
+        "IN", "IA", "KS", "KY", "LA", "ME", "MD", 
+        "MA", "MI", "MN", "MS", "MO", "MT", "NE", 
+        "NV", "NH", "NJ", "NM", "NY", "NC", "ND", 
+        "OH", "OK", "OR", "PA", "RI", "SC", "SD", 
+        "TN", "TX", "UT", "VT", "VA", "WA", "WV", 
+        "WI", "WY")
 
 tr_rent <- function(year, state){
     get_acs(
@@ -136,7 +104,7 @@ tr_rents <-
     select(-medrent12, -medrent18) %>% 
     distinct() %>% 
     group_by(GEOID) %>% 
-    filter(row_number()==1) %>% 
+    filter(row_number() == 1) %>% 
     ungroup()
 
 # If you have more than one state, use the following 
@@ -145,24 +113,110 @@ tr_rents <-
 # abbreviation in "" (after 'tracts(')
 
 gc()
-
-states <- 
-    raster::union(
-        tracts("IL", cb = TRUE, class = 'sp'), 
-        tracts("GA", cb = TRUE, class = 'sp')) %>%
-    raster::union(tracts("AR", cb = TRUE, class = 'sp')) %>%  
-    raster::union(tracts("TN", cb = TRUE, class = 'sp')) %>%
-    raster::union(tracts("CO", cb = TRUE, class = 'sp')) %>%
-    raster::union(tracts("MS", cb = TRUE, class = 'sp')) %>%
-    raster::union(tracts("AL", cb = TRUE, class = 'sp')) %>%
-    raster::union(tracts("KY", cb = TRUE, class = 'sp')) %>%
-    raster::union(tracts("MO", cb = TRUE, class = 'sp')) %>%
-    raster::union(tracts("IN", cb = TRUE, class = 'sp')) %>%
-    raster::union(tracts("CA", cb = TRUE, class = 'sp')) %>%
-    raster::union(tracts("WA", cb = TRUE, class = 'sp')) %>%
-    raster::union(tracts("OH", cb = TRUE, class = 'sp')) %>%
-    raster::union(tracts("MA", cb = TRUE, class = 'sp')) %>%
-    raster::union(tracts("NH", cb = TRUE, class = 'sp'))
+save.image(file = '3_create_lags.RData')
+load('3_create_lags.RData')
+states <- raster::union(tracts(st[1], cb = TRUE, class = 'sp', year = 2018),
+                                 tracts(st[2], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[3], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[4], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[5], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[6], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[7], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[8], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[9], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[10], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[11], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[12], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[13], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[14], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[15], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[16], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[17], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[18], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[19], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[20], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[21], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[22], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[23], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[24], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[25], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[26], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[27], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[28], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[29], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[30], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[31], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[32], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[33], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[34], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[35], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[36], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[37], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[38], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[39], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[40], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[41], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[42], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[43], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[44], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[45], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[46], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[47], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[48], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[49], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[50], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+states <- raster::union(states, tracts(st[51], cb = TRUE, class = 'sp', year = 2018))
+print('Done')
+save(list = states, file = 'states.RData')
 
 stsp <- states
 
@@ -185,7 +239,7 @@ stsp@data <-
 
 #
 # Create neighbor matrix
-# --------------------------------------------------------------------------
+# -----------------------------------------------------
     coords <- coordinates(stsp)
     IDs <- row.names(as(stsp, "data.frame"))
     stsp_nb <- poly2nb(stsp) # nb
@@ -203,15 +257,15 @@ stsp@data <-
     
 #
 # Create select lag variables
-# --------------------------------------------------------------------------
+# -----------------------------------------------------
 
     stsp$tr_pchrent.lag <- lag.listw(lw_dist_idwW,stsp$tr_pchrent)
     stsp$tr_chrent.lag <- lag.listw(lw_dist_idwW,stsp$tr_chrent)
     stsp$tr_medrent18.lag <- lag.listw(lw_dist_idwW,stsp$tr_medrent18)
 
-# ==========================================================================
+# =====================================================
 # Join lag vars with df
-# ==========================================================================
+# =====================================================
 
 lag <-  
     left_join(
@@ -236,9 +290,9 @@ lag <-
                                TRUE ~ 0),
     ) 
 
-# ==========================================================================
+# =====================================================
 # PUMA
-# ==========================================================================
+# =====================================================
 
 puma <-
     get_acs(
@@ -269,9 +323,9 @@ stsf <-
 
 lag <- left_join(lag, stsf)
                   
-# ==========================================================================
+# =====================================================
 # Export Data
-# ==========================================================================
+# =====================================================
 
 # saveRDS(df2, "~/git/displacement-typologies/data/rentgap.rds")
 fwrite(lag, "~/git/displacement-typologies/data/outputs/lags/lag.csv")

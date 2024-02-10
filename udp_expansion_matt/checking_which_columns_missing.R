@@ -13,4 +13,6 @@ colnames(LosAngeles_database_2018)[!colnames(LosAngeles_database_2018) %in% coln
 
 colnames(LosAngeles_database_2018)[!colnames(LosAngeles_database_2018) %in% colnames(all_cities_2018)]
 
-colnames(LosAngeles_database_2018)[!colnames(LosAngeles_database_2018) %in% colnames(pums)]
+colnames(zillow_database_2018)[!colnames(zillow_database_2018) %in% colnames(df)]
+
+all(colnames(zillow_database_2018) %in% colnames(df))
