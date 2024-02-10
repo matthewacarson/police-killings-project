@@ -1,25 +1,18 @@
-#%% 1
-# =====================================================
-# DATA CURATION
-# =====================================================
-# Note: (input needed) in title bars indicates that in order to bring in new city information
-# users must input new code in the section
-
 # =====================================================
 # Import Libraries
 # =====================================================
 
 # import census
-import pandas as pd
-import numpy as np
 # import sys
-import os
 # from pathlib import Path
-import geopandas as gpd
-from shapely.geometry import Point
 # from pyproj import Proj
 # import matplotlib.pyplot as plt
-# %whos # List variables in the workspace
+import pandas as pd
+import numpy as np
+import os
+import geopandas as gpd
+from shapely.geometry import Point
+
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 pd.options.display.float_format = '{:.2f}'.format # avoid scientific notation
@@ -29,6 +22,7 @@ input_path = home+'/data/inputs/'
 output_path = home+'/data/outputs/'
 
 os.chdir(home)
+
 # os.getcwd()
 # =====================================================
 # Crosswalk Files
@@ -42,7 +36,8 @@ os.chdir(home)
 # app, which doesn't download all Google Drive items to your computer
 # but rather pulls them as necessary. This will save a lot of space but compromises speed.
 #%% 2 
-# Data files
+# Data files #####
+
 # dtype_dict = {col: float for col in range(11, 51)}
 census_90 = pd.read_csv('R13437364_SL140_1990.csv') #, dtype=dtype_dict)
 # census_90 = pd.read_csv('R13437364_SL140_subset.csv', index_col = 0)
@@ -53,6 +48,7 @@ census_00 = pd.read_csv('merged_2000.csv')#, dtype=dtype_dict)
 # dtype_dict = {col: float for col in range(0, 51)}
 xwalk_90_10 = pd.read_csv(input_path+'crosswalk_1990_2010.csv')#, dtype=dtype_dict)
 xwalk_00_10 = pd.read_csv(input_path+'crosswalk_2000_2010.csv')#, dtype=dtype_dict)
+# ####
 
 # =====================================================
 # Create Crosswalk Functions / Files
@@ -109,9 +105,6 @@ census_00_xwalked = crosswalk_files (census_00, xwalk_00_10,  counts, medians, d
 
 del [census_00, xwalk_00_10]
 #%% 6
-
-
-
 # =====================================================
 # Variable Creation
 # =====================================================
@@ -244,28 +237,11 @@ census.loc[census['hinc_18'] < 0, 'hinc_18'] = np.nan
 census.loc[census['hinc_00'] < 0, 'hinc_00'] = np.nan
 census.loc[census['hinc_90'] < 0, 'hinc_90'] = np.nan
 
-# census['hinc_18'].head(9)
-# census['hinc_18'].value_counts().head()
-# census['hinc_18'].nunique()
-# census['hinc_18'].isna().sum()
-# census['hinc_18'].notna().sum()
-
-
-# census['hinc_00'].head(9)
-# census['hinc_00'].value_counts().head()
-# census['hinc_00'].nunique()
-# census['hinc_00'].isna().sum()
-# census['hinc_00'].notna().sum()
-
-# census['hinc_90'].head(9)
-# census['hinc_90'].value_counts().head()
-# census['hinc_90'].nunique()
-# census['hinc_90'].isna().sum()
-# census['hinc_90'].notna().sum()
-
-census.shape
+# census.shape
 
 hinc_columns = census.filter(like='hinc')
+hinc_columns.to_csv(output_path+'databases/hinc_columns.csv')
+del hinc_columns
 
 #%% 14
 ## Calculate regional medians (note that these are not indexed)
@@ -712,7 +688,8 @@ pums.loc[pums['lmh_flag_encoded']==6, 'lmh_flag_category'] = 'aff_mix_high'
 census = census.merge(pums[['FIPS', 'lmh_flag_encoded', 'lmh_flag_category']], on = 'FIPS')
 
 # len(census)
-del [pums]
+pums.to_csv(output_path+'databases/pums.csv')
+del pums
 # =====================================================
 # Setting 'Market Types'
 # ==========================================================================
@@ -926,11 +903,14 @@ df['aboverm_ch_per_col_90_00'] = np.where(df['ch_per_col_90_00']>ch_rm_per_col_9
 df['aboverm_ch_per_col_00_18'] = np.where(df['ch_per_col_00_18']>ch_rm_per_col_00_18, 1, 0)
 df['aboverm_per_units_pre50_18'] = np.where(df['per_units_pre50_18']>rm_per_units_pre50_18, 1, 0)
 
+df.to_csv(output_path+'databases/df.csv')
+del df
+
 # Shapefiles
 # --------------------------------------------------
 
 ## Filter only census_zillow tracts of interest from shp
-census_zillow_tract_list = census_zillow['FIPS'].astype(str).str.zfill(11)
+# census_zillow_tract_list = census_zillow['FIPS'].astype(str).str.zfill(11)
 # city_shp = city_shp[city_shp['GEOID'].isin(census_zillow_tract_list)].reset_index(drop = True)
 
 ## Create single region polygon
@@ -984,7 +964,8 @@ pub_hous = pd.read_csv(input_path+'Public_Housing_Buildings.csv.gz')
 ## Convert to geodataframe
 lihtc = gpd.GeoDataFrame(lihtc, geometry=[Point(xy) for xy in zip (lihtc['X'], lihtc['Y'])])
 pub_hous = gpd.GeoDataFrame(pub_hous, geometry=[Point(xy) for xy in zip (pub_hous['X'], pub_hous['Y'])])
-
+lihtc.to_csv(output_path+'databases/lihtc.csv')
+del lihtc
 ## LIHTC clean
 # lihtc = lihtc[lihtc['geometry'].within(city_poly.loc[0, 'geometry'])].reset_index(drop = True)
 
@@ -1026,4 +1007,14 @@ pub_hous = gpd.GeoDataFrame(pub_hous, geometry=[Point(xy) for xy in zip (pub_hou
 census_zillow.to_csv(output_path+'databases/zillow_database_2018.csv')
 # pq.write_table(output_path+'downloads/'+city_name.replace(" ", "")+'_database.parquet')
 census.to_csv(output_path+'databases/all_cities_2018.csv', index=False)
-length(census)
+census.columns
+
+# Loading Los Angeles as an example of what it should look like
+los_angeles = pd.read_csv(output_path+'/databases/LosAngeles_database_2018.csv')
+
+los_angeles.columns
+
+all(col in census.columns for col in los_angeles.columns)
+all(col in los_angeles.columns for col in census.columns)
+
+set(los_angeles.columns) - set(census.columns)
