@@ -990,19 +990,19 @@ rail.crs = {'init' :'epsg:4269'}
 
 ## creates UTM projection
 ## zone is defined under define city specific variables
-projection = '+proj=utm +zone='+zone+', +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
+# projection = '+proj=utm +zone='+zone+', +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
 
 ## project to UTM coordinate system
-rail_proj = rail.to_crs(projection)
+# rail_proj = rail.to_crs(projection)
 
 ## create buffer around anchor institution in meters
-rail_buffer = rail_proj.buffer(804.672)
+# rail_buffer = rail_proj.buffer(804.672)
 
 ## convert buffer back to WGS84
-rail_buffer_wgs = rail_buffer.to_crs(epsg=4326)
+# rail_buffer_wgs = rail_buffer.to_crs(epsg=4326)
 
 ## crate flag
-city_shp['rail'] = np.where(city_shp.intersects(rail_buffer_wgs.unary_union) == True, 1, 0)
+# city_shp['rail'] = np.where(city_shp.intersects(rail_buffer_wgs.unary_union) == True, 1, 0)
 
 # Subsidized Housing
 # --------------------------------------------------------------------------
