@@ -104,6 +104,8 @@ df_fips_base = 'FIPS'
 xwalk_fips_base = 'trtid90'
 xwalk_fips_horizon = 'trtid10'
 census_90_xwalked = crosswalk_files (census_90, xwalk_90_10,  counts, medians, df_fips_base, xwalk_fips_base, xwalk_fips_horizon )
+
+del [census_90, xwalk_90_10]
 #%% 5
 ## 2000 Census Data
 
@@ -113,6 +115,8 @@ df_fips_base = 'FIPS'
 xwalk_fips_base = 'trtid00'
 xwalk_fips_horizon = 'trtid10'
 census_00_xwalked = crosswalk_files (census_00, xwalk_00_10,  counts, medians, df_fips_base, xwalk_fips_base, xwalk_fips_horizon )
+
+del [census_00, xwalk_00_10]
 #%% 6
 
 
@@ -162,6 +166,8 @@ pums = pums.rename(columns = {'YEAR_x':'YEAR',
                                'TRACTA_x':'TRACTA',
                                'NAME_E_x':'NAME_E'})
 pums = pums.dropna(axis = 1)
+
+del [pums_r, pums_o]
 #%% 9
 # Bring in Zillow, Rail, Hospital, Unversity, LIHTC, PH dat
 # --------------------------------------------------------------------------
@@ -171,27 +177,22 @@ pums = pums.dropna(axis = 1)
 zillow = pd.read_csv(input_path+'Zip_Zhvi_AllHomes.csv', encoding = "ISO-8859-1")
 zillow_xwalk = pd.read_csv(input_path+'TRACT_ZIP_032015.csv')
 #%% 10
-# Warnings:
-    # runcell('10', 'C:/Users/madou/OneDrive - UCLA IT Services/1)_2023_Summer/PS-Honors/Summer23 R Code and Plots/UDP_forks/displacement-typologies/code/udp-expansion-matt/2_data_curation.py')
-    # c:\users\madou\onedrive - ucla it services\1)_2023_summer\ps-honors\summer23 r code and plots\udp_forks\displacement-typologies\code\udp-expansion-matt\2_data_curation.py:181: DtypeWarning: Columns (90,98,103,109,110,113,114) have mixed types. Specify dtype option on import or set low_memory=False.
-    #   lihtc = pd.read_csv(input_path+'LowIncome_Housing_Tax_Credit_Properties.csv')#, na_values=[''])
-    # c:\users\madou\onedrive - ucla it services\1)_2023_summer\ps-honors\summer23 r code and plots\udp_forks\displacement-typologies\code\udp-expansion-matt\2_data_curation.py:209: DtypeWarning: Columns (99,104,109) have mixed types. Specify dtype option on import or set low_memory=False.
-    #   pub_hous = pd.read_csv(input_path+'Public_Housing_Buildings.csv.gz')
+
 ## Rail data
 rail = pd.read_csv(input_path+'tod_database_download.csv')
 
-## Hospitals
-hospitals = pd.read_csv(input_path+'Hospitals.csv')
+## Hospitals (not using)
+# hospitals = pd.read_csv(input_path+'Hospitals.csv')
 
-## Universities
-university = pd.read_csv(input_path+'university_HD2016.csv')
+## Universities (not using)
+# university = pd.read_csv(input_path+'university_HD2016.csv')
 
 ## LIHTC
 # dtype_dict = {col: float for col in range(0, 51)}
 lihtc = pd.read_csv(input_path+'LowIncome_Housing_Tax_Credit_Properties.csv')#, na_values=[''])
 
-warnings = [90, 98, 103, 109, 110, 113, 114]
-lihtc_columns_with_warnings = lihtc.iloc[:, warnings]
+# warnings = [90, 98, 103, 109, 110, 113, 114]
+# lihtc_columns_with_warnings = lihtc.iloc[:, warnings]
 # lihtc_columns_with_warnings.iloc[8000, :] # These are all NaN; need to fix
 # lihtc.columns[warnings]
 # lihtc_columns_with_warnings['NECTA_NM'].dtype
@@ -236,8 +237,7 @@ pub_hous = pd.read_csv(input_path+'Public_Housing_Buildings.csv.gz')
 # Changed the data frame names below because I did not filter regions of interest. I used all FIPS codes.
 census = census_2012_2018.merge(census_00_xwalked, on = 'FIPS', how = 'outer').merge(census_90_xwalked, on = 'FIPS', how = 'outer')
 
-# del [census_00, census_2012_2018, census_00_xwalked, census_90, census_90_xwalked, pub_hous, pums, pums_o, pums_r, rail, university, xwalk_00_10, xwalk_90_10, xwalk_fips_base, xwalk_fips_horizon, lihtc, hospitals]
-
+del census_2012_2018
 ## CPI indexing values
 ## This is based on the yearly CPI average
 ## Add in new CPI based on current year: https://www.bls.gov/data/inflation_calculator.htm
@@ -744,7 +744,7 @@ pums.groupby('lmh_flag_category').count()['FIPS']
 census = census.merge(pums[['FIPS', 'lmh_flag_encoded', 'lmh_flag_category']], on = 'FIPS')
 
 len(census)
-
+del [pums]
 # ==========================================================================
 # Setting 'Market Types'
 # ==========================================================================
@@ -1022,9 +1022,7 @@ pub_hous = gpd.GeoDataFrame(pub_hous, geometry=[Point(xy) for xy in zip (pub_hou
 
 ## Public housing
 # pub_hous = pub_hous[pub_hous['geometry'].within(city_poly.loc[0, 'geometry'])].reset_index(drop = True)
-del [census, census_00, census_00_xwalked, census_2012_2018, census_90, pums_r]
-del [hinc_columns, university, df, xwalk_00_10, xwalk_90_10]
-del [xwalk_fips_base, xwalk_fips_horizon, census_90_xwalked, rail, pums, pums_o]
+
 ## Merge Datasets
 # presence_ph_LIHTC = lihtc[['geometry']].append(pub_hous[['geometry']])
 
