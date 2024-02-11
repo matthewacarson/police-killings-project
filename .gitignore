@@ -20,7 +20,8 @@ udp_expansion_matt/data/outputs/databases/hinc_columns.csv
 udp_expansion_matt/data/outputs/databases/early_backup.csv
 udp_expansion_matt/data/outputs/databases/df.csv
 udp_expansion_matt/data/outputs/databases/all_cities.csv
-
+states_final.RData
+st_48_51.RData
 !sp_sates_1_thru_47.RData
 !zillow_database_2018.RData
 !udp_expansion_matt/data/R_data/*.RData
