@@ -132,7 +132,7 @@ states <- raster::union(
 # rest of the script below.
 # ################################################# #
 
-save(states, file = 'sp_sates_1_thru_42.RData')
+
 # states includes all states through index location st[42] (which is SD).
 # > states <- raster::union(states, tracts(st[42], cb = TRUE, class = 'sp', year = 2018))
 # Using FIPS code '46' for state 'SD'
