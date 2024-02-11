@@ -4,8 +4,7 @@
 # =====================================================
 # =====================================================
 
-if (!require(pacman)) install.packages("pacman")
-pacman::p_load(googledrive, bit64, fs, data.table, tigris, tidycensus, tidyverse, spdep)
+if (!require(pacman)) install.packages("pacman"); pacman::p_load(googledrive, bit64, fs, data.table, tigris, tidycensus, tidyverse, spdep)
 # library(sf)
 # 2/9/2024: I could not find this package.
 # install.packages('colorout')
@@ -21,9 +20,11 @@ pacman::p_load(googledrive, bit64, fs, data.table, tigris, tidycensus, tidyverse
 # you're using
 
 # use this for Desktop R Studio
-data_dir <- 'C:\\Users\\madou\\OneDrive - UCLA IT Services\\1)_PS-Honors\\police_killings_github\\udp_expansion_matt\\data\\outputs\\databases\\'
-df <- read_csv(file = paste0(data_dir, 'zillow_database_2018.csv'))
-
+data_dir <- 'C:\\Users\\madou\\OneDrive - UCLA IT Services\\1)_PS-Honors\\police_killings_github\\udp_expansion_matt'
+r_data_folder <- '\\data\\R_data\\'
+# df <- read_csv(paste0(data_dir, '\\data\\outputs\\databases\\zillow_database_2018.csv'))
+# save(df, file = paste0(data_dir, r_data_folder, 'zillow_database_2018.RData'))
+load(paste0(data_dir, r_data_folder, 'zillow_database_2018.RData'))
 # use this for R Studio Cloud
 # data_dir <- '/udp_expansion_matt/data/outputs/databases/'
 # df <- read_csv(file = paste0(getwd(), data_dir, 'zillow_database_2018.csv'))
@@ -81,8 +82,7 @@ tr_rents12 <-
         mutate(
             COUNTY = substr(GEOID, 1, 5),
             medrent = medrent*1.07)
-    })
-gc()
+    }); gc()
 
 tr_rents <- 
     bind_rows(tr_rents18, tr_rents12) %>% 
@@ -109,18 +109,17 @@ tr_rents <-
     group_by(GEOID) %>% 
     filter(row_number() == 1) %>% 
     ungroup()
-
+rm(tr_rents12, tr_rents18)
+save(tr_rents, file = paste0(data_dir, r_data_folder, 'tr_rents.Rdata')); gc()
 # If you have more than one state, use the following 
 # code to knit together multiple states
 #To add your state, duplicate the second to last 
 #line (including %>%) and add state
 # abbreviation in "" (after 'tracts(')
 
-gc()
-save.image(file = '3_create_lags.RData')
-load('3_create_lags.RData')
-states <- raster::union(tracts(st[1], cb = TRUE, class = 'sp', year = 2018),
-                                 tracts(st[2], cb = TRUE, class = 'sp', year = 2018))
+states <- raster::union(
+    tracts(st[1], cb = TRUE, class = 'sp', year = 2018),
+    tracts(st[2], cb = TRUE, class = 'sp', year = 2018))
 # ################################################# #
 # 2/10/2024: Code was removed here because it was 
 # not the most efficient.
