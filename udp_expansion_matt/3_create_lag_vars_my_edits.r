@@ -140,48 +140,41 @@ load(file = paste0(data_dir, r_data_folder, 'tr_rents.Rdata'))
 # Using FIPS code '46' for state 'SD'
 # =============================================================| 100%
 
-load(paste0(data_dir, r_data_folder, "sp_sates.RData"))
-rm(st_42_43, st_42_thru_51)
-load(file = paste0(data_dir, r_data_folder,'sp_sates_1_thru_47.RData'))
+# load(paste0(data_dir, r_data_folder, "sp_sates.RData"))
+# rm(st_42_43, st_42_thru_51)
+# load(file = paste0(data_dir, r_data_folder,'sp_sates_1_thru_47.RData'))
 
 # stsp <- raster::union(st_50_51, st_48_49)
 # save(stsp, file = paste0(data_dir, r_data_folder, 'st_48_51.RData'))
-load(file = paste0(data_dir, r_data_folder, 'st_48_51.RData'))
-spatial_df_1 <- stsp
-spatial_df_2 <- states
+# load(file = paste0(data_dir, r_data_folder, 'st_48_51.RData'))
+# spatial_df_1 <- stsp
+# spatial_df_2 <- states
 
-library(foreach)
-library(doParallel)
-library(raster)
+# library(foreach)
+# library(doParallel)
+# library(raster)
 
-cl <- makeCluster(2)
-registerDoParallel(cl)
+# cl <- makeCluster(2)
+# registerDoParallel(cl)
 
 # Run raster::union() function in parallel
-stsp <- foreach(i = 1, .combine = raster::union) %dopar% {
-  raster::union(spatial_df_1, spatial_df_2)
-}
+# stsp <- foreach(i = 1, .combine = raster::union) %dopar% {
+  # raster::union(spatial_df_1, spatial_df_2)
+# }
 
 # Stop the parallel backend
-stopCluster(cl)
+# stopCluster(cl)
 
-save(stsp, file = paste0(data_dir, r_data_folder, 'states_final.RData'))
-
+# save(stsp, file = paste0(data_dir, r_data_folder, 'states_final.RData'))
+load(file = paste0(data_dir, r_data_folder, 'states_final.RData'))
+# debug(left_join)
+# undebug(left_join)
 # join data to these tracts
 stsp@data <-
     left_join(
-        stsp@data %>% 
-        mutate(GEOID = case_when(
-            !is.na(GEOID.1) ~ GEOID.1, 
-            !is.na(GEOID.2) ~ GEOID.2, 
-            !is.na(GEOID.1.1) ~ GEOID.1.1, 
-            !is.na(GEOID.1.2) ~ GEOID.1.2, 
-            !is.na(GEOID.1.3) ~ GEOID.1.3, 
-            !is.na(GEOID.1.4) ~ GEOID.1.4, 
-            !is.na(GEOID.1.5) ~ GEOID.1.5), 
-    ), 
+        stsp@data, 
         tr_rents, 
-        by = "GEOID") %>% 
+        by = "GEOID") #%>% 
     select(GEOID:rm_medrent12)
 
 #
