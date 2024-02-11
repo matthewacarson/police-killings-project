@@ -20,9 +20,10 @@ if (!require(pacman)) install.packages("pacman"); pacman::p_load(googledrive, bi
 # you're using
 
 # use this for Desktop R Studio
-data_dir <- 'C:\\Users\\madou\\OneDrive - UCLA IT Services\\1)_PS-Honors\\police_killings_github\\udp_expansion_matt'
-r_data_folder <- '\\data\\R_data\\'
-# df <- read_csv(paste0(data_dir, '\\data\\outputs\\databases\\zillow_database_2018.csv'))
+# data_dir <- 'C:/Users/madou/OneDrive - UCLA IT Services/1)_PS-Honors/police_killings_github/udp_expansion_matt'
+data_dir <- paste0(getwd(), '/udp_expansion_matt')
+r_data_folder <- '/data/R_data/'
+# df <- read_csv(paste0(data_dir, '/data/outputs/databases/zillow_database_2018.csv'))
 # save(df, file = paste0(data_dir, r_data_folder, 'zillow_database_2018.RData'))
 load(paste0(data_dir, r_data_folder, 'zillow_database_2018.RData'))
 # use this for R Studio Cloud
@@ -141,20 +142,26 @@ states <- raster::union(
 load("sp_sates.RData")
 rm(st_42_43, st_42_thru_51)
 
-state <- raster::union(states, st_44_45)
-rm(st_44_45)
-save(states, file = 'sp_sates_1_thru_45.RData')
-state <- raster::union(states, st_46_47)
-rm(st_46_47)
-save(states, file = 'sp_sates_1_thru_47.RData')
-state <- raster::union(states, st_48_49)
-rm(st_48_49)
-save(states, file = 'sp_sates_1_thru_49.RData')
-state <- raster::union(states, st_50_51)
-rm(st_50_51)
-save(states, file = 'sp_sates_1_thru_51.RData')
-rm(st_43_thru_51, st_46_47st_44_45, 
-   st_48_49st_50_51, st_48_49st_50_51st_46_47st_44_45)
+# state <- raster::union(states, st_44_45)
+# rm(st_44_45)
+# save(states, file = 'sp_sates_1_thru_45.RData')
+# state <- raster::union(states, st_46_47)
+# rm(st_46_47)
+# save(states, file = 'sp_sates_1_thru_47.RData')
+load(file = 'sp_sates_1_thru_47.RData'))
+
+
+
+
+
+# state <- raster::union(states, st_48_49)
+# rm(st_48_49)
+# save(states, file = 'sp_sates_1_thru_49.RData')
+# state <- raster::union(states, st_50_51)
+# rm(st_50_51)
+# save(states, file = 'sp_sates_1_thru_51.RData')
+# rm(st_43_thru_51, st_46_47st_44_45, 
+#    st_48_49st_50_51, st_48_49st_50_51st_46_47st_44_45)
 
 
 
