@@ -109,7 +109,8 @@ tr_rents <-
 
 # If you have more than one state, use the following 
 # code to knit together multiple states
-#To add your state, duplicate the second to last line (including %>%) and add state
+#To add your state, duplicate the second to last 
+#line (including %>%) and add state
 # abbreviation in "" (after 'tracts(')
 
 gc()
@@ -117,106 +118,44 @@ save.image(file = '3_create_lags.RData')
 load('3_create_lags.RData')
 states <- raster::union(tracts(st[1], cb = TRUE, class = 'sp', year = 2018),
                                  tracts(st[2], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[3], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[4], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[5], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[6], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[7], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[8], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[9], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[10], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[11], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[12], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[13], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[14], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[15], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[16], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[17], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[18], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[19], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[20], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[21], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[22], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[23], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[24], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[25], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[26], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[27], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[28], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[29], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[30], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[31], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[32], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[33], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[34], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[35], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[36], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[37], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[38], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[39], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[40], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[41], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[42], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[43], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[44], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[45], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[46], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[47], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[48], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[49], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[50], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-states <- raster::union(states, tracts(st[51], cb = TRUE, class = 'sp', year = 2018))
-print('Done')
-save(list = states, file = 'states.RData')
+# ################################################# #
+# 2/10/2024: Code was removed here because it was 
+# not the most efficient.
+# ADD THE NEW CODE USING: 
+# 3_lag_vars_download_all_sp_objects.R
+# SAVED TO: 3_lag_vars_all_sp_objects.RData
+# Loop through 'state_list' using raster::union(state_1, state_2)
+# to join individual states into one object.
+# Name the new object 'states' so that it works with the
+# rest of the script below.
+# ################################################# #
+
+save(states, file = 'sp_sates_1_thru_42.RData')
+# states includes all states through index location st[42] (which is SD).
+# > states <- raster::union(states, tracts(st[42], cb = TRUE, class = 'sp', year = 2018))
+# Using FIPS code '46' for state 'SD'
+# =============================================================| 100%
+
+load("sp_sates.RData")
+rm(st_42_43, st_42_thru_51)
+
+state <- raster::union(states, st_44_45)
+rm(st_44_45)
+save(states, file = 'sp_sates_1_thru_45.RData')
+state <- raster::union(states, st_46_47)
+rm(st_46_47)
+save(states, file = 'sp_sates_1_thru_47.RData')
+state <- raster::union(states, st_48_49)
+rm(st_48_49)
+save(states, file = 'sp_sates_1_thru_49.RData')
+state <- raster::union(states, st_50_51)
+rm(st_50_51)
+save(states, file = 'sp_sates_1_thru_51.RData')
+rm(st_43_thru_51, st_46_47st_44_45, 
+   st_48_49st_50_51, st_48_49st_50_51st_46_47st_44_45)
+
+
+
 
 stsp <- states
 
