@@ -25,7 +25,7 @@ data_dir <- paste0(getwd(), '/udp_expansion_matt')
 r_data_folder <- '/data/R_data/'
 # df <- read_csv(paste0(data_dir, '/data/outputs/databases/zillow_database_2018.csv'))
 # save(df, file = paste0(data_dir, r_data_folder, 'zillow_database_2018.RData'))
-load(paste0(data_dir, r_data_folder, 'zillow_database_2018.RData'))
+# load(paste0(data_dir, r_data_folder, 'zillow_database_2018.RData'))
 # use this for R Studio Cloud
 # data_dir <- '/udp_expansion_matt/data/outputs/databases/'
 # df <- read_csv(file = paste0(getwd(), data_dir, 'zillow_database_2018.csv'))
@@ -49,78 +49,79 @@ st <- c("AL", "AK", "AZ", "AR", "CA", "CO", "CT",
         "TN", "TX", "UT", "VT", "VA", "WA", "WV", 
         "WI", "WY")
 
-tr_rent <- function(year, state){
-    get_acs(
-        geography = "tract",
-        variables = c('medrent' = 'B25064_001'),
-        state = state,
-        county = NULL,
-        geometry = FALSE,
-        cache_table = TRUE,
-        output = "tidy",
-        year = year,
-        keep_geo_vars = TRUE
-        ) %>%
-    select(-moe) %>% 
-    rename(medrent = estimate) %>% 
-    mutate(
-        county = str_sub(GEOID, 3,5), 
-        state = str_sub(GEOID, 1,2),
-        year = str_sub(year, 3,4) 
-    )
-}
-
-### Loop (map) across different states
-tr_rents18 <- 
-    map_dfr(st, function(state){
-        tr_rent(year = 2018, state) %>% 
-        mutate(COUNTY = substr(GEOID, 1, 5))
-    })
-
-tr_rents12 <- 
-    map_dfr(st, function(state){
-        tr_rent(year = 2012, state) %>% 
-        mutate(
-            COUNTY = substr(GEOID, 1, 5),
-            medrent = medrent*1.07)
-    }); gc()
-
-tr_rents <- 
-    bind_rows(tr_rents18, tr_rents12) %>% 
-    unite("variable", c(variable,year), sep = "") %>% 
-    group_by(variable) %>% 
-    spread(variable, medrent) %>% 
-    group_by(COUNTY) %>%
-    mutate(
-        tr_medrent18 = 
-            case_when(
-                is.na(medrent18) ~ median(medrent18, na.rm = TRUE),
-                TRUE ~ medrent18
-            ),
-        tr_medrent12 = 
-            case_when(
-                is.na(medrent12) ~ median(medrent12, na.rm = TRUE),
-                TRUE ~ medrent12),
-        tr_chrent = tr_medrent18 - tr_medrent12,
-        tr_pchrent = (tr_medrent18 - tr_medrent12)/tr_medrent12,
-        rm_medrent18 = median(tr_medrent18, na.rm = TRUE), 
-        rm_medrent12 = median(tr_medrent12, na.rm = TRUE)) %>% 
-    select(-medrent12, -medrent18) %>% 
-    distinct() %>% 
-    group_by(GEOID) %>% 
-    filter(row_number() == 1) %>% 
-    ungroup()
-rm(tr_rents12, tr_rents18)
-save(tr_rents, file = paste0(data_dir, r_data_folder, 'tr_rents.Rdata')); gc()
+# tr_rent <- function(year, state){
+#     get_acs(
+#         geography = "tract",
+#         variables = c('medrent' = 'B25064_001'),
+#         state = state,
+#         county = NULL,
+#         geometry = FALSE,
+#         cache_table = TRUE,
+#         output = "tidy",
+#         year = year,
+#         keep_geo_vars = TRUE
+#         ) %>%
+#     select(-moe) %>% 
+#     rename(medrent = estimate) %>% 
+#     mutate(
+#         county = str_sub(GEOID, 3,5), 
+#         state = str_sub(GEOID, 1,2),
+#         year = str_sub(year, 3,4) 
+#     )
+# }
+# 
+# ### Loop (map) across different states
+# tr_rents18 <- 
+#     map_dfr(st, function(state){
+#         tr_rent(year = 2018, state) %>% 
+#         mutate(COUNTY = substr(GEOID, 1, 5))
+#     })
+# 
+# tr_rents12 <- 
+#     map_dfr(st, function(state){
+#         tr_rent(year = 2012, state) %>% 
+#         mutate(
+#             COUNTY = substr(GEOID, 1, 5),
+#             medrent = medrent*1.07)
+#     }); gc()
+# 
+# tr_rents <- 
+#     bind_rows(tr_rents18, tr_rents12) %>% 
+#     unite("variable", c(variable,year), sep = "") %>% 
+#     group_by(variable) %>% 
+#     spread(variable, medrent) %>% 
+#     group_by(COUNTY) %>%
+#     mutate(
+#         tr_medrent18 = 
+#             case_when(
+#                 is.na(medrent18) ~ median(medrent18, na.rm = TRUE),
+#                 TRUE ~ medrent18
+#             ),
+#         tr_medrent12 = 
+#             case_when(
+#                 is.na(medrent12) ~ median(medrent12, na.rm = TRUE),
+#                 TRUE ~ medrent12),
+#         tr_chrent = tr_medrent18 - tr_medrent12,
+#         tr_pchrent = (tr_medrent18 - tr_medrent12)/tr_medrent12,
+#         rm_medrent18 = median(tr_medrent18, na.rm = TRUE), 
+#         rm_medrent12 = median(tr_medrent12, na.rm = TRUE)) %>% 
+#     select(-medrent12, -medrent18) %>% 
+#     distinct() %>% 
+#     group_by(GEOID) %>% 
+#     filter(row_number() == 1) %>% 
+#     ungroup()
+# rm(tr_rents12, tr_rents18)
+# save(tr_rents, file = paste0(data_dir, r_data_folder, 'tr_rents.Rdata'))
+load(file = paste0(data_dir, r_data_folder, 'tr_rents.Rdata'))
 # If you have more than one state, use the following 
 # code to knit together multiple states
 #To add your state, duplicate the second to last 
 #line (including %>%) and add state
 # abbreviation in "" (after 'tracts(')
 
-states <- raster::union(
-    tracts(st[1], cb = TRUE, class = 'sp', year = 2018),
-    tracts(st[2], cb = TRUE, class = 'sp', year = 2018))
+# states <- raster::union(
+#     tracts(st[1], cb = TRUE, class = 'sp', year = 2018),
+#     tracts(st[2], cb = TRUE, class = 'sp', year = 2018))
 # ################################################# #
 # 2/10/2024: Code was removed here because it was 
 # not the most efficient.
@@ -139,34 +140,32 @@ states <- raster::union(
 # Using FIPS code '46' for state 'SD'
 # =============================================================| 100%
 
-load("sp_sates.RData")
+load(paste0(data_dir, r_data_folder, "sp_sates.RData"))
 rm(st_42_43, st_42_thru_51)
+load(file = paste0(data_dir, r_data_folder,'sp_sates_1_thru_47.RData'))
 
-# state <- raster::union(states, st_44_45)
-# rm(st_44_45)
-# save(states, file = 'sp_sates_1_thru_45.RData')
-# state <- raster::union(states, st_46_47)
-# rm(st_46_47)
-# save(states, file = 'sp_sates_1_thru_47.RData')
-load(file = 'sp_sates_1_thru_47.RData'))
+# stsp <- raster::union(st_50_51, st_48_49)
+# save(stsp, file = paste0(data_dir, r_data_folder, 'st_48_51.RData'))
+load(file = paste0(data_dir, r_data_folder, 'st_48_51.RData'))
+spatial_df_1 <- stsp
+spatial_df_2 <- states
 
+library(foreach)
+library(doParallel)
+library(raster)
 
+cl <- makeCluster(2)
+registerDoParallel(cl)
 
+# Run raster::union() function in parallel
+stsp <- foreach(i = 1, .combine = raster::union) %dopar% {
+  raster::union(spatial_df_1, spatial_df_2)
+}
 
+# Stop the parallel backend
+stopCluster(cl)
 
-# state <- raster::union(states, st_48_49)
-# rm(st_48_49)
-# save(states, file = 'sp_sates_1_thru_49.RData')
-# state <- raster::union(states, st_50_51)
-# rm(st_50_51)
-# save(states, file = 'sp_sates_1_thru_51.RData')
-# rm(st_43_thru_51, st_46_47st_44_45, 
-#    st_48_49st_50_51, st_48_49st_50_51st_46_47st_44_45)
-
-
-
-
-stsp <- states
+save(stsp, file = paste0(data_dir, r_data_folder, 'states_final.RData'))
 
 # join data to these tracts
 stsp@data <-
@@ -276,4 +275,4 @@ lag <- left_join(lag, stsf)
 # =====================================================
 
 # saveRDS(df2, "~/git/displacement-typologies/data/rentgap.rds")
-fwrite(lag, "~/git/displacement-typologies/data/outputs/lags/lag.csv")
+# fwrite(lag, "~/git/displacement-typologies/data/outputs/lags/lag.csv")
