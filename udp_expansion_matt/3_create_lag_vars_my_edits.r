@@ -6,7 +6,7 @@
 
 if (!require(pacman)) install.packages("pacman")
 pacman::p_load(googledrive, bit64, fs, data.table, tigris, tidycensus, tidyverse, spdep)
-
+# library(sf)
 # 2/9/2024: I could not find this package.
 # install.packages('colorout')
 
@@ -20,10 +20,13 @@ pacman::p_load(googledrive, bit64, fs, data.table, tigris, tidycensus, tidyverse
 # you will need to update the 'data_dir' variable to the directory
 # you're using
 
+# use this for Desktop R Studio
 data_dir <- 'C:\\Users\\madou\\OneDrive - UCLA IT Services\\1)_PS-Honors\\police_killings_github\\udp_expansion_matt\\data\\outputs\\databases\\'
-# csv_files <- fs::dir_ls(data_dir, regexp = "2018.csv$")
 df <- read_csv(file = paste0(data_dir, 'zillow_database_2018.csv'))
 
+# use this for R Studio Cloud
+# data_dir <- '/udp_expansion_matt/data/outputs/databases/'
+# df <- read_csv(file = paste0(getwd(), data_dir, 'zillow_database_2018.csv'))
 # =====================================================
 # Create rent gap and extra local change in rent
 # =====================================================
