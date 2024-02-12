@@ -121,66 +121,10 @@ combined_tracts <- tracts(st[1], cb = TRUE, class = 'sp')
 for (i in 2:51) {
   combined_tracts <- raster::union(combined_tracts,
                                    tracts(st[i], cb = TRUE, class = 'sp'))
-  save(combined_tracts, file = paste0(data_dir, r_data_folder, "st_thru_", i, '.RData'))
+  save(combined_tracts, 
+       file = paste0(data_dir, r_data_folder, "st_thru_", i, '.RData'))
 }
 
-# combined_tracts <- raster::union(combined_tracts,
-#                                  tracts(st[4], cb = TRUE, class = 'sp'))
-# 
-# combined_tracts <- raster::union(combined_tracts,
-#                                  tracts(st[5], cb = TRUE, class = 'sp'))
-# 
-# combined_tracts <- raster::union(combined_tracts,
-#                                  tracts(st[6], cb = TRUE, class = 'sp'))
-# 
-# combined_tracts <- raster::union(combined_tracts,
-#                                  tracts(st[7], cb = TRUE, class = 'sp'))
-# 
-# combined_tracts <- raster::union(combined_tracts,
-#                                  tracts(st[8], cb = TRUE, class = 'sp'))
-# 
-# combined_tracts <- raster::union(combined_tracts,
-#                                  tracts(st[9], cb = TRUE, class = 'sp'))
-# 
-# combined_tracts <- raster::union(combined_tracts,
-#                                  tracts(st[10], cb = TRUE, class = 'sp'))
-# 
-# combined_tracts <- raster::union(combined_tracts,
-#                                  tracts(st[11], cb = TRUE, class = 'sp'))
-# 
-# combined_tracts <- raster::union(combined_tracts,
-#                                  tracts(st[12], cb = TRUE, class = 'sp'))
-# 
-# combined_tracts <- raster::union(combined_tracts,
-#                                  tracts(st[13], cb = TRUE, class = 'sp'))
-# 
-# combined_tracts <- raster::union(combined_tracts,
-#                                  tracts(st[14], cb = TRUE, class = 'sp'))
-# 
-# combined_tracts <- raster::union(combined_tracts,
-#                                  tracts(st[15], cb = TRUE, class = 'sp'))
-# 
-# combined_tracts <- raster::union(combined_tracts,
-#                                  tracts(st[16], cb = TRUE, class = 'sp'))
-# 
-# combined_tracts <- raster::union(combined_tracts,
-#                                  tracts(st[17], cb = TRUE, class = 'sp'))
-# 
-# combined_tracts <- raster::union(combined_tracts,
-#                                  tracts(st[18], cb = TRUE, class = 'sp'))
-# 
-# combined_tracts <- raster::union(combined_tracts,
-#                                  tracts(st[19], cb = TRUE, class = 'sp'))
-# 
-# combined_tracts <- raster::union(combined_tracts,
-#                                  tracts(st[20], cb = TRUE, class = 'sp'))
-# 
-# combined_tracts <- raster::union(combined_tracts,
-#                                  tracts(st[21], cb = TRUE, class = 'sp'))
-# 
-# combined_tracts <- raster::union(combined_tracts,
-#                                  tracts(st[22], cb = TRUE, class = 'sp'))
-# save(stsp, file = paste0(data_dir, r_data_folder, 'states_final.RData'))
 load(file = paste0(data_dir, r_data_folder, 'states_final.RData'))
 # debug(left_join)
 # undebug(left_join)
