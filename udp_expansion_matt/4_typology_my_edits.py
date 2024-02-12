@@ -23,7 +23,7 @@ import sys
 # `python data.py <city name>`
 # Example: python data.py Atlanta
 
-city_name = str(sys.argv[1])
+# city_name = str(sys.argv[1])
 ###
 # When testing city analysis, use: 
 # city_name = "San Francisco"
@@ -31,15 +31,14 @@ city_name = str(sys.argv[1])
 # --------------------------------------------------------------------------
 # Note: If additional cities are added, make sure to change create_lag_vars.r
 # accordingly. 
+# home = "C:/Users/madou/OneDrive - UCLA IT Services/1)_PS-Honors/police_killings_github/udp_expansion_matt"  
+home = os.getcwd() + '\\udp_expansion_matt\\'
+os.chdir(home)
+input_path = home + '\\data\\inputs\\'
+output_path = home + '\\data\\outputs\\'
 
-lag = pd.read_csv('~/git/displacement-typologies/data/outputs/lags/lag.csv')
-
-home = str(Path.home())
-
-input_path = home+'/git/displacement-typologies/data/inputs/'
-output_path = home+'/git/displacement-typologies/data/outputs/'
-
-typology_input = pd.read_csv(output_path+'/databases/'+city_name.replace(" ", "")+'_database_2018.csv', index_col = 0) ### Read file
+lag = pd.read_csv(output_path + 'lags\\lag.csv')
+typology_input = pd.read_csv(output_path+ 'databases\\zillow_database_2018.csv', index_col = 0) ### Read file
 typology_input['geometry'] = typology_input['geometry'].apply(wkt.loads) ### Read geometry as a shp attribute
 geo_typology_input  = gpd.GeoDataFrame(typology_input, geometry='geometry') ### Create the gdf
 data = geo_typology_input.copy(deep=True)
