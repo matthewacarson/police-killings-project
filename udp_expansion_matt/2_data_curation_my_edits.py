@@ -158,13 +158,13 @@ zillow_xwalk = pd.read_csv(input_path+'TRACT_ZIP_032015.csv')
 #%% 10
 
 ## Rail data
-# rail = pd.read_csv(input_path+'tod_database_download.csv')
+rail = pd.read_csv(input_path+'tod_database_download.csv')
 
 ## Hospitals (not using)
-# hospitals = pd.read_csv(input_path+'Hospitals.csv')
+hospitals = pd.read_csv(input_path+'Hospitals.csv')
 
 ## Universities (not using)
-# university = pd.read_csv(input_path+'university_HD2016.csv')
+university = pd.read_csv(input_path+'university_HD2016.csv')
 
 ## LIHTC
 # dtype_dict = {col: float for col in range(0, 51)}
