@@ -12,7 +12,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 import sys
-
+import os
 # ==========================================================================
 # Choose City to Run (inputs needed)
 # ==========================================================================
