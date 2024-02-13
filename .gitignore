@@ -3,7 +3,7 @@
 # .git/
 git_exclude/
 # Bitmap.RData
-# *.pkl
+*.pkl
 *.RData
 # *.RDataTmp
 # *.Rhistory
