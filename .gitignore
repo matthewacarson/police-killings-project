@@ -1,14 +1,14 @@
-.spyproject/
+# .spyproject/
 # .Rproj.user/
-.git/
+# .git/
 git_exclude/
-Bitmap.RData
-*.pkl
+# Bitmap.RData
+# *.pkl
 *.RData
-*.RDataTmp
+# *.RDataTmp
 # *.Rhistory
 # *.Ruserdata
-*.spydata
+# *.spydata
 # *.Rproj
 udp_expansion_matt/data/inputs/Public_Housing_Buildings.csv.gz
 udp_expansion_matt/census_data.csv
