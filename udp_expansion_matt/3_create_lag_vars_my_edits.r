@@ -4,7 +4,7 @@
 # =====================================================
 # =====================================================
 
-if (!require(pacman)) install.packages("pacman"); pacman::p_load(googledrive, bit64, fs, data.table, tigris, tidycensus, tidyverse, spdep)
+if (!require(pacman)) install.packages("pacman"); pacman::p_load(googledrive, bit64, fs, data.table, tigris, tidycensus, tidyverse, spdep, raster, sp, parallel, sf)
 # library(sf)
 # 2/9/2024: I could not find this package.
 # install.packages('colorout')
@@ -124,6 +124,8 @@ for (i in 48:51) {
   save(combined_tracts, 
        file = paste0(data_dir, r_data_folder, "st_thru_", i, '.RData'))
 }
+
+load(file = paste0(data_dir, r_data_folder, 'st_thru_51.RData'))
 stsp <- combined_tracts; rm(combined_tracts)
 # load(file = paste0(data_dir, r_data_folder, 'states_final.RData'))
 # debug(left_join)
@@ -133,8 +135,7 @@ stsp@data <-
     left_join(
         stsp@data, 
         tr_rents, 
-        by = "GEOID") # %>% 
-    select(GEOID:rm_medrent12)
+        by = "GEOID") %>% select(5:23)
 
 #
 # Create neighbor matrix
@@ -145,15 +146,35 @@ stsp@data <-
     lw_bin <- nb2listw(stsp_nb, style = "W", zero.policy = TRUE)
 
     kern1 <- knn2nb(knearneigh(coords, k = 1), row.names=IDs)
-    dist <- unlist(nbdists(kern1, coords)); summary(dist)
-    max_1nn <- max(dist)
-    dist_nb <- dnearneigh(coords, d1=0, d2 = .1*max_1nn, row.names = IDs)
-    spdep::set.ZeroPolicyOption(TRUE)
-    spdep::set.ZeroPolicyOption(TRUE)
-    dists <- nbdists(dist_nb, coordinates(stsp))
-    idw <- lapply(dists, function(x) 1/(x^2))
-    lw_dist_idwW <- nb2listw(dist_nb, glist = idw, style = "W")
     
+# Parallelizing
+
+# Load necessary packages
+library(foreach)
+library(doParallel)
+
+# Set up parallel backend
+# cores <- detectCores()
+cl <- makeCluster(4) # manually set to four cores
+registerDoParallel(cl)
+
+
+  dist <- unlist(nbdists(kern1, coords)); summary(dist)
+  max_1nn <- max(dist)
+  dist_nb <- dnearneigh(coords, d1=0, d2 = .1*max_1nn, row.names = IDs)
+
+# Wait for above code to complete before running anything more
+  spdep::set.ZeroPolicyOption(TRUE)
+  spdep::set.ZeroPolicyOption(TRUE)
+  dists <<- nbdists(dist_nb, coordinates(stsp))
+  idw <<- lapply(dists, function(x) 1/(x^2))
+  lw_dist_idwW <<- nb2listw(dist_nb, glist = idw, style = "W")
+    
+
+    
+# Stop the parallel backend
+stopCluster(cl)
+
 #
 # Create select lag variables
 # -----------------------------------------------------
@@ -199,7 +220,7 @@ puma <-
         variable = "B05006_001", 
         year = 2018, 
         # wide = TRUE, 
-        geometry=TRUE, 
+        geometry = TRUE, 
         state = st, 
         keep_geo_vars = TRUE
     ) %>% 
@@ -208,7 +229,8 @@ puma <-
         puma_density = estimate/sqmile
         ) %>% 
     rename(PUMAID = GEOID)
-
+save(puma, file = paste0(data_dir, r_data_folder, 'puma.RData'))
+     
 stsf <- 
     stsp %>% 
     st_as_sf() %>% 
