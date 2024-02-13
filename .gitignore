@@ -1,12 +1,12 @@
 .spyproject/
-.Rproj.user/
+# .Rproj.user/
 .git/
 git_exclude/
 Bitmap.RData
 *.pkl
 *.RData
 *.RDataTmp
-*.Rhistory
+# *.Rhistory
 # *.Ruserdata
 *.spydata
 # *.Rproj
