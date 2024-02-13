@@ -118,14 +118,14 @@ combined_tracts <- tracts(st[1], cb = TRUE, class = 'sp')
 
 
 
-for (i in 2:51) {
+for (i in 48:51) {
   combined_tracts <- raster::union(combined_tracts,
                                    tracts(st[i], cb = TRUE, class = 'sp'))
   save(combined_tracts, 
        file = paste0(data_dir, r_data_folder, "st_thru_", i, '.RData'))
 }
-
-load(file = paste0(data_dir, r_data_folder, 'states_final.RData'))
+stsp <- combined_tracts; rm(combined_tracts)
+# load(file = paste0(data_dir, r_data_folder, 'states_final.RData'))
 # debug(left_join)
 # undebug(left_join)
 # join data to these tracts
@@ -133,7 +133,7 @@ stsp@data <-
     left_join(
         stsp@data, 
         tr_rents, 
-        by = "GEOID") #%>% 
+        by = "GEOID") # %>% 
     select(GEOID:rm_medrent12)
 
 #
@@ -225,6 +225,6 @@ lag <- left_join(lag, stsf)
 # =====================================================
 # Export Data
 # =====================================================
-
+save.image(file = paste0(data_dir, r_data_folder, '3_lag_vars_everything'))
 # saveRDS(df2, "~/git/displacement-typologies/data/rentgap.rds")
 # fwrite(lag, "~/git/displacement-typologies/data/outputs/lags/lag.csv")
