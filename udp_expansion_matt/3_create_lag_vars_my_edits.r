@@ -174,7 +174,7 @@ registerDoParallel(cl)
     
 # Stop the parallel backend
 stopCluster(cl)
-
+# Feb 13, 1:00 PM -- stopped here
 #
 # Create select lag variables
 # -----------------------------------------------------
