@@ -4,7 +4,7 @@
 # =====================================================
 # =====================================================
 
-if (!require(pacman)) install.packages("pacman"); pacman::p_load(googledrive, bit64, fs, data.table, tigris, tidycensus, tidyverse, spdep, raster, sp, parallel, sf)
+if (!require(pacman)) install.packages("pacman"); pacman::p_load(googledrive, bit64, fs, data.table, tigris, tidycensus, tidyverse, spdep, raster, sp, parallel, sf, foreach, doParallel)
 # library(sf)
 # 2/9/2024: I could not find this package.
 # install.packages('colorout')
@@ -112,21 +112,22 @@ st <- c("AL", "AK", "AZ", "AR", "CA", "CO", "CT",
 #     ungroup()
 # rm(tr_rents12, tr_rents18)
 # save(tr_rents, file = paste0(data_dir, r_data_folder, 'tr_rents.Rdata'))
-load(file = paste0(data_dir, r_data_folder, 'tr_rents.Rdata'))
+# load(file = paste0(data_dir, r_data_folder, 'tr_rents.Rdata'))
 
-combined_tracts <- tracts(st[1], cb = TRUE, class = 'sp')
+# combined_tracts <- tracts(st[1], cb = TRUE, class = 'sp')
 
 
 
 for (i in 48:51) {
-  combined_tracts <- raster::union(combined_tracts,
-                                   tracts(st[i], cb = TRUE, class = 'sp'))
-  save(combined_tracts, 
-       file = paste0(data_dir, r_data_folder, "st_thru_", i, '.RData'))
+  # combined_tracts <- raster::union(combined_tracts,
+                                   # tracts(st[i], cb = TRUE, class = 'sp'))
+  # save(combined_tracts, 
+       # file = paste0(data_dir, r_data_folder, "st_thru_", i, '.RData'))
 }
 
-load(file = paste0(data_dir, r_data_folder, 'st_thru_51.RData'))
-stsp <- combined_tracts; rm(combined_tracts)
+# stsp <- combined_tracts; rm(combined_tracts)
+
+# load(file = paste0(data_dir, r_data_folder, 'st_thru_51.RData'))
 # load(file = paste0(data_dir, r_data_folder, 'states_final.RData'))
 # debug(left_join)
 # undebug(left_join)
@@ -147,16 +148,7 @@ stsp@data <-
 
     kern1 <- knn2nb(knearneigh(coords, k = 1), row.names=IDs)
     
-# Parallelizing
 
-# Load necessary packages
-library(foreach)
-library(doParallel)
-
-# Set up parallel backend
-# cores <- detectCores()
-cl <- makeCluster(4) # manually set to four cores
-registerDoParallel(cl)
 
 
   dist <- unlist(nbdists(kern1, coords)); summary(dist)
@@ -171,18 +163,33 @@ registerDoParallel(cl)
   lw_dist_idwW <<- nb2listw(dist_nb, glist = idw, style = "W")
     
 
-    
-# Stop the parallel backend
-stopCluster(cl)
+load(file = 'Feb_13_2024_1_00_PM.RData') 
 # Feb 13, 1:00 PM -- stopped here
 #
-# Create select lag variables
-# -----------------------------------------------------
+# Create select lag variables 
+# ----------------------------------------------------- #
+# Parallelizing ####
 
-    stsp$tr_pchrent.lag <- lag.listw(lw_dist_idwW,stsp$tr_pchrent)
-    stsp$tr_chrent.lag <- lag.listw(lw_dist_idwW,stsp$tr_chrent)
-    stsp$tr_medrent18.lag <- lag.listw(lw_dist_idwW,stsp$tr_medrent18)
+# Set up parallel backend
+cl <- makeCluster(4) # manually set to four cores
+registerDoParallel(cl)
 
+# subsetting for missing NA values in stsp$tr_pchrent
+
+stsp$tr_pchrent.lag <- lag.listw(
+      lw_dist_idwW[!is.na(stsp$tr_chrent)], 
+      stsp$tr_chrent[!is.na(stsp$tr_chrent)])
+
+stsp$tr_chrent.lag <- lag.listw(
+  lw_dist_idwW[!is.na(stsp$tr_chrent)],
+  stsp$tr_chrent[!is.na(stsp$tr_chrent)])
+
+stsp$tr_medrent18.lag <- lag.listw(
+  lw_dist_idwW,
+  stsp$tr_medrent18)
+
+    # Stop the parallel backend
+stopCluster(cl)
 # =====================================================
 # Join lag vars with df
 # =====================================================
