@@ -1,0 +1,28 @@
+{
+    "id": "349FC04A",
+    "path": null,
+    "project_path": null,
+    "type": "object_explorer",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1707880406672.0,
+    "source_on_save": false,
+    "relative_order": 4,
+    "properties": {
+        "id": "dffe0ada06474689a4a58c0775bf68e5",
+        "name": "lw_dist_idwW",
+        "title": "lw_dist_idwW",
+        "language": "R",
+        "source_window_id": "",
+        "Source": "Source"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1858847316720,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1707880406672,
+    "read_only": false,
+    "read_only_alternatives": []
+}
