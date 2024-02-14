@@ -138,6 +138,12 @@ stsp@data <-
         tr_rents, 
         by = "GEOID") %>% select(5:23)
 
+# load(file = 'Feb_13_2024_1_00_PM.RData')
+# Subset stsp to remove NAs
+stsp_backup <- stsp
+stsp <- stsp[!is.na(stsp$tr_pchrent),]
+
+
 #
 # Create neighbor matrix
 # -----------------------------------------------------
@@ -156,66 +162,65 @@ stsp@data <-
   dist_nb <- dnearneigh(coords, d1=0, d2 = .1*max_1nn, row.names = IDs)
 
 # Wait for above code to complete before running anything more
+save.image(file = paste0(data_dir, r_data_folder, "Tues_2_13_night.RData"))
+
   spdep::set.ZeroPolicyOption(TRUE)
   spdep::set.ZeroPolicyOption(TRUE)
-  dists <<- nbdists(dist_nb, coordinates(stsp))
-  idw <<- lapply(dists, function(x) 1/(x^2))
-  lw_dist_idwW <<- nb2listw(dist_nb, glist = idw, style = "W")
+  dists <- nbdists(dist_nb, coordinates(stsp))
+  idw <- lapply(dists, function(x) 1/(x^2))
+  lw_dist_idwW <- nb2listw(dist_nb, glist = idw, style = "W")
     
+save(lw_dist_idwW, file = paste0(data_dir, r_data_folder, 'lw_dist_idwW.RData'))
 
-# load(file = 'Feb_13_2024_1_00_PM.RData')
-# Feb 13, 1:00 PM -- stopped here
 #
-# Create select lag variables 
+# Create select lag variables ####
 # ----------------------------------------------------- #
-# Parallelizing ####
-
-# Set up parallel backend
-cl <- makeCluster(8) # manually set to four cores
-registerDoParallel(cl)
-
-{
-  sum(stsp$rm_medrent18, na.rm = T);   length(stsp$rm_medrent12)
-}
-
 
 
 # subsetting for missing NA values in stsp$tr_pchrent
 
-############# #
-# Original ####
-############# #
+############## #
+### Original ###
+############## #
 
 # stsp$tr_pchrent.lag <- lag.listw(lw_dist_idwW, stsp$tr_pchrent)
 # stsp$tr_chrent.lag <- lag.listw(lw_dist_idwW, stsp$tr_chrent)
 # stsp$tr_medrent18.lag <- lag.listw(lw_dist_idwW, stsp$tr_medrent18)
 ################ #
-################ #
 
-stsp$tr_pchrent.lag <- lag.listw(
-      lw_dist_idwW[!is.na(stsp$tr_pchrent)], 
-      stsp$tr_pchrent[!is.na(stsp$tr_pchrent)])
+stsp$tr_pchrent.lag <- lag.listw(lw_dist_idwW, stsp$tr_pchrent)
+
+save(stsp, file = paste0(data_dir, r_data_folder, 'stsp.RData'))
 
 stsp$tr_chrent.lag <- lag.listw(
-  lw_dist_idwW[!is.na(stsp$tr_chrent)],
-  stsp$tr_chrent[!is.na(stsp$tr_chrent)])
+  lw_dist_idwW,
+  stsp$tr_chrent)
+
+save(stsp, file = paste0(data_dir, r_data_folder, 'stsp.RData'))
 
 stsp$tr_medrent18.lag <- lag.listw(
-  lw_dist_idwW[!is.na(stsp$tr_medrent18)],
-  stsp$tr_medrent18[!is.na(stsp$tr_medrent18)])
+  lw_dist_idwW,
+  stsp$tr_medrent18)
 
-    # Stop the parallel backend
-stopCluster(cl)
+save(stsp, file = paste0(data_dir, r_data_folder, 'stsp.RData'))
+
 # =====================================================
-# Join lag vars with df
+# Join lag vars with df ####
 # =====================================================
 
+# Parallelizing ####
+# Set up parallel backend
+cl <- makeCluster(8) # manually set to four cores
+registerDoParallel(cl)
+
+stsp_data <- stsp@data[, c(1, 14:22)]
+stsp_data$GEOID <- as.numeric(stsp$GEOID)
 lag <-  
     left_join(
         df, 
-        stsp@data %>% 
-            mutate(GEOID = as.numeric(GEOID)) %>%
-            select(GEOID, tr_medrent18:tr_medrent18.lag)) %>%
+        stsp_data) %>% 
+            # mutate(GEOID = as.numeric(GEOID)) %>%
+            # select(c(1,14:22)) %>%
     mutate(
         tr_rent_gap = tr_medrent18.lag - tr_medrent18, 
         tr_rent_gapprop = tr_rent_gap/((tr_medrent18 + tr_medrent18.lag)/2),
@@ -233,6 +238,7 @@ lag <-
                                TRUE ~ 0),
     ) 
 
+save(lag, file = paste0(data_dir, r_data_folder, 'lag.RData'))
 # =====================================================
 # PUMA
 # =====================================================
@@ -261,15 +267,23 @@ stsf <-
     st_centroid() %>%
     st_join(., puma) %>% 
     mutate(dense = case_when(puma_density >= 3000 ~ 1, TRUE ~ 0)) %>% 
-    st_drop_geometry() %>% 
-    select(GEOID, puma_density, dense) %>% 
-    mutate(GEOID = as.numeric(GEOID))
+    st_drop_geometry()
+    # select(GEOID, puma_density, dense) %>% 
+    # mutate(GEOID = as.numeric(GEOID))
+
+stsf$GEOID <- as.numeric(stsf$GEOID)
+stsf <- stsf[, c('GEOID', 'puma_density', 'dense')]
+
+save(stsp, file = paste0(data_dir, r_data_folder, 'stsp.RData'))
 
 lag <- left_join(lag, stsf)
-                  
+save(lag, file = paste0(data_dir, r_data_folder, 'lag.RData'))
 # =====================================================
 # Export Data
 # =====================================================
 save.image(file = paste0(data_dir, r_data_folder, '3_lag_vars_everything'))
 # saveRDS(df2, "~/git/displacement-typologies/data/rentgap.rds")
 # fwrite(lag, "~/git/displacement-typologies/data/outputs/lags/lag.csv")
+
+# Stop the parallel backend
+stopCluster(cl)

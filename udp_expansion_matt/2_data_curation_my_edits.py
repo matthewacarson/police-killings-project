@@ -92,7 +92,7 @@ xwalk_fips_base = 'trtid90'
 xwalk_fips_horizon = 'trtid10'
 census_90_xwalked = crosswalk_files (census_90, xwalk_90_10,  counts, medians, df_fips_base, xwalk_fips_base, xwalk_fips_horizon )
 
-del [census_90, xwalk_90_10]
+# del [census_90, xwalk_90_10]
 #%% 5
 ## 2000 Census Data
 
@@ -103,7 +103,7 @@ xwalk_fips_base = 'trtid00'
 xwalk_fips_horizon = 'trtid10'
 census_00_xwalked = crosswalk_files (census_00, xwalk_00_10,  counts, medians, df_fips_base, xwalk_fips_base, xwalk_fips_horizon )
 
-del [census_00, xwalk_00_10]
+# del [census_00, xwalk_00_10]
 #%% 6
 # =====================================================
 # Variable Creation
@@ -146,7 +146,7 @@ pums = pums.rename(columns = {'YEAR_x':'YEAR',
                                'NAME_E_x':'NAME_E'})
 pums = pums.dropna(axis = 1)
 
-del [pums_r, pums_o]
+# del [pums_r, pums_o]
 #%% 9
 # Bring in Zillow, Rail, Hospital, Unversity, LIHTC, PH dat
 # =====================================================
@@ -169,31 +169,7 @@ university = pd.read_csv(input_path+'university_HD2016.csv')
 ## LIHTC
 # dtype_dict = {col: float for col in range(0, 51)}
 lihtc = pd.read_csv(input_path+'LowIncome_Housing_Tax_Credit_Properties.csv', na_values=[''])
-# warnings = [90, 98, 103, 109, 110, 113, 114]
-# lihtc_columns_with_warnings = lihtc.iloc[:, warnings]
-# lihtc_columns_with_warnings.iloc[8000, :] # These are all NaN; need to fix
-# lihtc.columns[warnings]
-# lihtc_columns_with_warnings['NECTA_NM'].dtype
-# def has_multiple_data_types(column):
-#     unique_data_types = column.apply(type).unique()
-#     return len(unique_data_types) > 1
-# has_multiple_data_types(lihtc_columns_with_warnings['NECTA_NM'])
-# 
-# data_types_series = lihtc_columns_with_warnings['NECTA_NM'].apply(type)
-# # Get unique data types and their incidence
-# unique_data_types = data_types_series.unique()
-# data_type_counts = data_types_series.value_counts()
-# 
-# # Create a DataFrame to display the results
-# data_type_info = pd.DataFrame({'Data Type': unique_data_types, 'Count': data_type_counts})
-# # data_type_counts
-# 
-# # lihtc_columns_with_warnings[lihtc_columns_with_warnings['NECTA_NM'].notna()].index
-# lihtc_NECTA_NM_unique = lihtc_columns_with_warnings['NECTA_NM'].unique()
-# # lihtc_columns_with_warnings['NECTA_NM'].value_counts()
-# lihtc_columns_with_warnings['NECTA_NM'].nunique()
-# lihtc_columns_with_warnings['NECTA_NM'].isna().sum()
-# lihtc_columns_with_warnings['NECTA_NM'].notna().sum()
+
 ## Public housing
 pub_hous = pd.read_csv(input_path+'Public_Housing_Buildings.csv.gz')
 #%% 11
@@ -205,6 +181,34 @@ pub_hous = pd.read_csv(input_path+'Public_Housing_Buildings.csv.gz')
 # Note: Similar to above, add a 'elif' for you city here
 # Pull cartographic boundary files from here:
 # https://www.census.gov/geographies/mapping-files/time-series/geo/carto-boundary-file.2017.html
+import glob
+
+# Directory containing the Shapefiles
+directory = r'C:\Users\madou\OneDrive - UCLA IT Services\1)_PS-Honors\police-killings-project_union_PC\udp_expansion_matt\data\inputs\shp'
+
+# Search for all .shp files in the directory
+file_paths = glob.glob(directory + '\\*.shp')
+
+# run in parallel
+from concurrent.futures import ThreadPoolExecutor
+
+def combine_shapefile(file_path):
+    """Function to combine a single Shapefile."""
+    return gpd.read_file(file_path)
+
+# Create a ThreadPoolExecutor with max_workers set to the number of CPU cores
+with ThreadPoolExecutor(max_workers=None) as executor:
+    # Submit tasks to read each Shapefile asynchronously
+    futures = [executor.submit(combine_shapefile, file) for file in file_paths]
+    
+    # Wait for all tasks to complete and retrieve the results
+    shapefiles = [future.result() for future in futures]
+
+# Combine the Shapefiles into a single GeoDataFrame
+city_shp = gpd.GeoDataFrame(pd.concat(shapefiles, ignore_index=True))
+
+# Save the combined GeoDataFrame as a new Shapefile
+city_shp.to_file('combined_output.shp')
 
 # =====================================================
 # Income Interpolation
@@ -215,7 +219,7 @@ pub_hous = pd.read_csv(input_path+'Public_Housing_Buildings.csv.gz')
 # Changed the data frame names below because I did not filter regions of interest. I used all FIPS codes.
 census = census_2012_2018.merge(census_00_xwalked, on = 'FIPS', how = 'outer').merge(census_90_xwalked, on = 'FIPS', how = 'outer')
 
-del [census_2012_2018, census_00_xwalked, census_90_xwalked]
+# del [census_2012_2018, census_00_xwalked, census_90_xwalked]
 ## CPI indexing values
 ## This is based on the yearly CPI average
 ## Add in new CPI based on current year: https://www.bls.gov/data/inflation_calculator.htm
@@ -990,31 +994,70 @@ del lihtc
 # End Map Plot
 ####
 
-# =====================================================
+
+# ==========================================================================
 # Merge Census and Zillow Data
-# =====================================================
+# ==========================================================================
 
-# city_shp['GEOID'] = city_shp['GEOID'].astype('int64')
+city_shp['GEOID'] = city_shp['GEOID'].astype('int64')
 
-# census_zillow = census_zillow.merge(city_shp[['GEOID','geometry','rail',
+census_zillow = census_zillow.merge(city_shp[['GEOID','geometry','rail',
 	# 'anchor_institution',
-# 	'presence_ph_LIHTC']], right_on = 'GEOID', left_on = 'FIPS')
-# census_zillow.query("FIPS == 13121011100")
-# =====================================================
+	'presence_ph_LIHTC']], right_on = 'GEOID', left_on = 'FIPS')
+census_zillow.query("FIPS == 13121011100")
+# ==========================================================================
 # Export Data
-# =====================================================
+# ==========================================================================
+
 
 census_zillow.to_csv(output_path+'databases/zillow_database_2018.csv')
 # pq.write_table(output_path+'downloads/'+city_name.replace(" ", "")+'_database.parquet')
 census.to_csv(output_path+'databases/all_cities_2018.csv', index=False)
-census.columns
+# census.columns
+
+# save session/variables
+import shelve
+
+T='Hiya'
+val=[1,2,3]
+
+filename='/shelve.out'
+my_shelf = shelve.open(filename,'n') # 'n' for new
+
+for key in dir():
+    try:
+        my_shelf[key] = globals()[key]
+    except TypeError:
+        #
+        # __builtins__, my_shelf, and imported modules can not be shelved.
+        #
+        print('ERROR shelving: {0}'.format(key))
+my_shelf.close()
+
+
+import rpy2
+from rpy2 import robjects
+from rpy2.robjects import pandas2ri
+pandas2ri.activate()
+
+# read .RData file as a pandas dataframe
+def load_rdata_file(filename):
+    r_data = robjects.r['get'](robjects.r['load'](filename))
+    df = pandas2ri.ri2py(r_data)
+    return df
+
+# write pandas dataframe to an .RData file
+def save_rdata_file(df, filename):
+    r_data = pandas2ri.py2ri(df)
+    robjects.r.assign("my_df", r_data)
+    robjects.r("save(my_df, file='{}')".format(filename))
 
 # Loading Los Angeles as an example of what it should look like
-los_angeles = pd.read_csv(output_path+'/databases/LosAngeles_database_2018.csv')
+# los_angeles = pd.read_csv(output_path+'/databases/LosAngeles_database_2018.csv')
 
-los_angeles.columns
+# los_angeles.columns
 
-all(col in census.columns for col in los_angeles.columns)
-all(col in los_angeles.columns for col in census.columns)
+# all(col in census.columns for col in los_angeles.columns)
+# all(col in los_angeles.columns for col in census.columns)
 
-set(los_angeles.columns) - set(census.columns)
+# set(los_angeles.columns) - set(census.columns)
