@@ -118,12 +118,12 @@ st <- c("AL", "AK", "AZ", "AR", "CA", "CO", "CT",
 
 
 
-for (i in 48:51) {
+# for (i in 48:51) {
   # combined_tracts <- raster::union(combined_tracts,
                                    # tracts(st[i], cb = TRUE, class = 'sp'))
   # save(combined_tracts, 
        # file = paste0(data_dir, r_data_folder, "st_thru_", i, '.RData'))
-}
+# }
 
 # stsp <- combined_tracts; rm(combined_tracts)
 
@@ -163,7 +163,7 @@ stsp@data <-
   lw_dist_idwW <<- nb2listw(dist_nb, glist = idw, style = "W")
     
 
-load(file = 'Feb_13_2024_1_00_PM.RData') 
+# load(file = 'Feb_13_2024_1_00_PM.RData')
 # Feb 13, 1:00 PM -- stopped here
 #
 # Create select lag variables 
@@ -171,22 +171,38 @@ load(file = 'Feb_13_2024_1_00_PM.RData')
 # Parallelizing ####
 
 # Set up parallel backend
-cl <- makeCluster(4) # manually set to four cores
+cl <- makeCluster(8) # manually set to four cores
 registerDoParallel(cl)
+
+{
+  sum(stsp$rm_medrent18, na.rm = T);   length(stsp$rm_medrent12)
+}
+
+
 
 # subsetting for missing NA values in stsp$tr_pchrent
 
+############# #
+# Original ####
+############# #
+
+# stsp$tr_pchrent.lag <- lag.listw(lw_dist_idwW, stsp$tr_pchrent)
+# stsp$tr_chrent.lag <- lag.listw(lw_dist_idwW, stsp$tr_chrent)
+# stsp$tr_medrent18.lag <- lag.listw(lw_dist_idwW, stsp$tr_medrent18)
+################ #
+################ #
+
 stsp$tr_pchrent.lag <- lag.listw(
-      lw_dist_idwW[!is.na(stsp$tr_chrent)], 
-      stsp$tr_chrent[!is.na(stsp$tr_chrent)])
+      lw_dist_idwW[!is.na(stsp$tr_pchrent)], 
+      stsp$tr_pchrent[!is.na(stsp$tr_pchrent)])
 
 stsp$tr_chrent.lag <- lag.listw(
   lw_dist_idwW[!is.na(stsp$tr_chrent)],
   stsp$tr_chrent[!is.na(stsp$tr_chrent)])
 
 stsp$tr_medrent18.lag <- lag.listw(
-  lw_dist_idwW,
-  stsp$tr_medrent18)
+  lw_dist_idwW[!is.na(stsp$tr_medrent18)],
+  stsp$tr_medrent18[!is.na(stsp$tr_medrent18)])
 
     # Stop the parallel backend
 stopCluster(cl)
