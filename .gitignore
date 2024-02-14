@@ -5,7 +5,7 @@ git_exclude/
 # Bitmap.RData
 *.pkl
 *.RData
-# *.RDataTmp
+*.RDataTmp
 # *.Rhistory
 # *.Ruserdata
 # *.spydata
@@ -25,4 +25,4 @@ st_48_51.RData
 !sp_sates_1_thru_47.RData
 !zillow_database_2018.RData
 !udp_expansion_matt/data/R_data/*.RData
-.Rproj.user
+# .Rproj.user
