@@ -40,14 +40,11 @@ os.chdir(home)
 #%% 2 
 # Data files #####
 
-# dtype_dict = {col: float for col in range(11, 51)}
-census_90 = pd.read_csv('R13437364_SL140_1990.csv') #, dtype=dtype_dict)
-# census_90 = pd.read_csv('R13437364_SL140_subset.csv', index_col = 0)
-# dtype_dict = {col: float for col in range(1, 51)}
-census_00 = pd.read_csv('merged_2000.csv')#, dtype=dtype_dict)
+census_90 = pd.read_csv('R13437364_SL140_1990.csv')
+
+census_00 = pd.read_csv('merged_2000.csv')
 
 # Crosswalk files
-# dtype_dict = {col: float for col in range(0, 51)}
 xwalk_90_10 = pd.read_csv(input_path+'crosswalk_1990_2010.csv')#, dtype=dtype_dict)
 xwalk_00_10 = pd.read_csv(input_path+'crosswalk_2000_2010.csv')#, dtype=dtype_dict)
 # ####
@@ -82,11 +79,6 @@ def crosswalk_files (df, xwalk, counts, medians, df_fips_base, xwalk_fips_base, 
 #%% 4
 # Crosswalking
 # --------------------------------------------------
-# 9/11: I am running into some problems with multiplying non-integers (see error message below)
-# TypeError: can't multiply sequence by non-int of type 'float'
-# Use .dtypes to check the data storage types
-# Check lists with type(list_name)
-## 1990 Census Data
 
 counts = census_90.columns.drop(['mrent_90', 'mhval_90', 'hinc_90', "NAME", "QName", "SUMLEV", "GEOCOMP", "REGION", "DIVISION", "FIPS", "state", "county", "tract"])
 medians = ['mrent_90', 'mhval_90', 'hinc_90']
@@ -106,7 +98,7 @@ xwalk_fips_base = 'trtid00'
 xwalk_fips_horizon = 'trtid10'
 census_00_xwalked = crosswalk_files (census_00, xwalk_00_10,  counts, medians, df_fips_base, xwalk_fips_base, xwalk_fips_horizon )
 
-del [census_00, xwalk_00_10]
+del [census_00, xwalk_00_10, counts]
 #%% 6
 # =====================================================
 # Variable Creation
@@ -128,10 +120,7 @@ del [census_00, xwalk_00_10]
 census_2012_2018 = pd.read_csv('merged_2012_2018.csv')#, index_col = 0)
 # census_2012_2018 = census_2012_2018.drop(columns = ['county_y', 'state_y', 'tract_y'])
 #%% 7
-census_2012_2018 = census_2012_2018.rename(columns = {'county_x': 'county',
-                                    'state_x': 'state',
-                                    'tract_x': 'tract',
-                                    'GEOID': 'FIPS'}) # 9/11/23: I added this because tidycensus downloaded as GEOID
+census_2012_2018 = census_2012_2018.rename(columns = {'county_x': 'county', 'state_x': 'state', 'tract_x': 'tract', 'GEOID': 'FIPS'}) # 9/11/23: I added this because tidycensus downloaded as GEOID
 #%% 8
 # Bring in PUMS data
 # =====================================================
@@ -140,13 +129,7 @@ census_2012_2018 = census_2012_2018.rename(columns = {'county_x': 'county',
 pums_r = pd.read_csv(input_path+'nhgis0002_ds233_20175_2017_tract.csv', encoding = "ISO-8859-1")
 pums_o = pd.read_csv(input_path+'nhgis0002_ds234_20175_2017_tract.csv', encoding = "ISO-8859-1")
 pums = pums_r.merge(pums_o, on = 'GISJOIN')
-pums = pums.rename(columns = {'YEAR_x':'YEAR',
-                               'STATE_x':'STATE',
-                               'STATEA_x':'STATEA',
-                               'COUNTY_x':'COUNTY',
-                               'COUNTYA_x':'COUNTYA',
-                               'TRACTA_x':'TRACTA',
-                               'NAME_E_x':'NAME_E'})
+pums = pums.rename(columns = {'YEAR_x':'YEAR', 'STATE_x':'STATE', 'STATEA_x':'STATEA', 'COUNTY_x':'COUNTY', 'COUNTYA_x':'COUNTYA', 'TRACTA_x':'TRACTA', 'NAME_E_x':'NAME_E'})
 pums = pums.dropna(axis = 1)
 
 del [pums_r, pums_o]
@@ -164,10 +147,10 @@ zillow_xwalk = pd.read_csv(input_path+'TRACT_ZIP_032015.csv')
 rail = pd.read_csv(input_path+'tod_database_download.csv')
 
 ## Hospitals (not using)
-hospitals = pd.read_csv(input_path+'Hospitals.csv')
+# hospitals = pd.read_csv(input_path+'Hospitals.csv')
 
 ## Universities (not using)
-university = pd.read_csv(input_path+'university_HD2016.csv')
+# university = pd.read_csv(input_path+'university_HD2016.csv')
 
 ## LIHTC
 # dtype_dict = {col: float for col in range(0, 51)}
@@ -211,7 +194,7 @@ with ThreadPoolExecutor(max_workers=None) as executor:
 city_shp = gpd.GeoDataFrame(pd.concat(shapefiles, ignore_index=True))
 
 # Save the combined GeoDataFrame as a new Shapefile
-city_shp.to_file('combined_output.shp')
+# city_shp.to_file('combined_output.shp')
 city_shp = gpd.read_file('C:/Users/madou/OneDrive - UCLA IT Services/1)_PS-Honors/police_killings_github/udp_expansion_matt/combined_output.shp')
 # =====================================================
 # Income Interpolation
@@ -222,7 +205,7 @@ city_shp = gpd.read_file('C:/Users/madou/OneDrive - UCLA IT Services/1)_PS-Honor
 # Changed the data frame names below because I did not filter regions of interest. I used all FIPS codes.
 census = census_2012_2018.merge(census_00_xwalked, on = 'FIPS', how = 'outer').merge(census_90_xwalked, on = 'FIPS', how = 'outer')
 
-# del [census_2012_2018, census_00_xwalked, census_90_xwalked]
+del [census_2012_2018, census_00_xwalked, census_90_xwalked]
 ## CPI indexing values
 ## This is based on the yearly CPI average
 ## Add in new CPI based on current year: https://www.bls.gov/data/inflation_calculator.htm
@@ -263,6 +246,7 @@ rm_iinc_12 = np.nanmedian(census['iinc_12'])
 ## Income Interpolation Function
 ## This function interpolates population counts using income buckets provided by the Census
 #%% 16 
+
 def income_interpolation (census, year, cutoff, mhinc, tot_var, var_suffix, out):
     name = []
     for c in list(census.columns):
@@ -321,6 +305,7 @@ census = census.drop(columns = income_col)
 # Create Category Function + Run
 # --------------------------------------------------
 #%% 31
+
 def income_categories (df, year, mhinc, hinc):
     df['hinc_'+year] = np.where(df['hinc_'+year]<0, 0, df['hinc_'+year])
     reg_med_inc80 = 0.8*mhinc
@@ -741,9 +726,7 @@ census.loc[census['change_flag_encoded']==3, 'change_flag_category'] = 'ch_rapid
 # census.groupby(['change_flag_category', 'lmh_flag_category']).count()['FIPS']
 
 # len(census)
-# save 'census' to csv
-census.to_csv(output_path+'databases/all_cities_2018.csv', index=False)
-# census.columns
+
 # =====================================================
 # Zillow Data
 # =====================================================
@@ -800,7 +783,8 @@ census_zillow = census.merge(zillow[['FIPS', 'per_ch_zillow_12_18', 'ab_50pct_ch
 # census_zillow.info()
 # census.info()
 
-## Create 90th percentile for rent
+## Create 90th percentile for rent -
+# census['rent_percentile_90'] = census['pctch_real_mrent_12_18'].quantile(q = 0.9)
 census_zillow['rent_50pct_ch'] = np.where(census_zillow['pctch_real_mrent_12_18']>=0.5, 1, 0)
 census_zillow['rent_90percentile_ch'] = np.where(census_zillow['pctch_real_mrent_12_18']>=0.9, 1, 0)
 
@@ -917,6 +901,10 @@ del df
 # Shapefiles
 # --------------------------------------------------
 
+## Filter only census_zillow tracts of interest from shp
+census_zillow_tract_list = census_zillow['FIPS'].astype(str).str.zfill(11)
+city_shp = city_shp[city_shp['GEOID'].isin(census_zillow_tract_list)].reset_index(drop = True)
+
 ## Create single region polygon
 city_poly = city_shp.dissolve(by = 'STATEFP')
 city_poly = city_poly.reset_index(drop = True)
@@ -934,31 +922,29 @@ census_zillow_tract_list.describe()
 rail = rail[rail['Year Opened']=='Pre-2000'].reset_index(drop = True)
 
 ## Filter by city
-rail = rail[rail['Agency'].isin(rail_agency)].reset_index(drop = True)
-rail = gpd.GeoDataFrame(rail, geometry=[Point(xy) for xy in zip (rail['Longitude'], rail['Latitude'])])
+# rail = rail[rail['Agency'].isin(rail_agency)].reset_index(drop = True)
+# rail = gpd.GeoDataFrame(rail, geometry=[Point(xy) for xy in zip (rail['Longitude'], rail['Latitude'])])
 
 ## sets coordinate system to WGS84
-rail.crs = {'init' :'epsg:4269'}
+# rail.crs = {'init' :'epsg:4269'}
 
 ## creates UTM projection
 ## zone is defined under define city specific variables
-projection = '+proj=utm +zone='+zone+', +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
+# projection = '+proj=utm +zone='+zone+', +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
 
 ## project to UTM coordinate system
-rail_proj = rail.to_crs(projection)
+# rail_proj = rail.to_crs(projection)
 
 ## create buffer around anchor institution in meters
-rail_buffer = rail_proj.buffer(804.672)
+# rail_buffer = rail_proj.buffer(804.672)
 
 ## convert buffer back to WGS84
-rail_buffer_wgs = rail_buffer.to_crs(epsg=4326)
+# rail_buffer_wgs = rail_buffer.to_crs(epsg=4326)
 
 ## crate flag
-city_shp['rail'] = np.where(city_shp.intersects(rail_buffer_wgs.unary_union) == True, 1, 0)
+# city_shp['rail'] = np.where(city_shp.intersects(rail_buffer_wgs.unary_union) == True, 1, 0)
 
-# Subsidized Housing
-# --------------------------------------------------
-## Convert to geodataframe
+# Convert to geodataframe
 
 import multiprocessing
 import geopandas as gpd
@@ -1029,8 +1015,9 @@ census_zillow = census_zillow.merge(city_shp[['GEOID','geometry','rail', 'presen
 
 
 census_zillow.to_csv(output_path+'databases/zillow_database_2018.csv', index=False)
-pq.write_table(output_path+'_database.parquet')
-
+# pq.write_table(output_path+'downloads/'+city_name.replace(" ", "")+'_database.parquet')
+census.to_csv(output_path+'databases/all_cities_2018.csv', index=False)
+# census.columns
 
 # save session/variables
 import shelve
