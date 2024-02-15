@@ -25,7 +25,7 @@ output_path = home+'/data/outputs/'
 
 os.chdir(home)
 
-# os.getcwd()
+os.getcwd()
 # =====================================================
 # Crosswalk Files
 # =====================================================
@@ -914,6 +914,9 @@ df['aboverm_per_units_pre50_18'] = np.where(df['per_units_pre50_18']>rm_per_unit
 df.to_csv(output_path+'databases/df.csv')
 del df
 
+
+census_zillow_tract_list = census_zillow['FIPS'].astype(str).str.zfill(11)
+city_shp = city_shp[city_shp['GEOID'].isin(census_zillow_tract_list)].reset_index(drop = True)
 # Shapefiles
 # --------------------------------------------------
 
@@ -1033,41 +1036,41 @@ pq.write_table(output_path+'_database.parquet')
 
 
 # save session/variables
-import shelve
+#import shelve
 
-T='Hiya'
-val=[1,2,3]
+#T='Hiya'
+#val=[1,2,3]
 
-filename='/shelve.out'
-my_shelf = shelve.open(filename,'n') # 'n' for new
+#filename='/shelve.out'
+#my_shelf = shelve.open(filename,'n') # 'n' for new
 
-for key in dir():
-    try:
-        my_shelf[key] = globals()[key]
-    except TypeError:
-        #
-        # __builtins__, my_shelf, and imported modules can not be shelved.
-        #
-        print('ERROR shelving: {0}'.format(key))
-my_shelf.close()
+#for key in dir():
+#    try:
+#        my_shelf[key] = globals()[key]
+#    except TypeError:
+#        #
+#        # __builtins__, my_shelf, and imported modules can not be shelved.
+#        #
+#        print('ERROR shelving: {0}'.format(key))
+#my_shelf.close()
 
 
-import rpy2
-from rpy2 import robjects
-from rpy2.robjects import pandas2ri
-pandas2ri.activate()
+#import rpy2
+#from rpy2 import robjects
+#from rpy2.robjects import pandas2ri
+#pandas2ri.activate()
 
 # read .RData file as a pandas dataframe
-def load_rdata_file(filename):
-    r_data = robjects.r['get'](robjects.r['load'](filename))
-    df = pandas2ri.ri2py(r_data)
-    return df
+#def load_rdata_file(filename):
+#    r_data = robjects.r['get'](robjects.r['load'](filename))
+#    df = pandas2ri.ri2py(r_data)
+#    return df
 
 # write pandas dataframe to an .RData file
-def save_rdata_file(df, filename):
-    r_data = pandas2ri.py2ri(df)
-    robjects.r.assign("my_df", r_data)
-    robjects.r("save(my_df, file='{}')".format(filename))
+# def save_rdata_file(df, filename):
+#    r_data = pandas2ri.py2ri(df)
+#    robjects.r.assign("my_df", r_data)
+#    robjects.r("save(my_df, file='{}')".format(filename))
 
 # Loading Los Angeles as an example of what it should look like
 # los_angeles = pd.read_csv(output_path+'/databases/LosAngeles_database_2018.csv')
