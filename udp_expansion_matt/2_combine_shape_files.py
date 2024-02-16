@@ -1,12 +1,17 @@
+# %%
 import os
 import glob
+import geopandas as gpd
+import pandas as pd
+import numpy as np
+from shapely.geometry import Point
 # os.getcwd()
 
+# %%
 # ------------------------
 # combine shape files
 # ------------------------
 
-# %%
 # Search for all .shp files in the directory
 directory = "C:/Users/madou/OneDrive - UCLA IT Services/1)_PS-Honors/police-killings-project_union_PC/udp_expansion_matt/data/inputs/shp"
 file_paths = glob.glob(directory + '\\*.shp')
