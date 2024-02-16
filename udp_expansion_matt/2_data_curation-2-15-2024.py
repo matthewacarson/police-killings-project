@@ -16,19 +16,20 @@ import os
 import census
 import pandas as pd
 import numpy as np
-import sys
-from pathlib import Path
+# import sys
+# from pathlib import Path
 import geopandas as gpd
 from shapely.geometry import Point
-from pyproj import Proj
-import matplotlib.pyplot as plt
+# from pyproj import Proj
+# import matplotlib.pyplot as plt
 import glob
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 pd.options.display.float_format = '{:.2f}'.format # avoid scientific notation
 
-home = "C:/Users/madou/OneDrive - UCLA IT Services/1)_PS-Honors/police-killings-project_union_PC/udp_expansion_matt"  # str(Path.home())
+home = "C:/Users/madou/OneDrive - UCLA IT Services/1)_PS-Honors/police-killings-project_union_PC/udp_expansion_matt"
+directory = "C:/Users/madou/OneDrive - UCLA IT Services/1)_PS-Honors/police-killings-project_union_PC/udp_expansion_matt"
 input_path = home+'/data/inputs/'
 output_path = home+'/data/outputs/'
 # %%
@@ -224,28 +225,6 @@ pums = pums.rename(columns = {'YEAR_x':'YEAR',
                                'NAME_E_x':'NAME_E'})
 pums = pums.dropna(axis = 1)
 
-# Bring in Zillow, Rail, Hospital, Unversity, LIHTC, PH dat
-# --------------------------------------------------------------------------
-# Note: Make sure your city/county is included in these overlay files
-# %%
-## Zillow data
-zillow = pd.read_csv(input_path+'Zip_Zhvi_AllHomes.csv', encoding = "ISO-8859-1")
-zillow_xwalk = pd.read_csv(input_path+'TRACT_ZIP_032015.csv')
-
-## Rail data
-rail = pd.read_csv(input_path+'tod_database_download.csv')
-
-## Hospitals
-hospitals = pd.read_csv(input_path+'Hospitals.csv')
-
-## Universities
-university = pd.read_csv(input_path+'university_HD2016.csv')
-
-## LIHTC
-lihtc = pd.read_csv(input_path+'LowIncome_Housing_Tax_Credit_Properties.csv')
-
-## Public housing
-pub_hous = pd.read_csv(input_path+'Public_Housing_Buildings.csv.gz')
 # %%
 # ==========================================================================
 # Read Shapefile Data (inputs needed)
@@ -370,7 +349,7 @@ city_shp = gpd.read_file('C:/Users/madou/OneDrive - UCLA IT Services/1)_PS-Honor
 
 # Merge census data in single file
 # --------------------------------------------------------------------------
-
+census_backup = census
 census = acs_data.merge(data_2000, on = 'FIPS', how = 'outer').merge(data_1990, on = 'FIPS', how = 'outer')
 
 ## CPI indexing values
@@ -679,20 +658,10 @@ len(census)
 # ==========================================================================
 
 def filter_PUMS(df, FIPS):
-    if (city_name not in ('Memphis', 'Boston')):
-        FIPS = [int(x) for x in FIPS]
-        df = df[(df['STATEA'] == int(state))&(df['COUNTYA'].isin(FIPS))].reset_index(drop = True)
-    else:
-        fips_list = []
-        for i in state:
-            county = FIPS[i]
-            county = [int(x) for x in county]
-            a = list((df['GISJOIN'][(pums['STATEA']==int(i))&(df['COUNTYA'].isin(county))]))
-            fips_list += a
-            df = df[df['GISJOIN'].isin(fips_list)].reset_index(drop = True)
+    df = df.reset_index(drop = True)
     return df
 #%% 2/15/2024 3:45 PM: RUNNING INTO ERRORS HERE
-pums = filter_PUMS(pums, FIPS)
+# pums = filter_PUMS(pums, 'FIPS')
 pums['FIPS'] = ((pums['STATEA'].astype(str).str.zfill(2))+
                 (pums['COUNTYA'].astype(str).str.zfill(3))+
                 (pums['TRACTA'].astype(str).str.zfill(6)))
@@ -769,7 +738,7 @@ pums['high_tot_18'] = pums['rhigh_18']+pums['ohigh_18']
 pums['pct_low_18'] = pums['low_tot_18']/pums['hu_tot_18']
 pums['pct_mod_18'] = pums['mod_tot_18']/pums['hu_tot_18']
 pums['pct_high_18'] = pums['high_tot_18']/pums['hu_tot_18']
-
+#%%
 # Classifying tracts by housing afforablde by income
 # --------------------------------------------------------------------------
 
@@ -873,7 +842,7 @@ census.groupby('change_flag_category').count()['FIPS']
 census.groupby(['change_flag_category', 'lmh_flag_category']).count()['FIPS']
 
 len(census)
-
+# %%
 # ==========================================================================
 # Zillow Data
 # ==========================================================================
@@ -882,17 +851,9 @@ len(census)
 # --------------------------------------------------------------------------
 
 def filter_ZILLOW(df, FIPS):
-    if (city_name not in ('Memphis', 'Boston')):
-        FIPS_pre = [state+county for county in FIPS]
-        df = df[(df['FIPS'].astype(str).str.zfill(11).str[:5].isin(FIPS_pre))].reset_index(drop = True)
-    else:
-        fips_list = []
-        for i in state:
-            county = FIPS[str(i)]
-            FIPS_pre = [str(i)+county for county in county]
-        df = df[(df['FIPS'].astype(str).str.zfill(11).str[:5].isin(FIPS_pre))].reset_index(drop = True)
+    df = df.reset_index(drop = True)
     return df
-
+# %%
 ## Import Zillow data
 zillow = pd.read_csv(input_path+'Zip_Zhvi_AllHomes.csv', encoding = "ISO-8859-1")
 zillow_xwalk = pd.read_csv(input_path+'TRACT_ZIP_032015.csv')
@@ -903,12 +864,12 @@ zillow_xwalk = pd.read_csv(input_path+'TRACT_ZIP_032015.csv')
 ## Compute change over time
 zillow['ch_zillow_12_18'] = zillow['2018-01'] - zillow['2012-01']*CPI_12_18
 zillow['per_ch_zillow_12_18'] = zillow['ch_zillow_12_18']/zillow['2012-01']
-zillow = zillow[zillow['State'].isin(state_init)].reset_index(drop = True)
+# zillow = zillow[zillow['State'].isin(state_init)].reset_index(drop = True)
 zillow = zillow_xwalk[['TRACT', 'ZIP', 'RES_RATIO']].merge(zillow[['RegionName', 'ch_zillow_12_18', 'per_ch_zillow_12_18']], left_on = 'ZIP', right_on = 'RegionName', how = "outer")
 zillow = zillow.rename(columns = {'TRACT':'FIPS'})
 
 # Filter only data of interest
-zillow = filter_ZILLOW(zillow, FIPS)
+# zillow = filter_ZILLOW(zillow, FIPS)
 
 ## Keep only data for largest xwalk value, based on residential ratio
 zillow = zillow.sort_values(by = ['FIPS', 'RES_RATIO'], ascending = False).groupby('FIPS').first().reset_index(drop = False)
@@ -916,7 +877,7 @@ zillow = zillow.sort_values(by = ['FIPS', 'RES_RATIO'], ascending = False).group
 ## Compute 90th percentile change in region
 percentile_90 = zillow['per_ch_zillow_12_18'].quantile(q = 0.9)
 print(percentile_90)
-
+# %%
 # Create Flags
 # --------------------------------------------------------------------------
 
@@ -934,7 +895,7 @@ census.info()
 # census['rent_percentile_90'] = census['pctch_real_mrent_12_18'].quantile(q = 0.9)
 census_zillow['rent_50pct_ch'] = np.where(census_zillow['pctch_real_mrent_12_18']>=0.5, 1, 0)
 census_zillow['rent_90percentile_ch'] = np.where(census_zillow['pctch_real_mrent_12_18']>=0.9, 1, 0)
-
+# %%
 # ==========================================================================
 # Calculate Regional Medians
 # ==========================================================================
@@ -1004,7 +965,7 @@ census_zillow['ch_per_limove_12_18'] = census_zillow['per_limove_18'] - census_z
 ## Regional Medians
 ch_rm_per_col_90_00 = rm_per_col_00-rm_per_col_90
 ch_rm_per_col_00_18 = rm_per_col_18-rm_per_col_00
-
+# %%
 # Calculate flags
 # --------------------------------------------------------------------------
 
@@ -1041,53 +1002,55 @@ df['aboverm_pctch_real_hinc_00_18'] = np.where(df['pctch_real_hinc_00_18']>pctch
 df['aboverm_ch_per_col_90_00'] = np.where(df['ch_per_col_90_00']>ch_rm_per_col_90_00, 1, 0)
 df['aboverm_ch_per_col_00_18'] = np.where(df['ch_per_col_00_18']>ch_rm_per_col_00_18, 1, 0)
 df['aboverm_per_units_pre50_18'] = np.where(df['per_units_pre50_18']>rm_per_units_pre50_18, 1, 0)
-
+# %%
 # Shapefiles
 # --------------------------------------------------------------------------
 
 ## Filter only census_zillow tracts of interest from shp
-census_zillow_tract_list = census_zillow['FIPS'].astype(str).str.zfill(11)
-city_shp = city_shp[city_shp['GEOID'].isin(census_zillow_tract_list)].reset_index(drop = True)
+# NOT USING BECAUSE I AM NOT FILTERING ANYTHING
+# census_zillow_tract_list = census_zillow['FIPS'].astype(str).str.zfill(11)
+# city_shp = city_shp[city_shp['GEOID'].isin(census_zillow_tract_list)].reset_index(drop = True)
 
 ## Create single region polygon
 city_poly = city_shp.dissolve(by = 'STATEFP')
 city_poly = city_poly.reset_index(drop = True)
 
-census_zillow_tract_list.describe()
-
+# census_zillow_tract_list.describe()
+# %%
 # ==========================================================================
 # Overlay Variables (Rail + Housing)
 # ==========================================================================
 
-# Rail
+# Rail -- NOT USING RAIL RIGHT NOW
 # --------------------------------------------------------------------------
 
 ## Filter only existing rail
-rail = rail[rail['Year Opened']=='Pre-2000'].reset_index(drop = True)
+# rail = rail[rail['Year Opened']=='Pre-2000'].reset_index(drop = True)
 
 ## Filter by city
-rail = rail[rail['Agency'].isin(rail_agency)].reset_index(drop = True)
-rail = gpd.GeoDataFrame(rail, geometry=[Point(xy) for xy in zip (rail['Longitude'], rail['Latitude'])])
+# rail = rail[rail['Agency'].isin(rail_agency)].reset_index(drop = True)
+# rail = gpd.GeoDataFrame(rail, geometry=[Point(xy) for xy in zip (rail['Longitude'], rail['Latitude'])])
 
 ## sets coordinate system to WGS84
-rail.crs = {'init' :'epsg:4269'}
+# rail.crs = {'init' :'epsg:4269'}
 
 ## creates UTM projection
 ## zone is defined under define city specific variables
-projection = '+proj=utm +zone='+zone+', +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
+# projection = '+proj=utm +zone='+zone+', +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
 
 ## project to UTM coordinate system
-rail_proj = rail.to_crs(projection)
+# rail_proj = rail.to_crs(projection)
 
 ## create buffer around anchor institution in meters
-rail_buffer = rail_proj.buffer(804.672)
+# rail_buffer = rail_proj.buffer(804.672)
 
 ## convert buffer back to WGS84
-rail_buffer_wgs = rail_buffer.to_crs(epsg=4326)
+# rail_buffer_wgs = rail_buffer.to_crs(epsg=4326)
 
 ## crate flag
-city_shp['rail'] = np.where(city_shp.intersects(rail_buffer_wgs.unary_union) == True, 1, 0)
+# city_shp['rail'] = np.where(city_shp.intersects(rail_buffer_wgs.unary_union) == True, 1, 0)
 
+# %%
 # Subsidized Housing
 # --------------------------------------------------------------------------
 
@@ -1102,42 +1065,48 @@ lihtc = gpd.GeoDataFrame(lihtc, geometry=[Point(xy) for xy in zip (lihtc['X'], l
 pub_hous = gpd.GeoDataFrame(pub_hous, geometry=[Point(xy) for xy in zip (pub_hous['X'], pub_hous['Y'])])
 
 ## LIHTC clean
-lihtc = lihtc[lihtc['geometry'].within(city_poly.loc[0, 'geometry'])].reset_index(drop = True)
+# ----------------------------------------------------
+# disabling because I do not want to filter out any rows
+# lihtc = lihtc[lihtc['geometry'].within(city_poly.loc[0, 'geometry'])].reset_index(drop = True)
+
+
+# troubleshooting
+# lihtc.head()
+
 
 ## Public housing
-pub_hous = pub_hous[pub_hous['geometry'].within(city_poly.loc[0, 'geometry'])].reset_index(drop = True)
+# ----------------------------------------------------
+# disabling because I do not want to filter out any rows
+# pub_hous = pub_hous[pub_hous['geometry'].within(city_poly.loc[0, 'geometry'])].reset_index(drop = True)
 
 ## Merge Datasets
-presence_ph_LIHTC = lihtc[['geometry']].append(pub_hous[['geometry']])
+# Concatenate the 'geometry' columns of lihtc and pub_hous GeoDataFrames
+presence_ph_LIHTC = pd.concat([lihtc[['geometry']], pub_hous[['geometry']]], ignore_index=True)
 
 ## check whether census_zillow tract contains public housing or LIHTC station
 ## and create public housing flag
 city_shp['presence_ph_LIHTC'] = city_shp.intersects(presence_ph_LIHTC.unary_union)
-
-####
-# Begin Map Plot
-####
-# ax = city_shp.plot(color = 'grey')
-# city_shp.plot(ax = ax, column = 'presence_ph_LIHTC')
-# presence_ph_LIHTC.plot(ax = ax)
-# plt.show()
-####
-# End Map Plot
-####
-
+# %%
+# troubleshooting
+city_shp.head()
+pub_hous.head()
+lihtc.head()
+presence_ph_LIHTC.head()
+presence_ph_LIHTC.dtypes
 # ==========================================================================
 # Merge Census and Zillow Data
 # ==========================================================================
 
 city_shp['GEOID'] = city_shp['GEOID'].astype('int64')
-
-census_zillow = census_zillow.merge(city_shp[['GEOID','geometry','rail',
-	# 'anchor_institution',
+# %%
+census_zillow = census_zillow.merge(city_shp[['GEOID','geometry',
+                                              # 'rail', 'anchor_institution',
 	'presence_ph_LIHTC']], right_on = 'GEOID', left_on = 'FIPS')
+# %%
 census_zillow.query("FIPS == 13121011100")
 # ==========================================================================
 # Export Data
 # ==========================================================================
-
+# %%
 census_zillow.to_csv(output_path+'databases/'+city_name.replace(" ", "")+'_database_2018.csv')
 # pq.write_table(output_path+'downloads/'+city_name.replace(" ", "")+'_database.parquet')
