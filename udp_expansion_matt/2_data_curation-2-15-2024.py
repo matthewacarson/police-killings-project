@@ -13,7 +13,7 @@
 # ==========================================================================
 # from pyproj import Proj
 import os
-import census
+# import census
 import pandas as pd
 import numpy as np
 # import sys
@@ -22,14 +22,14 @@ import geopandas as gpd
 from shapely.geometry import Point
 # from pyproj import Proj
 # import matplotlib.pyplot as plt
-import glob
+
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 pd.options.display.float_format = '{:.2f}'.format # avoid scientific notation
 
 home = "C:/Users/madou/OneDrive - UCLA IT Services/1)_PS-Honors/police-killings-project_union_PC/udp_expansion_matt"
-directory = "C:/Users/madou/OneDrive - UCLA IT Services/1)_PS-Honors/police-killings-project_union_PC/udp_expansion_matt"
+directory = "C:/Users/madou/OneDrive - UCLA IT Services/1)_PS-Honors/police-killings-project_union_PC/udp_expansion_matt/"
 input_path = home+'/data/inputs/'
 output_path = home+'/data/outputs/'
 # %%
@@ -252,33 +252,12 @@ pums = pums.dropna(axis = 1)
 # elif city_name == 'Boston':
 #     shp_name = 'cb_2018_25_tract_500k.shp'
 
+
+
 # combine shape files
+# exec(open("2_combine_shape_files.py").read())
 
-# Search for all .shp files in the directory
-file_paths = glob.glob(directory + '\\*.shp')
 
-# run in parallel
-from concurrent.futures import ThreadPoolExecutor
-
-def combine_shapefile(file_path):
-    """Function to combine a single Shapefile."""
-    return gpd.read_file(file_path)
-
-# Create a ThreadPoolExecutor with max_workers set to the number of CPU cores
-with ThreadPoolExecutor(max_workers=None) as executor:
-    # Submit tasks to read each Shapefile asynchronously
-    futures = [executor.submit(combine_shapefile, file) for file in file_paths]
-    
-    # Wait for all tasks to complete and retrieve the results
-    shapefiles = [future.result() for future in futures]
-
-# Combine the Shapefiles into a single GeoDataFrame
-city_shp = gpd.GeoDataFrame(pd.concat(shapefiles, ignore_index=True))
-
-# Save the combined GeoDataFrame as a new Shapefile
-city_shp.to_file('combined_output.shp')
-
-shp_folder = input_path+'shp/'
 city_shp = gpd.read_file('C:/Users/madou/OneDrive - UCLA IT Services/1)_PS-Honors/police-killings-project_union_PC/udp_expansion_matt/combined_output.shp')
 
 # Define City Specific Variables
@@ -349,7 +328,6 @@ city_shp = gpd.read_file('C:/Users/madou/OneDrive - UCLA IT Services/1)_PS-Honor
 
 # Merge census data in single file
 # --------------------------------------------------------------------------
-census_backup = census
 census = acs_data.merge(data_2000, on = 'FIPS', how = 'outer').merge(data_1990, on = 'FIPS', how = 'outer')
 
 ## CPI indexing values
@@ -1059,20 +1037,17 @@ lihtc = pd.read_csv(input_path+'LowIncome_Housing_Tax_Credit_Properties.csv')
 
 ## Public housing
 pub_hous = pd.read_csv(input_path+'Public_Housing_Buildings.csv.gz')
+# %%
 
 ## Convert to geodataframe
 lihtc = gpd.GeoDataFrame(lihtc, geometry=[Point(xy) for xy in zip (lihtc['X'], lihtc['Y'])])
 pub_hous = gpd.GeoDataFrame(pub_hous, geometry=[Point(xy) for xy in zip (pub_hous['X'], pub_hous['Y'])])
+# %%
 
 ## LIHTC clean
 # ----------------------------------------------------
 # disabling because I do not want to filter out any rows
 # lihtc = lihtc[lihtc['geometry'].within(city_poly.loc[0, 'geometry'])].reset_index(drop = True)
-
-
-# troubleshooting
-# lihtc.head()
-
 
 ## Public housing
 # ----------------------------------------------------
@@ -1093,6 +1068,8 @@ pub_hous.head()
 lihtc.head()
 presence_ph_LIHTC.head()
 presence_ph_LIHTC.dtypes
+#%%
+
 # ==========================================================================
 # Merge Census and Zillow Data
 # ==========================================================================
@@ -1104,9 +1081,11 @@ census_zillow = census_zillow.merge(city_shp[['GEOID','geometry',
 	'presence_ph_LIHTC']], right_on = 'GEOID', left_on = 'FIPS')
 # %%
 census_zillow.query("FIPS == 13121011100")
+# %%
+
 # ==========================================================================
 # Export Data
 # ==========================================================================
 # %%
-census_zillow.to_csv(output_path+'databases/'+city_name.replace(" ", "")+'_database_2018.csv')
+census_zillow.to_csv(output_path+'databases/database_2018.csv')
 # pq.write_table(output_path+'downloads/'+city_name.replace(" ", "")+'_database.parquet')
