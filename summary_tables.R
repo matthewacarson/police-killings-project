@@ -482,7 +482,7 @@ summary_tables$prop_difference <-
     names_from = 'Type',# c('Race', 'Type'),
     values_from = Proportion
   ) |> 
-  mutate(Difference = LUOFs - race_total_pop)
+  mutate(Difference = LUOFs - Population)
 
 # summary_tables$prop_difference |> 
 #   write_csv(
