@@ -18,3 +18,4 @@ st_48_51.RData
 !zillow_database_2018.RData
 !udp_expansion_matt/data/R_data/*.RData
 .Rproj.user
+udp_expansion_matt/data/outputs/databases/all_cities_2018.csv
