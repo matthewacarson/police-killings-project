@@ -1,4 +1,3 @@
-# setwd("C:/Users/madou/OneDrive - UCLA IT Services/PS-Honors/police-killings-github")
 
 # Load Libraries ####
 # library(tidycensus)
@@ -18,13 +17,27 @@ if (!exists("summary_tables")) {summary_tables <- new.env()}
 # This is not a complete script of all summary tables
 ######################################################### #
 
-############################################# #
+######################################################### #
 # Creating basic summary table ####
-############################################# #
+######################################################### #
 
+######################################################### #
+## killings per year -by- quintile ####
+######################################################### #
 summary_tables$fatal_enc_table_1 <-  fatal_enc$joined %>%
   count(Income = income_quintiles_nolab) %>% rename(Killings = n) %>% 
   filter(!is.na(Income)) %>% mutate(Killings_Per_Yr = Killings / 6)
+
+# col dictionary
+# Income =                tract income quintile
+# Killings =              number killed in quintile
+# Killings_Per_Yr =       number of LUOF per year
+
+summary_tables$fatal_enc_table_1
+
+######################################################### #
+## total population in quintile ####
+######################################################### #
 
 summary_tables$pop_table_1 <- tapply(
   all_tracts$income_population_quintiles_2020$Total_popE, 
@@ -32,6 +45,11 @@ summary_tables$pop_table_1 <- tapply(
   sum, na.rm = TRUE) %>% 
   data.frame(Income = rownames(.), Population = .)
 
+summary_tables$pop_table_1
+
+######################################################### #
+## annualized OVERALL rate for quintiles ####
+######################################################### #
 summary_tables$summary_1 <- 
   left_join(
     x = summary_tables$fatal_enc_table_1,
@@ -45,15 +63,29 @@ summary_tables$summary_1 <- summary_tables$summary_1 |>
     Annualized_Per_10_M =
       Killings_Per_Yr / Population * 10000000)
 
+summary_tables$summary_1
+######################################################### #
+## killings -by- majority -by- quintile ####
+######################################################### #
 
 summary_tables$race_and_income <- 
   fatal_enc$joined |> 
   count(Majority, income_quintiles_nolab) |> 
-  rename(Killings = n)
+  rename(Killings = n, Quintile = income_quintiles_nolab)
+
+print(summary_tables$race_and_income, n = 100)
+######################################################### #
+## population -by- majoirty - by- quintile ####
+######################################################### #
 
 summary_tables$race_and_income_pop <- all_tracts$income_population_quintiles_2020 |> 
   aggregate(Total_popE ~ Majority + income_quintiles_nolab, FUN = sum) |> 
-  rename(Population = Total_popE)
+  rename(Population = Total_popE, Quintile = income_quintiles_nolab)
+
+print(summary_tables$race_and_income_pop)
+######################################################### #
+## ####
+######################################################### #
 
 summary_tables$race_and_income_summary <- 
   left_join(
@@ -91,6 +123,10 @@ summary_tables$race_and_income_summary <-
 #   )
 # )
 
+######################################################### #
+##
+######################################################### #
+
 summary_tables$race_victim_majority_and_quintile <- 
   fatal_enc$joined |> 
   filter(race_imputed != "Other/Unknown") |> 
@@ -119,6 +155,11 @@ summary_tables$race_victim_majority_and_quintile <-
 #   Majority) |> 
 #   aggregate(`White Pop` + `Black Pop` + `Hispanic/Latino Pop` ~ `Income Quintile` + Majority, FUN = sum)
 
+
+######################################################### #
+##
+######################################################### #
+
 summary_tables$race_and_income_pop <- 
   all_tracts$income_population_quintiles_2020 %>%
   select(
@@ -135,11 +176,19 @@ summary_tables$race_and_income_pop <-
     Latino = sum(`Hispanic/Latino Pop`)
   ) |> na.omit()
 
+######################################################### #
+##
+######################################################### #
+
 summary_tables$victim_race_majority_quint <-
   left_join(
     x = summary_tables$race_victim_majority_and_quintile,
     y = summary_tables$race_and_income_pop
   ) |> na.omit() # |> write_csv(file = "xtabs_race_majority_inc/victim_race_majority_quint.csv")
+
+######################################################### #
+##
+######################################################### #
 
 summary_tables$victim_race_majority_quint_annual <-
   summary_tables$victim_race_majority_quint |> 
@@ -197,7 +246,10 @@ summary_tables$victim_race_majority_quint_annual <-
 ############################################### #
 ############################################### #
 
-# Total population by race 2020
+######################################################### #
+## Total population by race 2020 ####
+######################################################### #
+
 summary_tables$total_pop_by_race <- 
   data.frame(
     Majority = c('Black', 'Hispanic/Latino', 'White'),
@@ -206,7 +258,10 @@ summary_tables$total_pop_by_race <-
       sum(all_tracts$income_population_quintiles_2020$Hisp_LatinoE),
       sum(all_tracts$income_population_quintiles_2020$NH_WhiteE)))
 
-# Calculating the total population by Race in each income quintile
+######################################################### #
+## total population -by- Race -by- income quintile ####
+######################################################### #
+
 summary_tables$race_quint_xtab <- 
   all_tracts$income_population_quintiles_2020 |> 
   select(
@@ -221,8 +276,10 @@ summary_tables$race_quint_xtab <-
     values_to = "population") |> 
   aggregate(population ~ Quintile + Majority, FUN = sum)
 
-# Calculate the proportion of each racial group living in each income
-# quintile
+############################################################### #
+## proportion racial group population -by- income quintile ####
+############################################################### #
+
 summary_tables$race_quint_proportions <- 
   left_join(
     x = summary_tables$race_quint_xtab,
@@ -317,9 +374,9 @@ summary_tables$bin_table_race_proportion <-
 
 summary_tables$bin_table_race_proportion$Income <- as.numeric(summary_tables$bin_table_race_proportion$Income)
 
-## ######################## #
+######################################################### #
 ## Using 100 quantiles/percentiles ####
-## ######################## #
+######################################################### #
 
 # this used to be called summary_tables$bin_table_race
 summary_tables$race_percentiles <-  
