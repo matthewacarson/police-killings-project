@@ -5,9 +5,7 @@
 # library(tidyverse)
 
 ####################### #
-####################### #
 # Run setup script ####
-####################### #
 ####################### #
 source(file = 'setup.R')
 
@@ -22,11 +20,11 @@ if (!exists("summary_tables")) {summary_tables <- new.env()}
 ######################################################### #
 
 ######################################################### #
-## killings per year -by- quintile ####
+## killings per year -BY- quintile ####
 ######################################################### #
 summary_tables$fatal_enc_table_1 <-  fatal_enc$joined %>%
-  count(Income = income_quintiles_nolab) %>% rename(Killings = n) %>% 
-  filter(!is.na(Income)) %>% mutate(Killings_Per_Yr = Killings / 6)
+  count(Quintile = income_quintiles_nolab) %>% rename(Killings = n) %>% 
+  filter(!is.na(Quintile)) %>% mutate(Killings_Per_Yr = Killings / 6)
 
 # col dictionary
 # Income =                tract income quintile
@@ -43,18 +41,18 @@ summary_tables$pop_table_1 <- tapply(
   all_tracts$income_population_quintiles_2020$Total_popE, 
   all_tracts$income_population_quintiles_2020$income_quintiles_nolab,
   sum, na.rm = TRUE) %>% 
-  data.frame(Income = rownames(.), Population = .)
+  data.frame(Quintile = rownames(.), Population = .)
 
 summary_tables$pop_table_1
 
 ######################################################### #
-## annualized OVERALL rate for quintiles ####
+## annualized: OVERALL rate for quintiles ####
 ######################################################### #
 summary_tables$summary_1 <- 
   left_join(
     x = summary_tables$fatal_enc_table_1,
     y = summary_tables$pop_table_1,
-    by = "Income")
+    by = "Quintile")
 
 summary_tables$summary_1$Majority <- "All"
 
@@ -65,7 +63,7 @@ summary_tables$summary_1 <- summary_tables$summary_1 |>
 
 summary_tables$summary_1
 ######################################################### #
-## killings -by- majority -by- quintile ####
+## killings: majority -BY- quintile ####
 ######################################################### #
 
 summary_tables$race_and_income <- 
@@ -75,7 +73,7 @@ summary_tables$race_and_income <-
 
 print(summary_tables$race_and_income, n = 100)
 ######################################################### #
-## population -by- majoirty - by- quintile ####
+## population: majoirty - BY- quintile ####
 ######################################################### #
 
 summary_tables$race_and_income_pop <- all_tracts$income_population_quintiles_2020 |> 
@@ -84,14 +82,14 @@ summary_tables$race_and_income_pop <- all_tracts$income_population_quintiles_202
 
 print(summary_tables$race_and_income_pop)
 ######################################################### #
-## ####
+## annualized rate: majority -BY- quintile  ####
 ######################################################### #
 
 summary_tables$race_and_income_summary <- 
   left_join(
     x = summary_tables$race_and_income,
     y = summary_tables$race_and_income_pop,
-    by = c("Majority", "income_quintiles_nolab")
+    by = c("Majority", "Quintile")
   )
 
 summary_tables$race_and_income_summary <- 
@@ -102,7 +100,7 @@ summary_tables$race_and_income_summary <-
   ) |> 
   select(
     Majority, 
-    Income = income_quintiles_nolab,
+    Quintile,
     Population,
     Killings,
     Annualized_Per_10_M
@@ -111,20 +109,11 @@ summary_tables$race_and_income_summary <-
       select(-Killings_Per_Yr)
   ) |> na.omit()
 
-# race_victim_majority_and_quintile <- with(
-#   fatal_enc$joined |>
-#     filter(race_imputed != "Other/Unknown") |>
-#     select(
-#       `Victim Race` = race_imputed,
-#       `Income Quintile` = income_quintiles_nolab,
-#       Majority),
-#   table(
-#     `Victim Race`, Majority, `Income Quintile`
-#   )
-# )
+
+summary_tables$race_and_income_summary
 
 ######################################################### #
-##
+## killings: victim -BY- majority -BY- quintile ####
 ######################################################### #
 
 summary_tables$race_victim_majority_and_quintile <- 
@@ -135,30 +124,22 @@ summary_tables$race_victim_majority_and_quintile <-
     Quintile = income_quintiles_nolab,
     Majority) |> 
   count(Victim, Majority, Quintile) |> 
+  rename(Killings = n) |> 
   full_join(
     x = _,
     y =   fatal_enc$joined |>
       select(
         Quintile = income_quintiles_nolab) |> 
       count(Quintile) |> 
+      rename(Killings = n) |> 
       mutate(Majority = "All", Victim = "All") |> 
       na.omit()
   )
 
-# summary_tables$race_and_income_pop <- 
-# all_tracts$income_population_quintiles_2020 |> 
-# select(
-#   `White Pop` = NH_WhiteE,
-#   `Black Pop` = NH_BlackE,
-#   `Hispanic/Latino Pop` = Hisp_LatinoE,
-#   `Income Quintile` = income_quintiles_nolab,
-#   Majority) |> 
-#   aggregate(`White Pop` + `Black Pop` + `Hispanic/Latino Pop` ~ `Income Quintile` + Majority, FUN = sum)
-
-
-######################################################### #
-##
-######################################################### #
+print(summary_tables$race_victim_majority_and_quintile, n = 30)
+################################################################### #
+## population: racial population within majority -BY- quintile   ####
+################################################################### #
 
 summary_tables$race_and_income_pop <- 
   all_tracts$income_population_quintiles_2020 %>%
@@ -176,8 +157,9 @@ summary_tables$race_and_income_pop <-
     Latino = sum(`Hispanic/Latino Pop`)
   ) |> na.omit()
 
+summary_tables$race_and_income_pop
 ######################################################### #
-##
+## Victim -BY- Majority -BY- Quintile -BY- Killings  ####
 ######################################################### #
 
 summary_tables$victim_race_majority_quint <-
@@ -186,8 +168,10 @@ summary_tables$victim_race_majority_quint <-
     y = summary_tables$race_and_income_pop
   ) |> na.omit() # |> write_csv(file = "xtabs_race_majority_inc/victim_race_majority_quint.csv")
 
+summary_tables$victim_race_majority_quint
+
 ######################################################### #
-##
+## ####
 ######################################################### #
 
 summary_tables$victim_race_majority_quint_annual <-
@@ -259,7 +243,7 @@ summary_tables$total_pop_by_race <-
       sum(all_tracts$income_population_quintiles_2020$NH_WhiteE)))
 
 ######################################################### #
-## total population -by- Race -by- income quintile ####
+## total population -BY- Race -BY- income quintile ####
 ######################################################### #
 
 summary_tables$race_quint_xtab <- 
@@ -277,7 +261,7 @@ summary_tables$race_quint_xtab <-
   aggregate(population ~ Quintile + Majority, FUN = sum)
 
 ############################################################### #
-## proportion racial group population -by- income quintile ####
+## proportion racial group population -BY- income quintile ####
 ############################################################### #
 
 summary_tables$race_quint_proportions <- 
