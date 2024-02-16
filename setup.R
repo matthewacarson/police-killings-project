@@ -57,8 +57,8 @@ if (!exists("fatal_enc")) {fatal_enc <- new.env()}
 #   file = "acs_2020.RData"); rm(population_income2020)
 
 # Load data from tidycensus ACS
-load("RData/acs_2019_raw.Rdata", envir = all_tracts)
-load("RData/acs_2020_raw.Rdata", envir = all_tracts)
+load("git_ignore/RData/acs_2019_raw.Rdata", envir = all_tracts)
+load("git_ignore/RData/acs_2020_raw.Rdata", envir = all_tracts)
 
 # Filter tracts with NA income values ####
 all_tracts$income_population_quintiles_2020 <- st_drop_geometry(all_tracts$population_income2020)
@@ -401,7 +401,7 @@ all_tracts$income_population_quintiles_2019 <- all_tracts$population_income2019 
 # Joining with all_tracts data from above ####
 ############################################ #
 load(
-  file = "RData/fatal_enc_initial_clean_geoid.RData",
+  file = "git_ignore/RData/fatal_enc_initial_clean_geoid.RData",
   envir = fatal_enc)
 
 fatal_enc$joined_backup <- 

@@ -850,6 +850,7 @@ summary_tables$race_and_income_pop_race_denom <-
       rename(Population = Total_popE) |> mutate(Majority = 'All')
   )
 
+
 summary_tables$race_income_summary_race_denom <- 
   left_join(
     x = summary_tables$race_and_income_pop_race_denom,
