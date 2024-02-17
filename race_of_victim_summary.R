@@ -214,10 +214,23 @@ right_join(
     value = _,
     envir = summary_tables)
 
-# reshape(
-#   data = summary_tables$IncRace_pop_and_IncRace_LUOF,
-#   idvar = "Quintile",
-#   timevar = "Interaction",
-#   direction = "wide"
-# )
+######################################################## #
+# Slicing by victim-race / quintile / majority ####
+######################################################## #
+# I'm not going to use this because it slices the numbers too small
+fatal_enc$joined |> 
+  filter(
+    !is.na(income_quintiles_nolab) &
+      race_imputed %in% c(
+        "Black", 
+        "White", 
+        "Hispanic/Latino") &
+      !is.na(Majority)
+    ) |> 
+  count(
+    Quintile = income_quintiles_nolab, 
+    Race = race_imputed,
+    Majority) |> 
+  rename(Killings_by_Quintile_and_Race = n) |>
+  mutate(Killings_Per_Yr = Killings_by_Quintile_and_Race / 6) |> print(n=100)
 
