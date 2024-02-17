@@ -9,9 +9,10 @@ begin
 	using CSV
 	using DataFrames
 	using GZip
-	using GeoDataFrames:GeoDataFrames as GDF
+	using GeoDataFrames
 	using GeometryTypes
 	using Shapefile
+	using DataFrames
 end
 
 # ╔═╡ 9558b83b-7149-4aa0-b7e0-8d0e531829b7
@@ -49,26 +50,17 @@ lihtc_geometry = [Point(xy[1], xy[2]) for xy in zip(lihtc[!, "X"], lihtc[!, "Y"]
 pub_hous_geometry = [Point(xy[1], xy[2]) for xy in zip(pub_hous[!, "X"], pub_hous[!, "Y"])]
 
 # ╔═╡ b948995d-fe08-4211-9d26-07c546aa2d16
-lihtc_geo_df = GDF.GeoDataFrame(lihtc, geometry=lihtc_geometry)	
+lihtc_geo_df = GeoDataFrames.GeoDataFrame(lihtc, geometry = lihtc_geometry)	
 
 # ╔═╡ 34dea307-69a4-4495-9ef6-02224b011ae1
-# ╠═╡ disabled = true
-#=╠═╡
-pub_hous_geo_df = GeoDataFrame(pub_hous, geometry = pub_hous_geometry)
-  ╠═╡ =#
+pub_hous_geo_df = GeoDataFrames.GeoDataFrame(pub_hous, geometry = pub_hous_geometry)
 
 # ╔═╡ 9e6d851d-05ec-4f51-bba0-f4a75cfc4f6e
-# ╠═╡ disabled = true
-#=╠═╡
 # Save GeoDataFrames as shapefiles
 Shapefile.write("pub_hous_geo_df.shp", pub_hous_geo_df)
-  ╠═╡ =#
 
 # ╔═╡ b51e5bd4-3d4c-4f9a-9073-4f9c05d07756
-# ╠═╡ disabled = true
-#=╠═╡
 Shapefile.write("lihtc_geo_df.shp", lihtc_geo_df)
-  ╠═╡ =#
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
