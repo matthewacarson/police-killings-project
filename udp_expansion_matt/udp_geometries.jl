@@ -9,7 +9,7 @@ begin
 	using CSV
 	using DataFrames
 	using GZip
-	using GeoDataFrames
+	using GeoDataFrames:GeoDataFrames as GDF
 	using GeometryTypes
 	using Shapefile
 end
@@ -41,25 +41,34 @@ begin
 end
 
 # ╔═╡ 167bfaca-1cfc-4337-90e3-bcf585e6341e
-begin
-	# Convert lihtc to GeoDataFrame
-	lihtc_geometry = [Point(xy[1], xy[2]) for xy in zip(lihtc[!, "X"], lihtc[!, "Y"])]
-	lihtc_geo_df = GeoDataFrame(lihtc, geometry=lihtc_geometry)	
-end
+# Convert lihtc to GeoDataFrame
+lihtc_geometry = [Point(xy[1], xy[2]) for xy in zip(lihtc[!, "X"], lihtc[!, "Y"])]
 
 # ╔═╡ ba5752f1-d916-44a5-ba52-e287958475a9
-begin
-		# Convert pub_hous to GeoDataFrame
-		pub_hous_geometry = [Point(xy[1], xy[2]) for xy in zip(pub_hous[!, "X"], pub_hous[!, "Y"])]
-		pub_hous_geo_df = GeoDataFrame(pub_hous, geometry = pub_hous_geometry)
-end
+# Convert pub_hous to GeoDataFrame
+pub_hous_geometry = [Point(xy[1], xy[2]) for xy in zip(pub_hous[!, "X"], pub_hous[!, "Y"])]
+
+# ╔═╡ b948995d-fe08-4211-9d26-07c546aa2d16
+lihtc_geo_df = GDF.GeoDataFrame(lihtc, geometry=lihtc_geometry)	
+
+# ╔═╡ 34dea307-69a4-4495-9ef6-02224b011ae1
+# ╠═╡ disabled = true
+#=╠═╡
+pub_hous_geo_df = GeoDataFrame(pub_hous, geometry = pub_hous_geometry)
+  ╠═╡ =#
+
+# ╔═╡ 9e6d851d-05ec-4f51-bba0-f4a75cfc4f6e
+# ╠═╡ disabled = true
+#=╠═╡
+# Save GeoDataFrames as shapefiles
+Shapefile.write("pub_hous_geo_df.shp", pub_hous_geo_df)
+  ╠═╡ =#
 
 # ╔═╡ b51e5bd4-3d4c-4f9a-9073-4f9c05d07756
-begin
-	# Save GeoDataFrames as shapefiles
-	Shapefile.write("lihtc_geo_df.shp", lihtc_geo_df)
-	Shapefile.write("pub_hous_geo_df.shp", pub_hous_geo_df)
-end
+# ╠═╡ disabled = true
+#=╠═╡
+Shapefile.write("lihtc_geo_df.shp", lihtc_geo_df)
+  ╠═╡ =#
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -995,6 +1004,9 @@ version = "1.1.9+1"
 # ╠═5cf02e5f-97cd-417b-ae1a-fb927e4abf68
 # ╠═167bfaca-1cfc-4337-90e3-bcf585e6341e
 # ╠═ba5752f1-d916-44a5-ba52-e287958475a9
+# ╠═b948995d-fe08-4211-9d26-07c546aa2d16
+# ╠═34dea307-69a4-4495-9ef6-02224b011ae1
+# ╠═9e6d851d-05ec-4f51-bba0-f4a75cfc4f6e
 # ╠═b51e5bd4-3d4c-4f9a-9073-4f9c05d07756
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
