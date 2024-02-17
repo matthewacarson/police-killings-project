@@ -11,7 +11,6 @@
 ################################################################# #
 
 if (!exists("all_tracts")) {all_tracts <- new.env()}
-
 if (!exists("fatal_enc")) {fatal_enc <- new.env()}
 
 # Download and clean tract income ####
@@ -174,7 +173,6 @@ if (!exists("fatal_enc")) {fatal_enc <- new.env()}
 ################################################################# #
 # Load data from tidycensus ACS ####
 ################################################################# #
-
 load("git_ignore/RData/acs_2019_raw.Rdata", envir = all_tracts)
 load("git_ignore/RData/acs_2020_raw.Rdata", envir = all_tracts)
 
@@ -188,7 +186,6 @@ all_tracts$income_population_quintiles_2020 <- all_tracts$income_population_quin
 ################################################################# #
 ## Add quantile data to all_tracts ####
 ################################################################# #
-
 
 ########################################### #
 ### Tertiles ####
