@@ -120,7 +120,8 @@ summary_tables$race_victim_majority_and_quintile <-
       count(Quintile) |> 
       rename(Killings = n) |> 
       mutate(Majority = "All", Victim = "All") |> 
-      na.omit()
+      na.omit(), 
+    by = join_by(Victim, Majority, Quintile, Killings)
   )
 
 # print(summary_tables$race_victim_majority_and_quintile, n = 30)
@@ -151,7 +152,8 @@ summary_tables$race_and_income_pop <-
 summary_tables$victim_race_majority_quint <-
   left_join(
     x = summary_tables$race_victim_majority_and_quintile,
-    y = summary_tables$race_and_income_pop
+    y = summary_tables$race_and_income_pop,
+    by = join_by(Majority, Quintile)
   ) |> na.omit() # |> write_csv(file = "xtabs_race_majority_inc/victim_race_majority_quint.csv")
 ######################################################### #
 ## victim_race_majority_quint: annual rate ####
@@ -241,29 +243,6 @@ summary_tables$race_quint_xtab <-
     names_to = 'Majority',
     values_to = "population") |> 
   aggregate(population ~ Quintile + Majority, FUN = sum)
-
-############################################################### #
-## proportion racial group population ####
-## BY: income quintile
-## BY: Majority
-############################################################### #
-
-summary_tables$race_quint_proportions <- 
-  left_join(
-    x = summary_tables$race_quint_xtab,
-    y = summary_tables$total_pop_by_race,
-    by = join_by(Majority)) |> 
-  mutate(Proportion = population / race_total_pop) #|> 
-  # select(-race_total_pop)
-
-################### #
-## Save as CSV ####
-################### #
-
-# summary_tables$race_quint_proportions |> select(-population) |>  
-#   mutate(Proportion = Proportion * 100) |>
-#   pivot_wider(names_from = Race, values_from = Proportion) |> 
-#   write_csv(file = "race_quint_proportions.csv")
 
 ############################################### #
 ############################################### #
@@ -452,15 +431,17 @@ summary_tables$race_quint_xtab <-
     values_to = "population") |> 
   aggregate(population ~ Quintile + Race, FUN = sum)
 
-# Calculate the proportion of each racial group living in each income
-# quintile
+############################################################### #
+## proportion racial group population ####
+## BY: income quintile
+## BY: Majority
+############################################################### #
 summary_tables$race_quint_proportions <- 
   left_join(
     x = summary_tables$race_quint_xtab,
     y = summary_tables$total_pop_by_race,
     by = join_by(Race)) |> 
-  mutate(Population = population / race_total_pop) |> 
-  select(-population, -race_total_pop)
+  mutate(Race_proportion_quintile = population / race_total_pop)
 
 
 # making changes
@@ -472,7 +453,7 @@ right_join(
   
   by = join_by(Quintile, Race)) |> 
   pivot_longer(
-    cols = c("LUOFs", "Population"),
+    cols = c("LUOFs", "population"),
     names_to = "Type",
     values_to = "Proportion"
   ) |> 
@@ -489,7 +470,7 @@ summary_tables$prop_difference <-
     names_from = 'Type',# c('Race', 'Type'),
     values_from = Proportion
   ) |> 
-  mutate(Difference = LUOFs - Population)
+  mutate(Difference = LUOFs - population)
 
 # summary_tables$prop_difference |> 
 #   write_csv(
