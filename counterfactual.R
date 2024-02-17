@@ -27,7 +27,7 @@ summary_tables$race_LUOF_counterfactual <-
     total_US_pop_race = race_total_pop,
 
 # proportion of that racial group that lives in that income quintile
-    prop_of_race_in_quintile = Prop_living_in_tract,
+    prop_of_race_in_quintile = Race_proportion_quintile,
 
 # count of LUOF of that race occurring within that income quintile
     LUOF_count_quint_race = Killings_by_Quintile_and_Race,
