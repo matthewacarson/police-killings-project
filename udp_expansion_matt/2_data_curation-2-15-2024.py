@@ -1039,36 +1039,11 @@ lihtc = pd.read_csv(input_path+'LowIncome_Housing_Tax_Credit_Properties.csv')
 
 ## Public housing
 pub_hous = pd.read_csv(input_path+'Public_Housing_Buildings.csv.gz')
-# %%
-
-# STOPPED HERE 2/15/24 -- 9:00 PM
-# I WAS RUNNING THE TWO LINES OF CODE ON 1072 AND 1074 SEPARATELY, BUT I SHOULD RUN THEM PARALLEL INSTEAD
-## Convert to geodataframe
-
-def process_dataframe(data):
-    data = gpd.GeoDataFrame(data, geometry=[Point(xy) for xy in zip(data['X'], data['Y'])])
-    return data
-
-if __name__ == '__main__':
-    # Assuming `lihtc` and `pub_hous` are your dataframes
-
-    # Create a multiprocessing pool
-    pool = multiprocessing.Pool(processes=2)  # Adjust the number of processes as needed
-
-    # Map the processing function to each dataframe
-    results = pool.map(process_dataframe, [lihtc, pub_hous])
-
-    # Close the pool to release resources
-    pool.close()
-    pool.join()
-
-    # Retrieve the results
-    lihtc_processed, pub_hous_processed = results
 
 # %%
-# lihtc = gpd.GeoDataFrame(lihtc, geometry=[Point(xy) for xy in zip (lihtc['X'], lihtc['Y'])])
+lihtc = gpd.GeoDataFrame(lihtc, geometry=[Point(xy) for xy in zip (lihtc['X'], lihtc['Y'])])
 # %%
-# pub_hous = gpd.GeoDataFrame(pub_hous, geometry=[Point(xy) for xy in zip (pub_hous['X'], pub_hous['Y'])])
+pub_hous = gpd.GeoDataFrame(pub_hous, geometry=[Point(xy) for xy in zip (pub_hous['X'], pub_hous['Y'])])
 # %%
 
 ## LIHTC clean
