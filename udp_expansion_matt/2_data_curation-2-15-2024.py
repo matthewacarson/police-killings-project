@@ -1065,9 +1065,6 @@ if __name__ == '__main__':
     # Retrieve the results
     lihtc_processed, pub_hous_processed = results
 
-
-
-
 # %%
 # lihtc = gpd.GeoDataFrame(lihtc, geometry=[Point(xy) for xy in zip (lihtc['X'], lihtc['Y'])])
 # %%
