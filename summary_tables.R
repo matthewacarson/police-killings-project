@@ -207,7 +207,7 @@ summary_tables$bins200_summary_1$quantile_200 <- as.numeric(summary_tables$bins2
 ## Grouped by majority race/ethnicity ####
 # ############################## #
 
-summary_tables$race_and_income_summary <- 
+summary_tables$race_and_income_summary <-
   left_join(
     x = summary_tables$race_and_income,
     y = summary_tables$race_and_income_pop,
@@ -240,28 +240,24 @@ summary_tables$race_and_income_summary <-
 ################## #
 # This needs to be assigned to an object for cowplot
 summary_tables$majority_table_1 <-  fatal_enc$joined |>
-  count(Majority = Majority) |> rename(Killings = n) |> 
+  count(Majority = Majority) |> rename(Killings = n) |>
   filter(!is.na(Majority)) |> mutate(Killings_Per_Yr = Killings / 6)
 
 summary_tables$majority_pop_table_1 <- tapply(
-  all_tracts$income_population_quintiles_2020$Total_popE, 
+  all_tracts$income_population_quintiles_2020$Total_popE,
   all_tracts$income_population_quintiles_2020$Majority,
-  sum, na.rm = TRUE) %>%
+  sum,
+  na.rm = TRUE
+) %>%
   data.frame(Majority = rownames(.), Population = .)
 
-summary_tables$majority_summary_1 <- 
+summary_tables$majority_summary_1 <-
   left_join(
     x = summary_tables$majority_table_1,
     y = summary_tables$majority_pop_table_1,
     by = "Majority"
-  )
-
-summary_tables$majority_summary_1 <- 
-  summary_tables$majority_summary_1 |> 
-  mutate(
-    Annualized_Per_10_M =
-      Killings_Per_Yr / Population * 10000000
-  )
+  ) |> mutate(Annualized_Per_10_M =
+                Killings_Per_Yr / Population * 10000000)
 ############################################# #
 ############################################# #
 # SCRIPT: income_100_quantiles_and_race.R ####
@@ -310,7 +306,7 @@ summary_tables$decile_pop_race_denom <-
       rename(Population = Total_popE) |> mutate(Majority = 'All')
   )
 
-summary_tables$decile_race_denom <- 
+summary_tables$decile_race_denom <-
   left_join(
     x = summary_tables$decile_pop_race_denom,
     y = summary_tables$decile_race_denom,
@@ -327,53 +323,6 @@ summary_tables$decile_race_denom <-
 ########################################## #
 ########################################## #
 
-summary_tables$decile_race_denom <- 
-  fatal_enc$joined |> 
-  count(Majority, income_decile) |> 
-  rename(Killings = n) |> 
-  na.omit() |> 
-  add_row(
-    fatal_enc$joined |> 
-      count(income_decile) |> 
-      rename(Killings = n) |> 
-      na.omit() |> 
-      mutate(Majority = 'All')
-  )
-
-summary_tables$decile_pop_race_denom <- 
-  # Black
-  all_tracts$income_population_quintiles_2020 |> 
-  filter(Majority == 'Black') |> 
-  aggregate(NH_BlackE ~ Majority + income_decile, FUN = sum) |> 
-  rename(Population = NH_BlackE) |> 
-  add_row(
-    # White
-    all_tracts$income_population_quintiles_2020 |> 
-      filter(Majority == 'White') |> 
-      aggregate(NH_WhiteE ~ Majority + income_decile, FUN = sum) |> 
-      rename(Population = NH_WhiteE)) |> 
-  add_row(
-    # Latino
-    all_tracts$income_population_quintiles_2020 |> 
-      filter(Majority == 'Hispanic/Latino') |> 
-      aggregate(Hisp_LatinoE ~ Majority + income_decile, FUN = sum) |> 
-      rename(Population = Hisp_LatinoE)) |> 
-  add_row(
-    all_tracts$income_population_quintiles_2020 |> 
-      aggregate(Total_popE ~ income_decile, FUN = sum) |> 
-      rename(Population = Total_popE) |> mutate(Majority = 'All')
-  )
-
-summary_tables$decile_race_denom <- 
-  left_join(
-    x = summary_tables$decile_pop_race_denom,
-    y = summary_tables$decile_race_denom,
-    by = join_by(Majority, income_decile)
-  ) |> 
-  mutate(Annualized_Per_10_M = 
-           # coalesce replaces NAs with 0
-           coalesce(Killings / Population * 10000000 / 6, 0)) |>   
-  rename(Income = income_decile)
 ############################################# #
 ############################################# #
 # SCRIPT: quintiles_race_denominators.R ####
