@@ -136,65 +136,80 @@ load(file = paste0(data_dir, r_data_folder, 'tr_rents.Rdata'))
 
 # stsp <- combined_tracts; rm(combined_tracts)
 
-load(file = paste0(data_dir, r_data_folder, 'states_final.RData'))
-# debug(left_join)
-# undebug(left_join)
+
+
+load(file = paste0(data_dir, r_data_folder, 'stsp_backup.RData'))
+
 # join data to these tracts
+stsp <- stsp_backup[!is.na(stsp_backup$tr_pchrent),]
 stsp@data <-
     left_join(
-        stsp@data, 
+      stsp@data, 
         tr_rents, 
         by = "GEOID") %>% select(5:23)
 
 # load(file = 'Feb_13_2024_1_00_PM.RData')
-# Subset stsp to remove NAs
-# stsp_backup <- stsp
-# stsp <- stsp_backup 
-stsp <- stsp[!is.na(stsp$tr_pchrent),]
-
-
 #
 # Create neighbor matrix
 # -----------------------------------------------------
     coords <- coordinates(stsp)
     IDs <- row.names(as(stsp, "data.frame"))
     stsp_nb <- poly2nb(stsp) # nb
+    
+  save(stsp_nb, file = paste0(data_dir, r_data_folder, 'stsp_nb.RData'))
+    
     lw_bin <- nb2listw(stsp_nb, style = "W", zero.policy = TRUE)
+    
+  save(lw_bin, file = paste0(data_dir, r_data_folder, 'lw_bin.RData'))
 
     kern1 <- knn2nb(knearneigh(coords, k = 1), row.names=IDs)
     
-
-
+  save(kern1, file = paste0(data_dir, r_data_folder, 'kern1.RData'))
 
   dist <- unlist(nbdists(kern1, coords))
+  
+save(dist, file = paste0(data_dir, r_data_folder, 'dist.RData'))
+  
   max_1nn <- max(dist)
+  
+save(max_1nn, file = paste0(data_dir, r_data_folder, 'max_1nn.RData'))
+  
   dist_nb <- dnearneigh(coords, d1=0, d2 = .1*max_1nn, row.names = IDs)
 
+save(dist_nb, file = paste0(data_dir, r_data_folder, 'dist_nb.RData'))
+  
 # Wait for above code to complete before running anything more
 save.image(file = paste0(data_dir, r_data_folder, "2_17.RData"))
 
   spdep::set.ZeroPolicyOption(TRUE)
   spdep::set.ZeroPolicyOption(TRUE)
   dists <- nbdists(dist_nb, coordinates(stsp))
+  
+save(dists, file = paste0(data_dir, r_data_folder, 'dists.RData'))
+  
   idw <- lapply(dists, function(x) 1/(x^2))
+  
+save(idw, file = paste0(data_dir, r_data_folder, 'dists.RData'))
+  
   lw_dist_idwW <- nb2listw(dist_nb, glist = idw, style = "W")
     
 save(lw_dist_idwW, file = paste0(data_dir, r_data_folder, 'lw_dist_idwW.RData'))
-
+load(file = paste0(data_dir, r_data_folder, 'lw_dist_idwW.RData'))
 #
 # Create select lag variables ####
 # ----------------------------------------------------- #
 
+  stsp$tr_pchrent.lag <- lag.listw(lw_dist_idwW, stsp$tr_pchrent.x)
 
-# subsetting for missing NA values in stsp$tr_pchrent
+save(stsp, file = paste0(data_dir, r_data_folder, 'stsp_tr_pchrent_lag.RData'))
 
-############## #
-### Original ###
-############## #
-
-stsp$tr_pchrent.lag <- lag.listw(lw_dist_idwW, stsp$tr_pchrent)
-stsp$tr_chrent.lag <- lag.listw(lw_dist_idwW, stsp$tr_chrent)
-stsp$tr_medrent18.lag <- lag.listw(lw_dist_idwW, stsp$tr_medrent18)
+  stsp$tr_chrent.lag <- lag.listw(lw_dist_idwW, stsp$tr_chrent)
+  
+save(stsp, file = paste0(data_dir, r_data_folder, 'stsp_tr_chrent_lag.RData'))
+  
+  stsp$tr_medrent18.lag <- lag.listw(lw_dist_idwW, stsp$tr_medrent18)
+  
+  save(stsp, file = paste0(data_dir, r_data_folder, 'stsp_tr_medrent18_lag.RData'))
 ################ #
 
 # =====================================================
@@ -252,7 +267,9 @@ puma <-
         puma_density = estimate/sqmile
         ) %>% 
     rename(PUMAID = GEOID)
-save(puma, file = paste0(data_dir, r_data_folder, 'puma.RData'))
+
+# save(puma, file = paste0(data_dir, r_data_folder, 'puma.RData'))
+load(file = file = paste0(data_dir, r_data_folder, 'puma.RData'))
 
 stsf <- 
     stsp %>% 
@@ -271,7 +288,11 @@ stsf <- stsf[, c('GEOID', 'puma_density', 'dense')]
 save(stsp, file = paste0(data_dir, r_data_folder, 'stsf.RData'))
 
 lag <- left_join(lag, stsf)
-save(lag, file = paste0(data_dir, r_data_folder, 'lag_joined.RData'))
+
+# Stop the parallel backend
+stopCluster(cl)
+
+save(lag, file = paste0(data_dir, r_data_folder, 'lag_stsf_joined.RData'))
 # =====================================================
 # Export Data
 # =====================================================
@@ -279,5 +300,3 @@ save.image(file = paste0(data_dir, r_data_folder, '3_lag_vars_everything.RData')
 # saveRDS(df2, "~/git/displacement-typologies/data/rentgap.rds")
 # fwrite(lag, "~/git/displacement-typologies/data/outputs/lags/lag.csv")
 
-# Stop the parallel backend
-stopCluster(cl)
