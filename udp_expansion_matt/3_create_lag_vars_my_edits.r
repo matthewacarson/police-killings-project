@@ -22,10 +22,19 @@ if (!require(pacman)) install.packages("pacman"); pacman::p_load(googledrive, bi
 # use this for Desktop R Studio
 # data_dir <- 'C:/Users/madou/OneDrive - UCLA IT Services/1)_PS-Honors/police_killings_github/udp_expansion_matt'
 data_dir <- paste0(getwd(), '/udp_expansion_matt')
+
 r_data_folder <- '/data/R_data/'
-# df <- read_csv(paste0(data_dir, '/data/outputs/databases/zillow_database_2018.csv'))
+
+# df <- read_csv(paste0(data_dir, '/data/outputs/databases/zillow_database_2018.csv'), col_types = cols(...1 = col_skip()))
+
+# save(df, file = paste0(data_dir, '/data/outputs/databases/zillow_database_2018.RData'))
+
+load(file = paste0(data_dir, '/data/outputs/databases/zillow_database_2018.RData'))
+
 # save(df, file = paste0(data_dir, r_data_folder, 'zillow_database_2018.RData'))
+
 # load(paste0(data_dir, r_data_folder, 'zillow_database_2018.RData'))
+
 # use this for R Studio Cloud
 # data_dir <- '/udp_expansion_matt/data/outputs/databases/'
 # df <- read_csv(file = paste0(getwd(), data_dir, 'zillow_database_2018.csv'))
@@ -112,7 +121,7 @@ st <- c("AL", "AK", "AZ", "AR", "CA", "CO", "CT",
 #     ungroup()
 # rm(tr_rents12, tr_rents18)
 # save(tr_rents, file = paste0(data_dir, r_data_folder, 'tr_rents.Rdata'))
-# load(file = paste0(data_dir, r_data_folder, 'tr_rents.Rdata'))
+load(file = paste0(data_dir, r_data_folder, 'tr_rents.Rdata'))
 
 # combined_tracts <- tracts(st[1], cb = TRUE, class = 'sp')
 
@@ -127,8 +136,7 @@ st <- c("AL", "AK", "AZ", "AR", "CA", "CO", "CT",
 
 # stsp <- combined_tracts; rm(combined_tracts)
 
-# load(file = paste0(data_dir, r_data_folder, 'st_thru_51.RData'))
-# load(file = paste0(data_dir, r_data_folder, 'states_final.RData'))
+load(file = paste0(data_dir, r_data_folder, 'states_final.RData'))
 # debug(left_join)
 # undebug(left_join)
 # join data to these tracts
@@ -140,7 +148,8 @@ stsp@data <-
 
 # load(file = 'Feb_13_2024_1_00_PM.RData')
 # Subset stsp to remove NAs
-stsp_backup <- stsp
+# stsp_backup <- stsp
+# stsp <- stsp_backup 
 stsp <- stsp[!is.na(stsp$tr_pchrent),]
 
 
@@ -157,12 +166,12 @@ stsp <- stsp[!is.na(stsp$tr_pchrent),]
 
 
 
-  dist <- unlist(nbdists(kern1, coords)); summary(dist)
+  dist <- unlist(nbdists(kern1, coords))
   max_1nn <- max(dist)
   dist_nb <- dnearneigh(coords, d1=0, d2 = .1*max_1nn, row.names = IDs)
 
 # Wait for above code to complete before running anything more
-save.image(file = paste0(data_dir, r_data_folder, "Tues_2_13_night.RData"))
+save.image(file = paste0(data_dir, r_data_folder, "2_17.RData"))
 
   spdep::set.ZeroPolicyOption(TRUE)
   spdep::set.ZeroPolicyOption(TRUE)
@@ -183,26 +192,10 @@ save(lw_dist_idwW, file = paste0(data_dir, r_data_folder, 'lw_dist_idwW.RData'))
 ### Original ###
 ############## #
 
-# stsp$tr_pchrent.lag <- lag.listw(lw_dist_idwW, stsp$tr_pchrent)
-# stsp$tr_chrent.lag <- lag.listw(lw_dist_idwW, stsp$tr_chrent)
-# stsp$tr_medrent18.lag <- lag.listw(lw_dist_idwW, stsp$tr_medrent18)
-################ #
-
 stsp$tr_pchrent.lag <- lag.listw(lw_dist_idwW, stsp$tr_pchrent)
-
-save(stsp, file = paste0(data_dir, r_data_folder, 'stsp.RData'))
-
-stsp$tr_chrent.lag <- lag.listw(
-  lw_dist_idwW,
-  stsp$tr_chrent)
-
-save(stsp, file = paste0(data_dir, r_data_folder, 'stsp.RData'))
-
-stsp$tr_medrent18.lag <- lag.listw(
-  lw_dist_idwW,
-  stsp$tr_medrent18)
-
-save(stsp, file = paste0(data_dir, r_data_folder, 'stsp.RData'))
+stsp$tr_chrent.lag <- lag.listw(lw_dist_idwW, stsp$tr_chrent)
+stsp$tr_medrent18.lag <- lag.listw(lw_dist_idwW, stsp$tr_medrent18)
+################ #
 
 # =====================================================
 # Join lag vars with df ####
@@ -217,7 +210,7 @@ stsp_data <- stsp@data[, c(1, 14:22)]
 stsp_data$GEOID <- as.numeric(stsp$GEOID)
 lag <-  
     left_join(
-        df, 
+        df |> rename(GEOID = FIPS), 
         stsp_data) %>% 
             # mutate(GEOID = as.numeric(GEOID)) %>%
             # select(c(1,14:22)) %>%
@@ -237,6 +230,7 @@ lag <-
         dp_RentGap = case_when(tr_rent_gapprop > 0 & tr_rent_gapprop > rm_rent_gapprop ~ 1,
                                TRUE ~ 0),
     ) 
+# which(apply(X = lag[,300:406], MARGIN = 2, FUN = function(x) all(is.na(x))))
 
 save(lag, file = paste0(data_dir, r_data_folder, 'lag.RData'))
 # =====================================================
@@ -259,7 +253,7 @@ puma <-
         ) %>% 
     rename(PUMAID = GEOID)
 save(puma, file = paste0(data_dir, r_data_folder, 'puma.RData'))
-     
+
 stsf <- 
     stsp %>% 
     st_as_sf() %>% 
@@ -274,14 +268,14 @@ stsf <-
 stsf$GEOID <- as.numeric(stsf$GEOID)
 stsf <- stsf[, c('GEOID', 'puma_density', 'dense')]
 
-save(stsp, file = paste0(data_dir, r_data_folder, 'stsp.RData'))
+save(stsp, file = paste0(data_dir, r_data_folder, 'stsf.RData'))
 
 lag <- left_join(lag, stsf)
-save(lag, file = paste0(data_dir, r_data_folder, 'lag.RData'))
+save(lag, file = paste0(data_dir, r_data_folder, 'lag_joined.RData'))
 # =====================================================
 # Export Data
 # =====================================================
-save.image(file = paste0(data_dir, r_data_folder, '3_lag_vars_everything'))
+save.image(file = paste0(data_dir, r_data_folder, '3_lag_vars_everything.RData'))
 # saveRDS(df2, "~/git/displacement-typologies/data/rentgap.rds")
 # fwrite(lag, "~/git/displacement-typologies/data/outputs/lags/lag.csv")
 

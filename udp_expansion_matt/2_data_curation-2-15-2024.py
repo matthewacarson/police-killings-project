@@ -20,10 +20,23 @@ import numpy as np
 # from pathlib import Path
 import geopandas as gpd
 from shapely.geometry import Point
-import multiprocessing
+# import multiprocessing
 
 # from pyproj import Proj
 # import matplotlib.pyplot as plt
+from rpy2.robjects import pandas2ri
+from rpy2.robjects.packages import importr
+
+# Convert Pandas DataFrame to R dataframe
+pandas2ri.activate()
+df = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
+r_df = pandas2ri.py2rpy(df)
+
+# Load necessary R libraries
+base = importr('base')
+
+# Save the R dataframe as .RData file
+base.save(r_df, file="mydata.RData")
 
 
 pd.set_option('display.max_columns', None)
