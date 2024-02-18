@@ -7,12 +7,11 @@ using InteractiveUtils
 # ╔═╡ e4f6718f-ba29-4bef-b12d-869aed9be1c1
 begin
 	using CSV
-	using DataFrames
 	using GZip
-	using GeoDataFrames
-	using GeometryTypes
-	using Shapefile
-	using DataFrames
+	import GeoDataFrames as GDF
+	import GeometryTypes as GT
+	import Shapefile as Shape
+	import DataFrames as dfs
 end
 
 # ╔═╡ 9558b83b-7149-4aa0-b7e0-8d0e531829b7
@@ -49,18 +48,40 @@ lihtc_geometry = [Point(xy[1], xy[2]) for xy in zip(lihtc[!, "X"], lihtc[!, "Y"]
 # Convert pub_hous to GeoDataFrame
 pub_hous_geometry = [Point(xy[1], xy[2]) for xy in zip(pub_hous[!, "X"], pub_hous[!, "Y"])]
 
+# ╔═╡ e6b747b9-6e78-44c8-9b4a-00d74dc3f139
+begin
+	# Read the shapefile
+	city_shp = Shapefile.read("C:/Users/madou/OneDrive - UCLA IT Services/1)_PS-Honors/police-killings-project_union_PC/udp_expansion_matt/combined_output.shp")
+
+	# Dissolve by 'STATEFP'
+	city_poly = GeoDataFrames.dissolve(city_shp, by="STATEFP")
+
+	# Reset index
+	city_poly = resetindex(city_poly)
+end
+
 # ╔═╡ b948995d-fe08-4211-9d26-07c546aa2d16
+# ╠═╡ disabled = true
+#=╠═╡
 lihtc_geo_df = GeoDataFrames.GeoDataFrame(lihtc, geometry = lihtc_geometry)	
+  ╠═╡ =#
 
 # ╔═╡ 34dea307-69a4-4495-9ef6-02224b011ae1
+# ╠═╡ disabled = true
+#=╠═╡
 pub_hous_geo_df = GeoDataFrames.GeoDataFrame(pub_hous, geometry = pub_hous_geometry)
+  ╠═╡ =#
 
 # ╔═╡ 9e6d851d-05ec-4f51-bba0-f4a75cfc4f6e
+#=╠═╡
 # Save GeoDataFrames as shapefiles
 Shapefile.write("pub_hous_geo_df.shp", pub_hous_geo_df)
+  ╠═╡ =#
 
 # ╔═╡ b51e5bd4-3d4c-4f9a-9073-4f9c05d07756
+#=╠═╡
 Shapefile.write("lihtc_geo_df.shp", lihtc_geo_df)
+  ╠═╡ =#
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -996,6 +1017,7 @@ version = "1.1.9+1"
 # ╠═5cf02e5f-97cd-417b-ae1a-fb927e4abf68
 # ╠═167bfaca-1cfc-4337-90e3-bcf585e6341e
 # ╠═ba5752f1-d916-44a5-ba52-e287958475a9
+# ╠═e6b747b9-6e78-44c8-9b4a-00d74dc3f139
 # ╠═b948995d-fe08-4211-9d26-07c546aa2d16
 # ╠═34dea307-69a4-4495-9ef6-02224b011ae1
 # ╠═9e6d851d-05ec-4f51-bba0-f4a75cfc4f6e
