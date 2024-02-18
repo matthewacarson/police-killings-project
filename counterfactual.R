@@ -8,37 +8,6 @@ source(file = "summary_tables.R")
 
 # These tables use the race of the victim.
 
-summary_tables$race_LUOF_counterfactual <-
-  full_join(
-    x = summary_tables$race_quint_proportions,
-    y = summary_tables$quintile_race_proportion,
-    by = join_by(Race, Quintile)
-  ) |>   rename(
-# income quintile of tract
-    quintile = Quintile, 
-    
-# race of victim
-    race = Race,
-
-# count of that race living in that income quintile
-    pop_quint_race = Population_in_tracts, 
-
-# total US population of that race
-    total_US_pop_race = race_total_pop,
-
-# proportion of that racial group that lives in that income quintile
-    prop_of_race_in_quintile = Race_proportion_quintile,
-
-# count of LUOF of that race occurring within that income quintile
-    LUOF_count_quint_race = Killings_by_Quintile_and_Race,
-
-# total count of persons of that race killed
-    LUOF_race_total_US = Killings_Race_Total,
-
-# proportion of all persons killed of that race within that income quintile
-    prop_of_LUOF_by_race = Proportion_LUOF
-  )
-
 # summary_tables$race_LUOF_counterfactual # inspect
 
 # Calculate the annual rate per 10 million population in tract type
