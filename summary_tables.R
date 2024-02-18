@@ -33,12 +33,6 @@ summary_tables$race_and_income_pop <- all_tracts$income_population_quintiles_202
 ######################################################### #
 ## annualized rate: majority -BY- quintile  ####
 ######################################################### #
-summary_tables$race_and_income_summary <- 
-  left_join(
-    x = summary_tables$race_and_income,
-    y = summary_tables$race_and_income_pop,
-    by = c("Majority", "Quintile")
-  )
 
 summary_tables$race_and_income_summary <- 
   summary_tables$race_and_income_summary |> 
