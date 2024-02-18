@@ -346,7 +346,7 @@ summary_tables$race_income_luof_race_denom <-
       mutate(Majority = 'All')
   )
 
-summary_tables$race_and_income_pop_race_denom <- 
+summary_tables$race_and_income_pop_race_denom <-
   # Black
   all_tracts$income_population_quintiles_2020 |> 
   filter(Majority == 'Black') |> 
@@ -415,3 +415,10 @@ delete_these <- c(
   "race_income_luof_race_denom"
 )
 rm(list = delete_these, envir = summary_tables)
+
+
+writexl::write_xlsx(x = as.list(summary_tables), path = 'summary_tables.xlsx')
+
+# for (df in names(summary_tables)) {
+#   write_csv(x = get(df, envir = summary_tables), file = paste0(getwd(), '/summary_tables/', df, '.csv'))
+# }

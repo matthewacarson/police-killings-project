@@ -1,4 +1,4 @@
-git_exclude/
+git_ignore/
 # *.csv
 *.pkl
 # *.RData
