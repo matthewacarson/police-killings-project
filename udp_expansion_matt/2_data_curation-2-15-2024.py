@@ -1,3 +1,4 @@
+# %% 1
 # ==========================================================================
 # ==========================================================================
 # ==========================================================================
@@ -24,20 +25,6 @@ from shapely.geometry import Point
 
 # from pyproj import Proj
 # import matplotlib.pyplot as plt
-from rpy2.robjects import pandas2ri
-from rpy2.robjects.packages import importr
-
-# Convert Pandas DataFrame to R dataframe
-pandas2ri.activate()
-df = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
-r_df = pandas2ri.py2rpy(df)
-
-# Load necessary R libraries
-base = importr('base')
-
-# Save the R dataframe as .RData file
-base.save(r_df, file="mydata.RData")
-
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
@@ -47,7 +34,7 @@ home = "C:/Users/madou/OneDrive - UCLA IT Services/1)_PS-Honors/police-killings-
 directory = "C:/Users/madou/OneDrive - UCLA IT Services/1)_PS-Honors/police-killings-project_union_PC/udp_expansion_matt/"
 input_path = home+'/data/inputs/'
 output_path = home+'/data/outputs/'
-# %%
+# %% 2
 
 os.chdir(home)
 
@@ -166,7 +153,7 @@ def crosswalk_files (df, xwalk, counts, medians, df_fips_base, xwalk_fips_base, 
     # drop weight column
     df = df.drop(columns = ['weight'])
     return df
-# %%
+# %% 3 
 # Crosswalking
 # --------------------------------------------------------------------------
 
@@ -181,7 +168,7 @@ df_fips_base = 'FIPS'
 xwalk_fips_base = 'trtid90'
 xwalk_fips_horizon = 'trtid10'
 census_90_xwalked = crosswalk_files (census_90, xwalk_90_10,  counts, medians, df_fips_base, xwalk_fips_base, xwalk_fips_horizon )
-# %%
+# %% 4
 ## 2000 Census Data
 
 census_00.columns
@@ -197,7 +184,7 @@ census_00_xwalked = crosswalk_files (census_00, xwalk_00_10,  counts, medians, d
 
 census_90_filtered = filter_FIPS(census_90_xwalked)
 census_00_filtered = filter_FIPS(census_00_xwalked)
-# %%
+# %% 5
 
 # ==========================================================================
 # ==========================================================================
@@ -224,7 +211,7 @@ acs_data = pd.read_csv('merged_2012_2018.csv', index_col = 0)
 acs_data = acs_data.rename(columns = {'county_x': 'county',
                                     'state_x': 'state',
                                     'tract_x': 'tract'})
-# %%
+# %% 6
 # Bring in PUMS data
 # --------------------------------------------------------------------------
 
@@ -240,7 +227,7 @@ pums = pums.rename(columns = {'YEAR_x':'YEAR',
                                'NAME_E_x':'NAME_E'})
 pums = pums.dropna(axis = 1)
 
-# %%
+# %% 7
 # ==========================================================================
 # Read Shapefile Data (inputs needed)
 # ==========================================================================
@@ -279,64 +266,15 @@ city_shp = gpd.read_file('C:/Users/madou/OneDrive - UCLA IT Services/1)_PS-Honor
 # --------------------------------------------------------------------------
 # Note: Choose city and define city specific variables
 # Add a new 'elif' for your city here
-# %% NOT USING THE CODE BELOW
+# NOT USING THE CODE BELOW
 # if city_name == 'Chicago':
 #     state = '17'
 #     state_init = ['IL']
 #     FIPS = ['031', '043', '089', '093', '097', '111', '197']
 #     rail_agency = ['CTA']
 #     zone = '16T'
-# elif city_name == 'Atlanta':
-#     state = '13'
-#     state_init = ['GA']
-#     FIPS = ['057', '063', '067', '089', '097', '113', '121', '135', '151', '247']
-#     rail_agency = ['MARTA']
-#     zone = '16S'
-# elif city_name == 'Denver':
-#     state = '08'
-#     state_init = ['CO']
-#     FIPS = ['001', '005', '013', '014', '019', '031', '035', '047', '059']
-#     rail_agency = ['RTD']
-#     zone = '13S'
-# elif city_name == 'Memphis':
-#     state = ['28', '47']
-#     state_init = ['MS', 'TN']
-#     FIPS = {'28':['033', '093'], '47': ['047', '157']}
-#     rail_agency = [np.nan]
-#     zone = '15S'
-# elif city_name == 'Los Angeles':
-#     state = '06'
-#     state_init = ['CA']
-#     FIPS = ['037', '059', '073']
-#     rail_agency = ['Metro', 'MTS', 'Metrolink']
-#     zone = '11S'
-# elif city_name == 'San Francisco':
-#     state = '06'
-#     state_init = ['CA']
-#     FIPS = ['001', '013', '041', '055', '067', '075', '077', '081', '085', '087', '095', '097', '113']
-#     rail_agency = ['ACE ', 'ACE , Capitol Corridor Joint Powers Authority', 'BART', 'Caltrain', 'Capitol Corridor Joint Powers Authority', 'RT', 'San Francisco Municipal Transportation Agency', 'VTA', 'Alameda/Oakland Ferry', 'Blue & Gold Fleet', 'Golden Gate Ferry', 'Harbor Bay Ferry', 'Baylink']
-#     zone = '10S'
-# elif city_name == 'Seattle':
-#     state = '53'
-#     state_init = ['WA']
-#     FIPS = ['033', '053', '061']
-#     rail_agency = ['City of Seattle', 'Sound Transit', 'Washington State Ferries', 'King County Marine Division']
-#     zone = '10T'
-# elif city_name == 'Cleveland':
-#     state = '39'
-#     state_init = ['OH']
-#     FIPS = ['035', '055', '085', '093', '103']
-#     rail_agency = ['GCRTA']
-#     zone = '17T'
-# elif city_name == 'Boston':
-#     state = ['25', '33']
-#     state_init = ['MA', 'NH']
-#     FIPS = {'25': ['009', '017', '021', '023', '025'], '33': ['015', '017']}
-#     rail_agency = ['MBTA', 'Amtrak', 'Salem Ferry', 'Boston Harbor Islands Ferries']
-#     zone = '19T'
-# else:
-#     print ('There is no information for the selected city')
-# %%
+
+# %% 8
 # ==========================================================================
 # Income Interpolation
 # ==========================================================================
@@ -649,11 +587,7 @@ len(census)
 # ==========================================================================
 # Housing Affordability Variables
 # ==========================================================================
-
-def filter_PUMS(df, FIPS):
-    df = df.reset_index(drop = True)
-    return df
-#%% 2/15/2024 3:45 PM: RUNNING INTO ERRORS HERE
+# 2/15/2024 3:45 PM: RUNNING INTO ERRORS HERE
 # pums = filter_PUMS(pums, 'FIPS')
 pums['FIPS'] = ((pums['STATEA'].astype(str).str.zfill(2))+
                 (pums['COUNTYA'].astype(str).str.zfill(3))+
@@ -843,11 +777,6 @@ len(census)
 # Load Zillow Data
 # --------------------------------------------------------------------------
 
-def filter_ZILLOW(df, FIPS):
-    df = df.reset_index(drop = True)
-    return df
-# %%
-## Import Zillow data
 zillow = pd.read_csv(input_path+'Zip_Zhvi_AllHomes.csv', encoding = "ISO-8859-1")
 zillow_xwalk = pd.read_csv(input_path+'TRACT_ZIP_032015.csv')
 
@@ -1055,7 +984,6 @@ pub_hous = pd.read_csv(input_path+'Public_Housing_Buildings.csv.gz')
 
 # %%
 lihtc = gpd.GeoDataFrame(lihtc, geometry=[Point(xy) for xy in zip (lihtc['X'], lihtc['Y'])])
-# %%
 pub_hous = gpd.GeoDataFrame(pub_hous, geometry=[Point(xy) for xy in zip (pub_hous['X'], pub_hous['Y'])])
 # %%
 
