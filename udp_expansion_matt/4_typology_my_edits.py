@@ -21,6 +21,7 @@ from pathlib import Path
 import sys
 import os
 import pickle
+from pandasgui import show
 
 # ==========================================================================
 # folder paths
@@ -288,8 +289,24 @@ df = pd.read_pickle(pickle_files + '\\2_typology_data_variable.pkl')
 # %%
 
 # %%
+import pickle
 
+# List of variable names to save
+variable_names = ['data', 'df', 'geo_typology_input', 'typology_input']
+
+# Dictionary to store the variables
+variables_to_save = {}
+
+# Iterate over variable names and get their values from globals()
+for var_name in variable_names:
+    if var_name in globals():
+        variables_to_save[var_name] = globals()[var_name]
+
+# Save variables to a pickle file
+with open(pickle_files + '\\4_typology' + '\\census_zillow_only.pkl', 'wb') as f:
+    pickle.dump(variables_to_save, f)
 # %%
+os.getcwd()
 # ###################################################################
 # (2/18/2024) STOP HERE: read in lag.csv
 # ###################################################################

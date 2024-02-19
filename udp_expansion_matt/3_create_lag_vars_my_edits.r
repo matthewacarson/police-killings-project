@@ -144,71 +144,71 @@ stsp@data <- stsp@data |>
     rm_medrent12
   ) |> mutate(GEOID = as.numeric(GEOID))
 
-# cl <- makeCluster(8) # manually set to 8 cores
-# registerDoParallel(cl)
+cl <- makeCluster(8) # manually set to 8 cores
+registerDoParallel(cl)
 # Create neighbor matrix
 # -----------------------------------------------------
-    # coords <- coordinates(stsp)
-    # IDs <- row.names(as(stsp, "data.frame"))
-    # stsp_nb <- poly2nb(stsp) # nb
+    coords <- coordinates(stsp)
+    IDs <- row.names(as(stsp, "data.frame"))
+    stsp_nb <- poly2nb(stsp) # nb
     
 # save(stsp_nb, file = paste0(data_dir, r_data_folder, 'stsp_nb.RData'))
-load(file = paste0(data_dir, r_data_folder, 'stsp_nb.RData'))
+# load(file = paste0(data_dir, r_data_folder, 'stsp_nb.RData'))
 
-    # lw_bin <- nb2listw(stsp_nb, style = "W", zero.policy = TRUE)
+    lw_bin <- nb2listw(stsp_nb, style = "W", zero.policy = TRUE)
     
 # save(lw_bin, file = paste0(data_dir, r_data_folder, 'lw_bin.RData'))
-load(file = paste0(data_dir, r_data_folder, 'lw_bin.RData')) 
+# load(file = paste0(data_dir, r_data_folder, 'lw_bin.RData')) 
 
-    # knearneigh1 <- knearneigh(coords, k = 1)
+    knearneigh1 <- knearneigh(coords, k = 1)
   
-    # kern1 <- knn2nb(knearneigh1) # , row.names=IDs)
+    kern1 <- knn2nb(knearneigh1) # , row.names=IDs)
     
 # save(kern1, file = paste0(data_dir, r_data_folder, 'kern1.RData'))
-load(file = paste0(data_dir, r_data_folder, 'kern1.RData'))
+# load(file = paste0(data_dir, r_data_folder, 'kern1.RData'))
 
-  # dist <- unlist(nbdists(kern1, coords))
+  dist <- unlist(nbdists(kern1, coords))
   
 # save(dist, file = paste0(data_dir, r_data_folder, 'dist.RData'))
-load(file = paste0(data_dir, r_data_folder, 'dist.RData'))
+# load(file = paste0(data_dir, r_data_folder, 'dist.RData'))
   
-  # max_1nn <- max(dist)
+  max_1nn <- max(dist)
   
 # save(max_1nn, file = paste0(data_dir, r_data_folder, 'max_1nn.RData'))
-load(file = paste0(data_dir, r_data_folder, 'max_1nn.RData'))
+# load(file = paste0(data_dir, r_data_folder, 'max_1nn.RData'))
   
-  # dist_nb <- dnearneigh(coords, d1=0, d2 = .1*max_1nn) # , row.names = IDs)
+  dist_nb <- dnearneigh(coords, d1=0, d2 = .1*max_1nn) # , row.names = IDs)
 
 # save(dist_nb, file = paste0(data_dir, r_data_folder, 'dist_nb.RData'))
-load(file = paste0(data_dir, r_data_folder, 'dist_nb.RData'))
+# load(file = paste0(data_dir, r_data_folder, 'dist_nb.RData'))
 
   spdep::set.ZeroPolicyOption(TRUE)
   spdep::set.ZeroPolicyOption(TRUE)
   dists <- nbdists(dist_nb, coordinates(stsp))
   
 # save(idw, file = paste0(data_dir, r_data_folder, 'dists.RData'))
-load(file = paste0(data_dir, r_data_folder, 'dists.RData'))
+# load(file = paste0(data_dir, r_data_folder, 'dists.RData'))
   
   idw <- lapply(dists, function(x) 1/(x^2))
   # lw_dist_idwW <- nb2listw(dist_nb, glist = idw, style = "W")
     
-# save(lw_dist_idwW, file = paste0(data_dir, r_data_folder, 'lw_dist_idwW.RData'))
-load(file = paste0(data_dir, r_data_folder, 'lw_dist_idwW.RData'))
+save(lw_dist_idwW, file = paste0(data_dir, r_data_folder, 'lw_dist_idwW.RData'))
+# load(file = paste0(data_dir, r_data_folder, 'lw_dist_idwW.RData'))
 
 # Filter out so that lw_dist_idwW is same length as stsp ------------------
 
-lw_dist_idwW_filter <- lw_dist_idwW
-lw_dist_idwW_filter$neighbours <- lw_dist_idwW$neighbours[!is.na(stsp$tr_chrent)]
-lw_dist_idwW_filter$weights <- lw_dist_idwW$weights[!is.na(stsp$tr_chrent)]
-
-stsp@data <- stsp@data[!is.na(stsp$tr_chrent),]
-
-rownames(stsp@data) <- seq(nrow(stsp@data))
+# lw_dist_idwW_filter <- lw_dist_idwW
+# lw_dist_idwW_filter$neighbours <- lw_dist_idwW$neighbours[!is.na(stsp$tr_chrent)]
+# lw_dist_idwW_filter$weights <- lw_dist_idwW$weights[!is.na(stsp$tr_chrent)]
+# 
+# stsp@data <- stsp@data[!is.na(stsp$tr_chrent),]
+# 
+# rownames(stsp@data) <- seq(nrow(stsp@data))
 #
 # Create select lag variables ####
 # ----------------------------------------------------- #
 
-  stsp$tr_pchrent.lag <- lag.listw(lw_dist_idwW, stsp$tr_pchrent)
+  stsp$tr_pchrent.lag <- lag.listw(lw_dist_idwW_filter, stsp$tr_pchrent)
   
 # save(stsp, file = paste0(data_dir, r_data_folder, 'stsp_tr_pchrent_lag.RData'))
 # load(file = paste0(data_dir, r_data_folder, 'stsp_tr_pchrent_lag.RData'))
@@ -223,8 +223,6 @@ rownames(stsp@data) <- seq(nrow(stsp@data))
 # save(stsp, file = paste0(data_dir, r_data_folder, 'stsp_tr_medrent18_lag.RData'))
 # load(file = paste0(data_dir, r_data_folder, 'stsp_tr_medrent18_lag.RData'))
 
-# Wait for above code to complete before running anything more
-# save.image(file = paste0(data_dir, r_data_folder, "2_18.RData"))
 ################ #
 # there was an issue with the columns names having an appended '.x' or '.y'
 # Renaming
@@ -296,13 +294,13 @@ stsf <-
 
 
 # troubleshooting ---------------------------------------------------------
-library(sp)
-stsp_transformed <- spTransform(stsp, CRS("+init=epsg:4269"))
-
-stsf$GEOID <- as.numeric(stsf$GEOID)
-stsf <- stsf[, c('GEOID', 'puma_density', 'dense')]
-
-save(stsp, file = paste0(data_dir, r_data_folder, 'stsf.RData'))
+# library(sp)
+# stsp_transformed <- spTransform(stsp, CRS("+init=epsg:4269"))
+# 
+# stsf$GEOID <- as.numeric(stsf$GEOID)
+# stsf <- stsf[, c('GEOID', 'puma_density', 'dense')]
+# 
+# save(stsp, file = paste0(data_dir, r_data_folder, 'stsf.RData'))
 
 lag <- left_join(lag, stsf)
 
