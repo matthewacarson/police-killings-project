@@ -1,0 +1,1508 @@
+Formal class 'SpatialPolygonsDataFrame' [package "sp"] with 5 slots
+  ..@ data       :'data.frame':	60572 obs. of  10 variables:
+  .. ..$ GEOID           : num [1:60572] 1089003100 1089000501 1089011021 1095031200 1073012401 ...
+  .. ..$ tr_medrent18    : num [1:60572] 706 909 853 658 838 623 718 598 828 679 ...
+  .. ..$ tr_medrent12    : num [1:60572] 378 910 875 587 819 ...
+  .. ..$ tr_chrent       : num [1:60572] 328.3 -0.5 -22.3 70.6 19.4 ...
+  .. ..$ tr_pchrent      : num [1:60572] 0.86916 -0.00055 -0.02543 0.12013 0.02376 ...
+  .. ..$ rm_medrent18    : num [1:60572] 902 902 902 650 846 ...
+  .. ..$ rm_medrent12    : num [1:60572] 817 817 817 642 823 ...
+  .. ..$ tr_pchrent.lag  : num [1:60572] 0.078 0.184 0.0288 0.0381 0.0245 ...
+  .. ..$ tr_chrent.lag   : num [1:60572] 63.7 137.6 -29.3 12.2 12 ...
+  .. ..$ tr_medrent18.lag: num [1:60572] 823 940 895 699 785 ...
+  ..@ polygons   :List of 60572
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.6 34.7
+  .. .. .. .. .. .. ..@ area   : num 0.000426
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:23, 1:2] -86.6 -86.6 -86.6 -86.6 -86.6 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:23] "1" "2" "3" "4" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.6 34.7
+  .. .. .. ..@ ID       : chr "1"
+  .. .. .. ..@ area     : num 0.000426
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.6 34.8
+  .. .. .. .. .. .. ..@ area   : num 0.000277
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:15, 1:2] -86.7 -86.7 -86.6 -86.6 -86.6 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:15] "24" "25" "26" "27" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.6 34.8
+  .. .. .. ..@ ID       : chr "2"
+  .. .. .. ..@ area     : num 0.000277
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.8 34.7
+  .. .. .. .. .. .. ..@ area   : num 0.00112
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:25, 1:2] -86.8 -86.8 -86.8 -86.8 -86.8 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:25] "39" "40" "41" "42" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.8 34.7
+  .. .. .. ..@ ID       : chr "3"
+  .. .. .. ..@ area     : num 0.00112
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.1 34.2
+  .. .. .. .. .. .. ..@ area   : num 0.00284
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:56, 1:2] -86.2 -86.2 -86.2 -86.2 -86.2 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:56] "64" "65" "66" "67" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.1 34.2
+  .. .. .. ..@ ID       : chr "4"
+  .. .. .. ..@ area     : num 0.00284
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.9 33.6
+  .. .. .. .. .. .. ..@ area   : num 0.00046
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:31, 1:2] -86.9 -86.9 -86.9 -86.9 -86.9 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:31] "120" "121" "122" "123" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.9 33.6
+  .. .. .. ..@ ID       : chr "5"
+  .. .. .. ..@ area     : num 0.00046
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.8 33.5
+  .. .. .. .. .. .. ..@ area   : num 0.00112
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:49, 1:2] -86.9 -86.9 -86.9 -86.8 -86.8 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:49] "151" "152" "153" "154" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.8 33.5
+  .. .. .. ..@ ID       : chr "6"
+  .. .. .. ..@ area     : num 0.00112
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87 33.4
+  .. .. .. .. .. .. ..@ area   : num 0.000233
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:29, 1:2] -87 -87 -87 -87 -87 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:29] "200" "201" "202" "203" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87 33.4
+  .. .. .. ..@ ID       : chr "7"
+  .. .. .. ..@ area     : num 0.000233
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.9 33.5
+  .. .. .. .. .. .. ..@ area   : num 0.000217
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:26, 1:2] -86.9 -86.9 -86.9 -86.9 -86.9 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:26] "229" "230" "231" "232" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.9 33.5
+  .. .. .. ..@ ID       : chr "8"
+  .. .. .. ..@ area     : num 0.000217
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.7 33.6
+  .. .. .. .. .. .. ..@ area   : num 0.000288
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:34, 1:2] -86.7 -86.7 -86.7 -86.7 -86.7 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:34] "255" "256" "257" "258" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.7 33.6
+  .. .. .. ..@ ID       : chr "9"
+  .. .. .. ..@ area     : num 0.000288
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87 34.6
+  .. .. .. .. .. .. ..@ area   : num 0.000621
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:34, 1:2] -87 -87 -87 -87 -87 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:34] "289" "290" "291" "292" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87 34.6
+  .. .. .. ..@ ID       : chr "10"
+  .. .. .. ..@ area     : num 0.000621
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87 34.6
+  .. .. .. .. .. .. ..@ area   : num 0.000252
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:13, 1:2] -87 -87 -87 -87 -87 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:13] "323" "324" "325" "326" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87 34.6
+  .. .. .. ..@ ID       : chr "11"
+  .. .. .. ..@ area     : num 0.000252
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87.6 33.2
+  .. .. .. .. .. .. ..@ area   : num 0.000166
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:17, 1:2] -87.6 -87.6 -87.6 -87.6 -87.6 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:17] "336" "337" "338" "339" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87.6 33.2
+  .. .. .. ..@ ID       : chr "12"
+  .. .. .. ..@ area     : num 0.000166
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87.7 32.7
+  .. .. .. .. .. .. ..@ area   : num 0.0264
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:304, 1:2] -87.9 -87.9 -87.9 -87.9 -87.9 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:304] "353" "354" "355" "356" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87.7 32.7
+  .. .. .. ..@ ID       : chr "13"
+  .. .. .. ..@ area     : num 0.0264
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87.3 31.6
+  .. .. .. .. .. .. ..@ area   : num 0.0315
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:308, 1:2] -87.4 -87.4 -87.4 -87.4 -87.4 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:308] "657" "658" "659" "660" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87.3 31.6
+  .. .. .. ..@ ID       : chr "14"
+  .. .. .. ..@ area     : num 0.0315
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -88.2 32.9
+  .. .. .. .. .. .. ..@ area   : num 0.0526
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:287, 1:2] -88.4 -88.4 -88.4 -88.4 -88.3 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:287] "965" "966" "967" "968" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -88.2 32.9
+  .. .. .. ..@ ID       : chr "15"
+  .. .. .. ..@ area     : num 0.0526
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -88.2 31.5
+  .. .. .. .. .. .. ..@ area   : num 0.0617
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:471, 1:2] -88.5 -88.5 -88.4 -88.4 -88.4 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:471] "1252" "1253" "1254" "1255" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -88.2 31.5
+  .. .. .. ..@ ID       : chr "16"
+  .. .. .. ..@ area     : num 0.0617
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87.4 34.6
+  .. .. .. .. .. .. ..@ area   : num 0.0225
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:332, 1:2] -87.5 -87.5 -87.5 -87.5 -87.5 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:332] "1723" "1724" "1725" "1726" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87.4 34.6
+  .. .. .. ..@ ID       : chr "17"
+  .. .. .. ..@ area     : num 0.0225
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -85.8 33.7
+  .. .. .. .. .. .. ..@ area   : num 0.000258
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:19, 1:2] -85.8 -85.8 -85.8 -85.8 -85.8 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:19] "2055" "2056" "2057" "2058" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -85.8 33.7
+  .. .. .. ..@ ID       : chr "18"
+  .. .. .. ..@ area     : num 0.000258
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -88.3 31.9
+  .. .. .. .. .. .. ..@ area   : num 0.0554
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:319, 1:2] -88.5 -88.5 -88.5 -88.5 -88.5 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:319] "2074" "2075" "2076" "2077" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -88.3 31.9
+  .. .. .. ..@ ID       : chr "19"
+  .. .. .. ..@ area     : num 0.0554
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.4 31.4
+  .. .. .. .. .. .. ..@ area   : num 0.0352
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:304, 1:2] -86.5 -86.5 -86.5 -86.5 -86.5 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:304] "2393" "2394" "2395" "2396" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.4 31.4
+  .. .. .. ..@ ID       : chr "20"
+  .. .. .. ..@ area     : num 0.0352
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.7 32.3
+  .. .. .. .. .. .. ..@ area   : num 0.0559
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:451, 1:2] -86.9 -86.9 -86.9 -86.9 -86.9 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:451] "2697" "2698" "2699" "2700" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.7 32.3
+  .. .. .. ..@ ID       : chr "21"
+  .. .. .. ..@ area     : num 0.0559
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87 32.4
+  .. .. .. .. .. .. ..@ area   : num 0.000265
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:25, 1:2] -87 -87 -87 -87 -87 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:25] "3148" "3149" "3150" "3151" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87 32.4
+  .. .. .. ..@ ID       : chr "22"
+  .. .. .. ..@ area     : num 0.000265
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.1 34
+  .. .. .. .. .. .. ..@ area   : num 0.000233
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:31, 1:2] -86.1 -86.1 -86.1 -86.1 -86.1 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:31] "3173" "3174" "3175" "3176" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.1 34
+  .. .. .. ..@ ID       : chr "23"
+  .. .. .. ..@ area     : num 0.000233
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86 34
+  .. .. .. .. .. .. ..@ area   : num 0.000131
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:14, 1:2] -86 -86 -86 -86 -86 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:14] "3204" "3205" "3206" "3207" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86 34
+  .. .. .. ..@ ID       : chr "24"
+  .. .. .. ..@ area     : num 0.000131
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86 34
+  .. .. .. .. .. .. ..@ area   : num 0.000398
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:31, 1:2] -86 -86 -86 -86 -86 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:31] "3218" "3219" "3220" "3221" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86 34
+  .. .. .. ..@ ID       : chr "25"
+  .. .. .. ..@ area     : num 0.000398
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87.7 34.8
+  .. .. .. .. .. .. ..@ area   : num 0.000193
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:18, 1:2] -87.7 -87.7 -87.7 -87.7 -87.7 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:18] "3249" "3250" "3251" "3252" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87.7 34.8
+  .. .. .. ..@ ID       : chr "26"
+  .. .. .. ..@ area     : num 0.000193
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87.8 31.1
+  .. .. .. .. .. .. ..@ area   : num 0.0954
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:357, 1:2] -88 -88 -88 -88 -88 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:357] "3267" "3268" "3269" "3270" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87.8 31.1
+  .. .. .. ..@ ID       : chr "27"
+  .. .. .. ..@ area     : num 0.0954
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -85.5 33.3
+  .. .. .. .. .. .. ..@ area   : num 0.0337
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:377, 1:2] -85.7 -85.7 -85.7 -85.6 -85.6 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:377] "3624" "3625" "3626" "3627" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -85.5 33.3
+  .. .. .. ..@ ID       : chr "28"
+  .. .. .. ..@ area     : num 0.0337
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.2 32.8
+  .. .. .. .. .. .. ..@ area   : num 0.064
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:317, 1:2] -86.5 -86.5 -86.5 -86.5 -86.4 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:317] "4001" "4002" "4003" "4004" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.2 32.8
+  .. .. .. ..@ ID       : chr "29"
+  .. .. .. ..@ area     : num 0.064
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.5 32.2
+  .. .. .. .. .. .. ..@ area   : num 0.0389
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:377, 1:2] -86.6 -86.6 -86.6 -86.6 -86.6 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:377] "4318" "4319" "4320" "4321" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.5 32.2
+  .. .. .. ..@ ID       : chr "30"
+  .. .. .. ..@ area     : num 0.0389
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -85.9 32.3
+  .. .. .. .. .. .. ..@ area   : num 0.0263
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:400, 1:2] -86 -86 -86 -86 -86 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:400] "4695" "4696" "4697" "4698" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -85.9 32.3
+  .. .. .. ..@ ID       : chr "31"
+  .. .. .. ..@ area     : num 0.0263
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.3 32.3
+  .. .. .. .. .. .. ..@ area   : num 0.000529
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:22, 1:2] -86.4 -86.3 -86.3 -86.3 -86.3 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:22] "5095" "5096" "5097" "5098" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.3 32.3
+  .. .. .. ..@ ID       : chr "32"
+  .. .. .. ..@ area     : num 0.000529
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.3 32.4
+  .. .. .. .. .. .. ..@ area   : num 0.000274
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:21, 1:2] -86.3 -86.3 -86.3 -86.3 -86.3 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:21] "5117" "5118" "5119" "5120" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.3 32.4
+  .. .. .. ..@ ID       : chr "33"
+  .. .. .. ..@ area     : num 0.000274
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.8 33.2
+  .. .. .. .. .. .. ..@ area   : num 0.000527
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:28, 1:2] -86.8 -86.8 -86.8 -86.8 -86.8 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:28] "5138" "5139" "5140" "5141" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.8 33.2
+  .. .. .. ..@ ID       : chr "34"
+  .. .. .. ..@ area     : num 0.000527
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87.7 34.1
+  .. .. .. .. .. .. ..@ area   : num 0.0288
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:288, 1:2] -87.9 -87.9 -87.9 -87.8 -87.8 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:288] "5166" "5167" "5168" "5169" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87.7 34.1
+  .. .. .. ..@ ID       : chr "35"
+  .. .. .. ..@ area     : num 0.0288
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.5 32.5
+  .. .. .. .. .. .. ..@ area   : num 0.000319
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:27, 1:2] -86.5 -86.5 -86.5 -86.5 -86.5 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:27] "5454" "5455" "5456" "5457" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.5 32.5
+  .. .. .. ..@ ID       : chr "36"
+  .. .. .. ..@ area     : num 0.000319
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -88.1 30.8
+  .. .. .. .. .. .. ..@ area   : num 0.000093
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:17, 1:2] -88.1 -88.1 -88.1 -88.1 -88.1 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:17] "5481" "5482" "5483" "5484" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -88.1 30.8
+  .. .. .. ..@ ID       : chr "37"
+  .. .. .. ..@ area     : num 0.000093
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -88 30.7
+  .. .. .. .. .. .. ..@ area   : num 0.000194
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:19, 1:2] -88.1 -88.1 -88.1 -88.1 -88 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:19] "5498" "5499" "5500" "5501" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -88 30.7
+  .. .. .. ..@ ID       : chr "38"
+  .. .. .. ..@ area     : num 0.000194
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -88.1 30.7
+  .. .. .. .. .. .. ..@ area   : num 0.000164
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:15, 1:2] -88.1 -88.1 -88.1 -88.1 -88.1 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:15] "5517" "5518" "5519" "5520" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -88.1 30.7
+  .. .. .. ..@ ID       : chr "39"
+  .. .. .. ..@ area     : num 0.000164
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -88.1 30.6
+  .. .. .. .. .. .. ..@ area   : num 0.000585
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:23, 1:2] -88.2 -88.2 -88.2 -88.2 -88.2 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:23] "5532" "5533" "5534" "5535" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -88.1 30.6
+  .. .. .. ..@ ID       : chr "40"
+  .. .. .. ..@ area     : num 0.000585
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -88.1 30.7
+  .. .. .. .. .. .. ..@ area   : num 0.000165
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:10, 1:2] -88.1 -88.1 -88.1 -88.1 -88.1 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:10] "5555" "5556" "5557" "5558" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -88.1 30.7
+  .. .. .. ..@ ID       : chr "41"
+  .. .. .. ..@ area     : num 0.000165
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -88.1 30.7
+  .. .. .. .. .. .. ..@ area   : num 0.000183
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:22, 1:2] -88.2 -88.2 -88.1 -88.1 -88.1 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:22] "5565" "5566" "5567" "5568" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -88.1 30.7
+  .. .. .. ..@ ID       : chr "42"
+  .. .. .. ..@ area     : num 0.000183
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -88.2 30.5
+  .. .. .. .. .. .. ..@ area   : num 0.0032
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:30, 1:2] -88.2 -88.2 -88.2 -88.2 -88.2 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:30] "5587" "5588" "5589" "5590" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -88.2 30.5
+  .. .. .. ..@ ID       : chr "43"
+  .. .. .. ..@ area     : num 0.0032
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -85.4 31.3
+  .. .. .. .. .. .. ..@ area   : num 0.000953
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:26, 1:2] -85.5 -85.5 -85.4 -85.4 -85.4 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:26] "5617" "5618" "5619" "5620" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -85.4 31.3
+  .. .. .. ..@ ID       : chr "44"
+  .. .. .. ..@ area     : num 0.000953
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -85.9 31.3
+  .. .. .. .. .. .. ..@ area   : num 0.000312
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:15, 1:2] -85.9 -85.9 -85.9 -85.8 -85.8 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:15] "5643" "5644" "5645" "5646" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -85.9 31.3
+  .. .. .. ..@ ID       : chr "45"
+  .. .. .. ..@ area     : num 0.000312
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87.1 31.7
+  .. .. .. .. .. .. ..@ area   : num 0.05
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:291, 1:2] -87.3 -87.3 -87.3 -87.3 -87.3 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:291] "5658" "5659" "5660" "5661" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87.1 31.7
+  .. .. .. ..@ ID       : chr "46"
+  .. .. .. ..@ area     : num 0.05
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.6 34.8
+  .. .. .. .. .. .. ..@ area   : num 0.00039
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:17, 1:2] -86.6 -86.6 -86.6 -86.6 -86.6 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:17] "5949" "5950" "5951" "5952" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.6 34.8
+  .. .. .. ..@ ID       : chr "47"
+  .. .. .. ..@ area     : num 0.00039
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.7 33.6
+  .. .. .. .. .. .. ..@ area   : num 0.000706
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:46, 1:2] -86.7 -86.7 -86.7 -86.7 -86.7 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:46] "5966" "5967" "5968" "5969" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.7 33.6
+  .. .. .. ..@ ID       : chr "48"
+  .. .. .. ..@ area     : num 0.000706
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.8 33.4
+  .. .. .. .. .. .. ..@ area   : num 0.00037
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:20, 1:2] -86.8 -86.8 -86.8 -86.8 -86.8 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:20] "6012" "6013" "6014" "6015" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.8 33.4
+  .. .. .. ..@ ID       : chr "49"
+  .. .. .. ..@ area     : num 0.00037
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.8 33.3
+  .. .. .. .. .. .. ..@ area   : num 0.000346
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:26, 1:2] -86.9 -86.8 -86.8 -86.8 -86.8 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:26] "6032" "6033" "6034" "6035" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.8 33.3
+  .. .. .. ..@ ID       : chr "50"
+  .. .. .. ..@ area     : num 0.000346
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.2 32.3
+  .. .. .. .. .. .. ..@ area   : num 0.000747
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:28, 1:2] -86.2 -86.2 -86.2 -86.2 -86.2 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:28] "6058" "6059" "6060" "6061" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.2 32.3
+  .. .. .. ..@ ID       : chr "51"
+  .. .. .. ..@ area     : num 0.000747
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -88.2 30.7
+  .. .. .. .. .. .. ..@ area   : num 0.000353
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:16, 1:2] -88.2 -88.2 -88.2 -88.2 -88.2 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:16] "6086" "6087" "6088" "6089" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -88.2 30.7
+  .. .. .. ..@ ID       : chr "52"
+  .. .. .. ..@ area     : num 0.000353
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87.9 30.6
+  .. .. .. .. .. .. ..@ area   : num 0.000814
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:48, 1:2] -87.9 -87.9 -87.9 -87.9 -87.9 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:48] "6102" "6103" "6104" "6105" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87.9 30.6
+  .. .. .. ..@ ID       : chr "53"
+  .. .. .. ..@ area     : num 0.000814
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87.6 33.2
+  .. .. .. .. .. .. ..@ area   : num 0.000156
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:19, 1:2] -87.6 -87.6 -87.6 -87.6 -87.6 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:19] "6150" "6151" "6152" "6153" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87.6 33.2
+  .. .. .. ..@ ID       : chr "54"
+  .. .. .. ..@ area     : num 0.000156
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -88 30.5
+  .. .. .. .. .. .. ..@ area   : num 0.000532
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:15, 1:2] -88.1 -88.1 -88 -88 -88 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:15] "6169" "6170" "6171" "6172" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -88 30.5
+  .. .. .. ..@ ID       : chr "55"
+  .. .. .. ..@ area     : num 0.000532
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.9 33.5
+  .. .. .. .. .. .. ..@ area   : num 0.000236
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:24, 1:2] -86.9 -86.9 -86.9 -86.9 -86.9 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:24] "7399" "7400" "7401" "7402" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.9 33.5
+  .. .. .. ..@ ID       : chr "77"
+  .. .. .. ..@ area     : num 0.000236
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.8 33.5
+  .. .. .. .. .. .. ..@ area   : num 0.000188
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:27, 1:2] -86.8 -86.8 -86.8 -86.8 -86.8 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:27] "7423" "7424" "7425" "7426" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.8 33.5
+  .. .. .. ..@ ID       : chr "78"
+  .. .. .. ..@ area     : num 0.000188
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.9 33.4
+  .. .. .. .. .. .. ..@ area   : num 0.000468
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:35, 1:2] -86.9 -86.9 -86.9 -86.9 -86.9 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:35] "7450" "7451" "7452" "7453" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.9 33.4
+  .. .. .. ..@ ID       : chr "79"
+  .. .. .. ..@ area     : num 0.000468
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.9 33.5
+  .. .. .. .. .. .. ..@ area   : num 0.000316
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:26, 1:2] -86.9 -86.9 -86.9 -86.9 -86.9 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:26] "7485" "7486" "7487" "7488" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.9 33.5
+  .. .. .. ..@ ID       : chr "80"
+  .. .. .. ..@ area     : num 0.000316
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.7 33.6
+  .. .. .. .. .. .. ..@ area   : num 0.000351
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:29, 1:2] -86.7 -86.7 -86.7 -86.7 -86.7 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:29] "7511" "7512" "7513" "7514" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.7 33.6
+  .. .. .. ..@ ID       : chr "81"
+  .. .. .. ..@ area     : num 0.000351
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.7 33.6
+  .. .. .. .. .. .. ..@ area   : num 0.000326
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:30, 1:2] -86.8 -86.8 -86.8 -86.7 -86.7 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:30] "7540" "7541" "7542" "7543" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.7 33.6
+  .. .. .. ..@ ID       : chr "82"
+  .. .. .. ..@ area     : num 0.000326
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.8 33.5
+  .. .. .. .. .. .. ..@ area   : num 0.000108
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:20, 1:2] -86.8 -86.8 -86.8 -86.8 -86.8 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:20] "7570" "7571" "7572" "7573" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.8 33.5
+  .. .. .. ..@ ID       : chr "83"
+  .. .. .. ..@ area     : num 0.000108
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.8 33.4
+  .. .. .. .. .. .. ..@ area   : num 0.000413
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:37, 1:2] -86.8 -86.8 -86.8 -86.8 -86.8 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:37] "7590" "7591" "7592" "7593" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.8 33.4
+  .. .. .. ..@ ID       : chr "84"
+  .. .. .. ..@ area     : num 0.000413
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87.1 33.5
+  .. .. .. .. .. .. ..@ area   : num 0.0165
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:377, 1:2] -87.2 -87.2 -87.2 -87.2 -87.2 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:377] "7627" "7628" "7629" "7630" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87.1 33.5
+  .. .. .. ..@ ID       : chr "85"
+  .. .. .. ..@ area     : num 0.0165
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87 34.6
+  .. .. .. .. .. .. ..@ area   : num 0.000649
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:25, 1:2] -87 -87 -87 -87 -87 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:25] "8004" "8005" "8006" "8007" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87 34.6
+  .. .. .. ..@ ID       : chr "86"
+  .. .. .. ..@ area     : num 0.000649
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87 34.5
+  .. .. .. .. .. .. ..@ area   : num 0.000861
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:31, 1:2] -87 -87 -87 -87 -87 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:31] "8029" "8030" "8031" "8032" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87 34.5
+  .. .. .. ..@ ID       : chr "87"
+  .. .. .. ..@ area     : num 0.000861
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87.6 33.2
+  .. .. .. .. .. .. ..@ area   : num 0.000917
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:43, 1:2] -87.6 -87.6 -87.6 -87.6 -87.6 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:43] "8060" "8061" "8062" "8063" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87.6 33.2
+  .. .. .. ..@ ID       : chr "88"
+  .. .. .. ..@ area     : num 0.000917
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87.6 33.2
+  .. .. .. .. .. .. ..@ area   : num 0.000406
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:29, 1:2] -87.6 -87.6 -87.6 -87.6 -87.6 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:29] "8103" "8104" "8105" "8106" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87.6 33.2
+  .. .. .. ..@ ID       : chr "89"
+  .. .. .. ..@ area     : num 0.000406
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87.9 32.1
+  .. .. .. .. .. .. ..@ area   : num 0.047
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:362, 1:2] -88.1 -88.1 -88.1 -88.1 -88.1 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:362] "8132" "8133" "8134" "8135" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87.9 32.1
+  .. .. .. ..@ ID       : chr "90"
+  .. .. .. ..@ area     : num 0.047
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87.7 32.9
+  .. .. .. .. .. .. ..@ area   : num 0.0246
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:313, 1:2] -87.8 -87.8 -87.8 -87.8 -87.8 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:313] "8494" "8495" "8496" "8497" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87.7 32.9
+  .. .. .. ..@ ID       : chr "91"
+  .. .. .. ..@ area     : num 0.0246
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87.6 31.3
+  .. .. .. .. .. .. ..@ area   : num 0.041
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:322, 1:2] -87.8 -87.8 -87.8 -87.8 -87.8 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:322] "8807" "8808" "8809" "8810" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87.6 31.3
+  .. .. .. ..@ ID       : chr "92"
+  .. .. .. ..@ area     : num 0.041
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87.4 31.7
+  .. .. .. .. .. .. ..@ area   : num 0.058
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:324, 1:2] -87.6 -87.5 -87.5 -87.5 -87.5 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:324] "9129" "9130" "9131" "9132" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87.4 31.7
+  .. .. .. ..@ ID       : chr "93"
+  .. .. .. ..@ area     : num 0.058
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87.9 32.7
+  .. .. .. .. .. .. ..@ area   : num 0.0566
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:490, 1:2] -88.1 -88.1 -88.1 -88.1 -88.1 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:490] "9453" "9454" "9455" "9456" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87.9 32.7
+  .. .. .. ..@ ID       : chr "94"
+  .. .. .. ..@ area     : num 0.0566
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.2 34.9
+  .. .. .. .. .. .. ..@ area   : num 0.0546
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:344, 1:2] -86.4 -86.3 -86.3 -86.3 -86.3 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:344] "9943" "9944" "9945" "9946" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.2 34.9
+  .. .. .. ..@ ID       : chr "95"
+  .. .. .. ..@ area     : num 0.0546
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.5 34.8
+  .. .. .. .. .. .. ..@ area   : num 0.000958
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:35, 1:2] -86.6 -86.6 -86.6 -86.6 -86.6 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:35] "10287" "10288" "10289" "10290" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.5 34.8
+  .. .. .. ..@ ID       : chr "96"
+  .. .. .. ..@ area     : num 0.000958
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.6 34.7
+  .. .. .. .. .. .. ..@ area   : num 0.000337
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:19, 1:2] -86.6 -86.6 -86.6 -86.6 -86.6 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:19] "10322" "10323" "10324" "10325" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.6 34.7
+  .. .. .. ..@ ID       : chr "97"
+  .. .. .. ..@ area     : num 0.000337
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.6 34.8
+  .. .. .. .. .. .. ..@ area   : num 0.00038
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:11, 1:2] -86.6 -86.6 -86.6 -86.6 -86.6 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:11] "10341" "10342" "10343" "10344" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.6 34.8
+  .. .. .. ..@ ID       : chr "98"
+  .. .. .. ..@ area     : num 0.00038
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.6 34.8
+  .. .. .. .. .. .. ..@ area   : num 0.000196
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:12, 1:2] -86.7 -86.6 -86.6 -86.6 -86.6 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:12] "10352" "10353" "10354" "10355" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.6 34.8
+  .. .. .. ..@ ID       : chr "99"
+  .. .. .. ..@ area     : num 0.000196
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.6 34.7
+  .. .. .. .. .. .. ..@ area   : num 0.00023
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:16, 1:2] -86.6 -86.6 -86.6 -86.6 -86.6 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:16] "10364" "10365" "10366" "10367" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.6 34.7
+  .. .. .. ..@ ID       : chr "100"
+  .. .. .. ..@ area     : num 0.00023
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.6 34.6
+  .. .. .. .. .. .. ..@ area   : num 0.000492
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:27, 1:2] -86.6 -86.6 -86.6 -86.6 -86.6 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:27] "10380" "10381" "10382" "10383" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.6 34.6
+  .. .. .. ..@ ID       : chr "101"
+  .. .. .. ..@ area     : num 0.000492
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87 34.8
+  .. .. .. .. .. .. ..@ area   : num 0.000461
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:16, 1:2] -87 -87 -87 -87 -87 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:16] "10407" "10408" "10409" "10410" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87 34.8
+  .. .. .. ..@ ID       : chr "102"
+  .. .. .. ..@ area     : num 0.000461
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.3 31.2
+  .. .. .. .. .. .. ..@ area   : num 0.0238
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:296, 1:2] -86.4 -86.4 -86.4 -86.4 -86.4 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:296] "10423" "10424" "10425" "10426" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.3 31.2
+  .. .. .. ..@ ID       : chr "103"
+  .. .. .. ..@ area     : num 0.0238
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87.2 32.2
+  .. .. .. .. .. .. ..@ area   : num 0.0872
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:670, 1:2] -87.5 -87.4 -87.4 -87.4 -87.4 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:670] "10719" "10720" "10721" "10722" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87.2 32.2
+  .. .. .. ..@ ID       : chr "104"
+  .. .. .. ..@ area     : num 0.0872
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87 32.6
+  .. .. .. .. .. .. ..@ area   : num 0.0176
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:329, 1:2] -87.1 -87.1 -87.1 -87.1 -87.1 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:329] "11389" "11390" "11391" "11392" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87 32.6
+  .. .. .. ..@ ID       : chr "105"
+  .. .. .. ..@ area     : num 0.0176
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87.1 32.4
+  .. .. .. .. .. .. ..@ area   : num 0.000891
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:22, 1:2] -87.1 -87.1 -87.1 -87 -87 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:22] "11718" "11719" "11720" "11721" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87.1 32.4
+  .. .. .. ..@ ID       : chr "106"
+  .. .. .. ..@ area     : num 0.000891
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87.7 34.8
+  .. .. .. .. .. .. ..@ area   : num 0.000234
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:36, 1:2] -87.7 -87.7 -87.7 -87.7 -87.7 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:36] "11740" "11741" "11742" "11743" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87.7 34.8
+  .. .. .. ..@ ID       : chr "107"
+  .. .. .. ..@ area     : num 0.000234
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87.8 30.9
+  .. .. .. .. .. .. ..@ area   : num 0.00166
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:55, 1:2] -87.8 -87.8 -87.8 -87.8 -87.8 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:55] "11776" "11777" "11778" "11779" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87.8 30.9
+  .. .. .. ..@ ID       : chr "108"
+  .. .. .. ..@ area     : num 0.00166
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.5 34
+  .. .. .. .. .. .. ..@ area   : num 0.0114
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:286, 1:2] -86.6 -86.6 -86.6 -86.6 -86.6 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:286] "11831" "11832" "11833" "11834" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.5 34
+  .. .. .. ..@ ID       : chr "109"
+  .. .. .. ..@ area     : num 0.0114
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -85.8 33.7
+  .. .. .. .. .. .. ..@ area   : num 0.00066
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:32, 1:2] -85.8 -85.8 -85.8 -85.8 -85.8 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:32] "12117" "12118" "12119" "12120" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -85.8 33.7
+  .. .. .. ..@ ID       : chr "110"
+  .. .. .. ..@ area     : num 0.00066
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -85.6 34.4
+  .. .. .. .. .. .. ..@ area   : num 0.0353
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:310, 1:2] -85.7 -85.7 -85.7 -85.7 -85.7 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:310] "12149" "12150" "12151" "12152" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -85.6 34.4
+  .. .. .. ..@ ID       : chr "111"
+  .. .. .. ..@ area     : num 0.0353
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87.7 31.6
+  .. .. .. .. .. .. ..@ area   : num 0.0796
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:436, 1:2] -88 -87.9 -87.9 -87.9 -87.9 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:436] "12459" "12460" "12461" "12462" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87.7 31.6
+  .. .. .. ..@ ID       : chr "112"
+  .. .. .. ..@ area     : num 0.0796
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -88.1 31.8
+  .. .. .. .. .. .. ..@ area   : num 0.036
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:350, 1:2] -88.2 -88.2 -88.2 -88.2 -88.2 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:350] "12895" "12896" "12897" "12898" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -88.1 31.8
+  .. .. .. ..@ ID       : chr "113"
+  .. .. .. ..@ area     : num 0.036
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -87.7 34.8
+  .. .. .. .. .. .. ..@ area   : num 0.000281
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:22, 1:2] -87.7 -87.7 -87.7 -87.7 -87.7 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:22] "13245" "13246" "13247" "13248" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -87.7 34.8
+  .. .. .. ..@ ID       : chr "114"
+  .. .. .. ..@ area     : num 0.000281
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -85.5 32.6
+  .. .. .. .. .. .. ..@ area   : num 0.000167
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:16, 1:2] -85.5 -85.5 -85.5 -85.5 -85.5 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:16] "13267" "13268" "13269" "13270" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -85.5 32.6
+  .. .. .. ..@ ID       : chr "115"
+  .. .. .. ..@ area     : num 0.000167
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -85.4 32.6
+  .. .. .. .. .. .. ..@ area   : num 0.00046
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:30, 1:2] -85.4 -85.4 -85.4 -85.4 -85.4 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:30] "13283" "13284" "13285" "13286" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -85.4 32.6
+  .. .. .. ..@ ID       : chr "116"
+  .. .. .. ..@ area     : num 0.00046
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.4 32.4
+  .. .. .. .. .. .. ..@ area   : num 0.00101
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:31, 1:2] -86.4 -86.4 -86.4 -86.4 -86.4 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:31] "13313" "13314" "13315" "13316" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.4 32.4
+  .. .. .. ..@ ID       : chr "117"
+  .. .. .. ..@ area     : num 0.00101
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.3 32.4
+  .. .. .. .. .. .. ..@ area   : num 0.000341
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:18, 1:2] -86.3 -86.3 -86.3 -86.3 -86.3 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:18] "13344" "13345" "13346" "13347" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.3 32.4
+  .. .. .. ..@ ID       : chr "118"
+  .. .. .. ..@ area     : num 0.000341
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.2 32.3
+  .. .. .. .. .. .. ..@ area   : num 0.000336
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:21, 1:2] -86.2 -86.2 -86.2 -86.2 -86.2 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:21] "13362" "13363" "13364" "13365" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.2 32.3
+  .. .. .. ..@ ID       : chr "119"
+  .. .. .. ..@ area     : num 0.000336
+  .. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+  .. .. .. ..@ Polygons :List of 1
+  .. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+  .. .. .. .. .. .. ..@ labpt  : num [1:2] -86.3 32.4
+  .. .. .. .. .. .. ..@ area   : num 0.000162
+  .. .. .. .. .. .. ..@ hole   : logi FALSE
+  .. .. .. .. .. .. ..@ ringDir: int 1
+  .. .. .. .. .. .. ..@ coords : num [1:15, 1:2] -86.3 -86.3 -86.3 -86.3 -86.3 ...
+  .. .. .. .. .. .. .. ..- attr(*, "dimnames")=List of 2
+  .. .. .. .. .. .. .. .. ..$ : chr [1:15] "13383" "13384" "13385" "13386" ...
+  .. .. .. .. .. .. .. .. ..$ : chr [1:2] "x" "y"
+  .. .. .. ..@ plotOrder: int 1
+  .. .. .. ..@ labpt    : num [1:2] -86.3 32.4
+  .. .. .. ..@ ID       : chr "120"
+  .. .. .. ..@ area     : num 0.000162
+  .. .. [list output truncated]
+  ..@ plotOrder  : int [1:60572] 1446 1469 1450 1483 1491 1451 1467 1444 1443 1458 ...
+  ..@ bbox       : num [1:2, 1:2] -179.1 18.9 179.8 71.4
+  .. ..- attr(*, "dimnames")=List of 2
+  .. .. ..$ : chr [1:2] "x" "y"
+  .. .. ..$ : chr [1:2] "min" "max"
+  ..@ proj4string:Formal class 'CRS' [package "sp"] with 1 slot
+  .. .. ..@ projargs: chr "+proj=longlat +datum=NAD83 +no_defs"
+  .. .. ..$ comment: chr "GEOGCRS[\"unknown\",\n    DATUM[\"North American Datum 1983\",\n        ELLIPSOID[\"GRS 1980\",6378137,298.2572"| __truncated__
+  ..$ comment: chr "FALSE"

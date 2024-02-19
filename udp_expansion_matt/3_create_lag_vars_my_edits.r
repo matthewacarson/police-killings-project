@@ -133,6 +133,7 @@ load(file = paste0(data_dir, r_data_folder, 'tr_rents.Rdata'))
 
 load("C:/Users/madou/OneDrive - UCLA IT Services/1)_PS-Honors/police-killings-project_union_PC/udp_expansion_matt/data/R_data/stsp_backup.RData")
 stsp <- stsp_backup
+
 stsp@data <- stsp@data |> 
   select(
     GEOID,
@@ -144,10 +145,16 @@ stsp@data <- stsp@data |>
     rm_medrent12
   ) |> mutate(GEOID = as.numeric(GEOID))
 
-cl <- makeCluster(8) # manually set to 8 cores
-registerDoParallel(cl)
+subset_logical <- !is.na(stsp$tr_chrent)
+stsp@data <- stsp@data[subset_logical,]
+stsp@polygons <- stsp@polygons[subset_logical]
+stsp@plotOrder <- stsp@plotOrder[subset_logical]
+
+rownames(stsp@data) <- as.character(seq(nrow(stsp@data)))
 # Create neighbor matrix
 # -----------------------------------------------------
+cl <- makeCluster(4) # manually set # of cores
+registerDoParallel(cl) # begin running in parallel
     coords <- coordinates(stsp)
     IDs <- row.names(as(stsp, "data.frame"))
     stsp_nb <- poly2nb(stsp) # nb
@@ -161,8 +168,8 @@ registerDoParallel(cl)
 # load(file = paste0(data_dir, r_data_folder, 'lw_bin.RData')) 
 
     knearneigh1 <- knearneigh(coords, k = 1)
-  
-    kern1 <- knn2nb(knearneigh1) # , row.names=IDs)
+
+    kern1 <- knn2nb(knearneigh1, row.names=IDs)
     
 # save(kern1, file = paste0(data_dir, r_data_folder, 'kern1.RData'))
 # load(file = paste0(data_dir, r_data_folder, 'kern1.RData'))
@@ -173,11 +180,13 @@ registerDoParallel(cl)
 # load(file = paste0(data_dir, r_data_folder, 'dist.RData'))
   
   max_1nn <- max(dist)
-  
+
+
 # save(max_1nn, file = paste0(data_dir, r_data_folder, 'max_1nn.RData'))
 # load(file = paste0(data_dir, r_data_folder, 'max_1nn.RData'))
+
   
-  dist_nb <- dnearneigh(coords, d1=0, d2 = .1*max_1nn) # , row.names = IDs)
+  dist_nb <- dnearneigh(coords, d1=0, d2 = .1*max_1nn, row.names = IDs)
 
 # save(dist_nb, file = paste0(data_dir, r_data_folder, 'dist_nb.RData'))
 # load(file = paste0(data_dir, r_data_folder, 'dist_nb.RData'))
@@ -190,25 +199,19 @@ registerDoParallel(cl)
 # load(file = paste0(data_dir, r_data_folder, 'dists.RData'))
   
   idw <- lapply(dists, function(x) 1/(x^2))
-  # lw_dist_idwW <- nb2listw(dist_nb, glist = idw, style = "W")
-    
-save(lw_dist_idwW, file = paste0(data_dir, r_data_folder, 'lw_dist_idwW.RData'))
-# load(file = paste0(data_dir, r_data_folder, 'lw_dist_idwW.RData'))
+  lw_dist_idwW <- nb2listw(dist_nb, glist = idw, style = "W")
 
 # Filter out so that lw_dist_idwW is same length as stsp ------------------
 
-# lw_dist_idwW_filter <- lw_dist_idwW
-# lw_dist_idwW_filter$neighbours <- lw_dist_idwW$neighbours[!is.na(stsp$tr_chrent)]
-# lw_dist_idwW_filter$weights <- lw_dist_idwW$weights[!is.na(stsp$tr_chrent)]
+lw_dist_idwW_filter <- lw_dist_idwW[!is.na(stsp$tr_chrent)]
+lw_dist_idwW_filter$neighbours <- lw_dist_idwW$neighbours[!is.na(stsp$tr_chrent)]
+lw_dist_idwW_filter$weights <- lw_dist_idwW$weights[!is.na(stsp$tr_chrent)]
 # 
-# stsp@data <- stsp@data[!is.na(stsp$tr_chrent),]
-# 
-# rownames(stsp@data) <- seq(nrow(stsp@data))
-#
+save(lw_dist_idwW, file = paste0(data_dir, r_data_folder, 'lw_dist_idwW.RData'))
 # Create select lag variables ####
 # ----------------------------------------------------- #
 
-  stsp$tr_pchrent.lag <- lag.listw(lw_dist_idwW_filter, stsp$tr_pchrent)
+  stsp$tr_pchrent.lag <- lag.listw(lw_dist_idwW, stsp$tr_pchrent)
   
 # save(stsp, file = paste0(data_dir, r_data_folder, 'stsp_tr_pchrent_lag.RData'))
 # load(file = paste0(data_dir, r_data_folder, 'stsp_tr_pchrent_lag.RData'))
@@ -222,22 +225,20 @@ save(lw_dist_idwW, file = paste0(data_dir, r_data_folder, 'lw_dist_idwW.RData'))
   
 # save(stsp, file = paste0(data_dir, r_data_folder, 'stsp_tr_medrent18_lag.RData'))
 # load(file = paste0(data_dir, r_data_folder, 'stsp_tr_medrent18_lag.RData'))
-
+save(stsp, file = paste0(data_dir, r_data_folder, 'stsp_lags.Rdata'))
 ################ #
 # there was an issue with the columns names having an appended '.x' or '.y'
 # Renaming
-# =====================================================
+# ===================================================== #
 # Join lag vars with df ####
-# =====================================================
-
-# stsp_data <- stsp@data # [, c(1, 11:23)]
+# ===================================================== #
 
 lag <-  
     left_join(
         df |> rename(GEOID = FIPS), 
         stsp@data) %>% 
-            mutate(GEOID = as.numeric(GEOID)) %>%
-            select(c(1,14:22)) %>%
+            # mutate(GEOID = as.numeric(GEOID)) %>%
+            # select(c(1,14:22)) %>%
     mutate(
         tr_rent_gap = tr_medrent18.lag - tr_medrent18, 
         tr_rent_gapprop = tr_rent_gap/((tr_medrent18 + tr_medrent18.lag)/2),
@@ -280,6 +281,9 @@ save(lag, file = paste0(data_dir, r_data_folder, 'lag.RData'))
 # save(puma, file = paste0(data_dir, r_data_folder, 'puma.RData'))
 load(file = paste0(data_dir, r_data_folder, 'puma.RData'))
 
+stsf 
+  stsp_backup %>% 
+  st_as_sf()
 
 stsf <- 
   stsp %>% 
@@ -294,18 +298,63 @@ stsf <-
 
 
 # troubleshooting ---------------------------------------------------------
+
+## trying another approach to the sf library above -------------------------
+library(sp)
+
+# Convert to SpatialPolygonsDataFrame
+stsp_sp <- as(stsp, "Spatial")
+
+## attempt 2  ------------------------------------------------------------------
+
+library(sp)
+
+# Assuming your original CRS is EPSG:XXXX, replace XXXX with the appropriate EPSG code
+original_crs <- CRS("+init=EPSG:XXXX")  # Replace XXXX with your original CRS
+
+# Define the target CRS
+target_crs <- CRS("+proj=longlat +datum=NAD83")
+
+# Transform the SpatialPolygonsDataFrame to the target CRS
+stsp_sp_transformed <- spTransform(stsp_sp, target_crs)
+
+## attempt 3 ---------------------------------------------------------------
+
+# Get centroids
+centroids <- gCentroid(stsp_sp_transformed, byid = TRUE)
+
+# Join with puma
+# Assuming puma is a SpatialPolygonsDataFrame as well
+joined <- sp::over(centroids, puma)
+
+# Add dense column
+joined$dense <- ifelse(joined$puma_density >= 3000, 1, 0)
+
+# Remove geometry
+result <- as.data.frame(joined)
+result$geometry <- NULL
+
+## attempt 4 ---------------------------------------------------------
+
 # library(sp)
-# stsp_transformed <- spTransform(stsp, CRS("+init=epsg:4269"))
+stsp_transformed <- spTransform(stsp, CRS("+init=epsg:4269"))
 # 
 # stsf$GEOID <- as.numeric(stsf$GEOID)
 # stsf <- stsf[, c('GEOID', 'puma_density', 'dense')]
 # 
 # save(stsp, file = paste0(data_dir, r_data_folder, 'stsf.RData'))
 
-lag <- left_join(lag, stsf)
 
-# Stop the parallel backend
-stopCluster(cl)
+# end troubleshooting -----------------------------------------------------
+
+# lag <- left_join(lag, stsf)
+
+
+# trying to just us stsp instead ------------------------------------------
+
+lag <- left_join(lag, stsp)
+
+# stopCluster(cl) # Stop the parallel backend
 
 save(lag, file = paste0(data_dir, r_data_folder, 'lag_stsf_joined.RData'))
 # =====================================================
