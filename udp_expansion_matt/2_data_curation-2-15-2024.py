@@ -21,6 +21,7 @@ import numpy as np
 # from pathlib import Path
 import geopandas as gpd
 from shapely.geometry import Point
+import pickle
 # import multiprocessing
 
 # from pyproj import Proj
@@ -34,6 +35,7 @@ home = "C:/Users/madou/OneDrive - UCLA IT Services/1)_PS-Honors/police-killings-
 directory = "C:/Users/madou/OneDrive - UCLA IT Services/1)_PS-Honors/police-killings-project_union_PC/udp_expansion_matt/"
 input_path = home+'/data/inputs/'
 output_path = home+'/data/outputs/'
+pickle_files = 'C:\\Users\\madou\\OneDrive - UCLA IT Services\\1)_PS-Honors\\police-killings-project_union_PC\\udp_expansion_matt\\data\\pickle_files'
 # %% 2
 
 os.chdir(home)
@@ -124,15 +126,6 @@ xwalk_00_10 = pd.read_csv(input_path+'crosswalk_2000_2010.csv')
 # Create Crosswalk Functions / Files
 # ==========================================================================
 
-# Create a Filter Function
-# --------------------------------------------------------------------------
-# Note - Memphis and Boston are different bc they are located in 2 states
-
-def filter_FIPS(df):
-    df = df.reset_index(drop = True)
-    return df
-
-
 def crosswalk_files (df, xwalk, counts, medians, df_fips_base, xwalk_fips_base, xwalk_fips_horizon):
     # merge dataframe with xwalk file
     df_merge = df.merge(xwalk[['weight', xwalk_fips_base, xwalk_fips_horizon]], left_on = df_fips_base, right_on = xwalk_fips_base, how='left')
@@ -180,10 +173,6 @@ xwalk_fips_base = 'trtid00'
 xwalk_fips_horizon = 'trtid10'
 census_00_xwalked = crosswalk_files (census_00, xwalk_00_10,  counts, medians, df_fips_base, xwalk_fips_base, xwalk_fips_horizon )
 
-## Filters and exports data
-
-census_90_filtered = filter_FIPS(census_90_xwalked)
-census_00_filtered = filter_FIPS(census_00_xwalked)
 # %% 5
 
 # ==========================================================================
@@ -204,8 +193,8 @@ census_00_filtered = filter_FIPS(census_00_xwalked)
 # output_path = output_path
 
 
-data_1990 = census_90_filtered
-data_2000 = census_00_filtered
+data_1990 = census_90_xwalked
+data_2000 = census_00_xwalked
 acs_data = pd.read_csv('merged_2012_2018.csv', index_col = 0)
 # acs_data = acs_data.drop(columns = ['county_y', 'state_y', 'tract_y'])
 acs_data = acs_data.rename(columns = {'county_x': 'county',
@@ -925,6 +914,9 @@ df['aboverm_ch_per_col_90_00'] = np.where(df['ch_per_col_90_00']>ch_rm_per_col_9
 df['aboverm_ch_per_col_00_18'] = np.where(df['ch_per_col_00_18']>ch_rm_per_col_00_18, 1, 0)
 df['aboverm_per_units_pre50_18'] = np.where(df['per_units_pre50_18']>rm_per_units_pre50_18, 1, 0)
 # %%
+df.to_pickle(pickle_files + '\\df.pkl')
+df.to_csv(pickle_files + '\\df.csv')
+# %%
 # Shapefiles
 # --------------------------------------------------------------------------
 
@@ -1005,6 +997,11 @@ presence_ph_LIHTC = pd.concat([lihtc[['geometry']], pub_hous[['geometry']]], ign
 ## and create public housing flag
 city_shp['presence_ph_LIHTC'] = city_shp.intersects(presence_ph_LIHTC.unary_union)
 # %%
+city_shp.to_pickle(pickle_files + '\\city_shp_presence_ph_LIHTC.pkl')
+#%%
+city_shp.to_csv(pickle_files + '\\city_shp_presence_ph_LIHTC.csv')
+
+# %%
 # troubleshooting
 city_shp.head()
 pub_hous.head()
@@ -1032,3 +1029,98 @@ census_zillow.query("FIPS == 13121011100")
 # %%
 census_zillow.to_csv(output_path+'databases/database_2018.csv')
 # pq.write_table(output_path+'downloads/'+city_name.replace(" ", "")+'_database.parquet')
+
+# %%
+# dir()
+save_these = ['acs_data',
+'aff_18',
+'census',
+'census_00',
+'census_00_filtered',
+'census_00_xwalked',
+'census_90',
+'census_90_filtered',
+'census_90_xwalked',
+'census_zillow',
+'ch_rm_per_col_00_18',
+'ch_rm_per_col_90_00',
+'city_poly',
+'city_shp',
+'counts',
+'crosswalk_files',
+'data_1990',
+'data_2000',
+'df',
+'df_fips_base',
+'directory',
+'filter_FIPS',
+'income_categories',
+'income_col',
+'income_interpolation',
+'income_interpolation_movein',
+'lihtc',
+'medians',
+'pctch_rm_real_hinc_00_18',
+'pctch_rm_real_hinc_90_00',
+'pctch_rm_real_mhval_00_18',
+'pctch_rm_real_mhval_90_00',
+'pctch_rm_real_mrent_00_18',
+'pctch_rm_real_mrent_12_18',
+'pctch_rm_real_mrent_90_00',
+'percentile_90',
+'presence_ph_LIHTC',
+'pub_hous',
+'pums',
+'pums_o',
+'pums_r',
+'rm_hinc_00',
+'rm_hinc_18',
+'rm_hinc_90',
+'rm_iinc_12',
+'rm_iinc_18',
+'rm_pctch_real_mhval_00_18_increase',
+'rm_pctch_real_mrent_12_18',
+'rm_pctch_real_mrent_12_18_increase',
+'rm_per_all_li_00',
+'rm_per_all_li_18',
+'rm_per_all_li_90',
+'rm_per_ch_zillow_12_18',
+'rm_per_col_00',
+'rm_per_col_18',
+'rm_per_col_90',
+'rm_per_nonwhite_00',
+'rm_per_nonwhite_18',
+'rm_per_nonwhite_90',
+'rm_per_rent_00',
+'rm_per_rent_18',
+'rm_per_rent_90',
+'rm_per_units_pre50_18',
+'rm_real_hinc_00',
+'rm_real_hinc_18',
+'rm_real_hinc_90',
+'rm_real_mhval_00',
+'rm_real_mhval_18',
+'rm_real_mhval_90',
+'rm_real_mrent_00',
+'rm_real_mrent_12',
+'rm_real_mrent_18',
+'rm_real_mrent_90',
+'xwalk_00_10',
+'xwalk_90_10',
+'xwalk_fips_base',
+'xwalk_fips_horizon',
+'zillow',
+'zillow_xwalk']
+
+# %%
+# Save custom variables to a pickle file
+# Iterate over variable names and get their values from globals()
+for var_name in save_these:
+    if var_name in globals():
+        file_path = pickle_files + '\\' + var_name + '.pkl'
+        print('Starting: ' + file_path)
+        with open(file_path, 'wb') as f:
+            pickle.dump(globals()[var_name], f)
+        print('Success:  ' + file_path)
+
+# %%

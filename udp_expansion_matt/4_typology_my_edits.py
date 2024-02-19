@@ -1,6 +1,13 @@
 #!/usr/bin/env python
 # coding: utf-8
-
+# ==========================================================================
+# This area reserved for troubleshooting / testing
+# ==========================================================================
+# data
+globals()
+locals()
+# pickle_files + '\\2_typology_data_variable.pkl'
+# %%
 # ==========================================================================
 # Import Libraries
 # ==========================================================================
@@ -13,7 +20,13 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 import sys
 import os
+import pickle
 
+# ==========================================================================
+# folder paths
+# ==========================================================================
+pickle_files = 'C:\\Users\\madou\\OneDrive - UCLA IT Services\\1)_PS-Honors\\police-killings-project_union_PC\\udp_expansion_matt\\data\\pickle_files'
+pickle_files
 # ==========================================================================
 # Choose City to Run (inputs needed)
 # ==========================================================================
@@ -25,7 +38,9 @@ import os
 # Example: python data.py Atlanta
 
 # city_name = str(sys.argv[1])
-###
+
+# %%
+
 # When testing city analysis, use: 
 # city_name = "San Francisco"
 # Run create_lag_vars.r to create lag variables
@@ -33,17 +48,24 @@ import os
 # Note: If additional cities are added, make sure to change create_lag_vars.r
 # accordingly. 
 # home = "C:/Users/madou/OneDrive - UCLA IT Services/1)_PS-Honors/police_killings_github/udp_expansion_matt"  
-home = os.getcwd() + '\\udp_expansion_matt\\'
-os.chdir(home)
+home = os.getcwd() 
+os.getcwd()
+# os.chdir(home)
 input_path = home + '\\data\\inputs\\'
 output_path = home + '\\data\\outputs\\'
+# %%
 
-lag = pd.read_csv(output_path + 'lags\\lag.csv')
-typology_input = pd.read_csv(output_path+ 'databases\\zillow_database_2018.csv', index_col = 0) ### Read file
+output_path
+
+typology_input = pd.read_csv(output_path+ 'databases\\census_zillow.csv', index_col = 0) ### Read file
+
+show(typology_input)
+
 typology_input['geometry'] = typology_input['geometry'].apply(wkt.loads) ### Read geometry as a shp attribute
 geo_typology_input  = gpd.GeoDataFrame(typology_input, geometry='geometry') ### Create the gdf
 data = geo_typology_input.copy(deep=True)
 
+# %%
 ## Summarize Income Categorization Data
 # --------------------------------------------------------------------------
 
@@ -65,7 +87,7 @@ data['pop00flag'] = np.where((data['pop_00'] >500), 1, 0)
 ####
 # End Test
 ####
-
+# %%
 # ==========================================================================
 # Define Vulnerability to Gentrification Variable
 # ==========================================================================
@@ -177,6 +199,7 @@ data['vul_gent_18'] = np.where(((data['aboverm_real_mrent_18']==0)|(data['abover
 # End Test
 ####
 
+# %%
 # ==========================================================================
 # Define Hot Market Variable
 # ==========================================================================
@@ -223,6 +246,7 @@ data['hotmarket_18'] = np.where((data['aboverm_pctch_real_mhval_00_18'].isna())|
 # End Test
 ####
 
+# %%
 # ==========================================================================
 # Define Experienced Gentrification Variable
 # ==========================================================================
@@ -256,6 +280,27 @@ data['gent_00_18_urban'] = np.where((data['vul_gent_00']==1)&
                                 # (data['ch_per_limove_12_18']<0)&
                                 (data['hotmarket_18']==1), 1, 0)
 
+# %%
+with open(pickle_files + '\\2_typology_data_variable.pkl', 'wb') as f:
+    pickle.dump(data, f)
+# %%
+df = pd.read_pickle(pickle_files + '\\2_typology_data_variable.pkl')
+# %%
+
+# %%
+
+# %%
+# ###################################################################
+# (2/18/2024) STOP HERE: read in lag.csv
+# ###################################################################
+
+# ###################################################################
+# (2/18/24, 2:45 PM) THIS STILL NEEDS TO BE RUN !! ##################
+# IMPORTANT: This was originally at the beginning of the script.
+# It was moved here because 'lag' is not used until this point.
+lag = pd.read_csv(output_path + 'lags\\lag.csv')
+# ###################################################################
+#  %%
 
 # Add lag variables
 data = pd.merge(data,lag[['dp_PChRent','dp_RentGap','GEOID', 'tr_rent_gap', 'rm_rent_gap', 'dense']],on='GEOID')

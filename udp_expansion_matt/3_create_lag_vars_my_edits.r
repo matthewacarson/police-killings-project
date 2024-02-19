@@ -138,23 +138,39 @@ load(file = paste0(data_dir, r_data_folder, 'tr_rents.Rdata'))
 
 
 
-load(file = paste0(data_dir, r_data_folder, 'stsp_backup.RData'))
 
 # join data to these tracts
-stsp <- stsp_backup[!is.na(stsp_backup$tr_pchrent),]
-stsp@data <-
-    left_join(
-      stsp@data, 
-        tr_rents, 
-        by = "GEOID") %>% select(c(1,5:23))
+# stsp@data <-
+#     left_join(
+#       stsp@data,
+#         tr_rents,
+#         by = "GEOID")# %>% select(c(1,5:23))
+# 
+# # load(file = 'Feb_13_2024_1_00_PM.RData')
 
-# load(file = 'Feb_13_2024_1_00_PM.RData')
-stsp_2 <- stsp
-names(stsp) <- c("GEOID", "NAMELSADCO", "STATE_NAME", "LSAD", "ALAND", "AWATER", 
-                 "NAME", "county", "state", "COUNTY", "tr_medrent18", 
-                 "tr_medrent12", "tr_chrent", "tr_pchrent", "rm_medrent18", 
-                 "rm_medrent12", "NAME", "county", "state", "COUNTY")
+# names(stsp@data) <- c("GEOID", "NAMELSADCO", "STATE_NAME", "LSAD", "ALAND", "AWATER",
+#                  "NAME", "county", "state", "COUNTY", "tr_medrent18",
+#                  "tr_medrent12", "tr_chrent", "tr_pchrent", "rm_medrent18",
+#                  "rm_medrent12", "NAME", "county", "state", "COUNTY")
 #
+load(file = paste0(data_dir, r_data_folder, 'stsp_backup.RData'))
+stsp <- stsp_backup
+stsp@data <- stsp@data |> 
+  select(
+    GEOID,
+    tr_medrent18,
+    tr_medrent12,
+    tr_chrent,
+    tr_pchrent,
+    rm_medrent18,
+    rm_medrent12
+  ) |> mutate(GEOID = as.numeric(GEOID))
+
+stsp@data <- stsp@data[!is.na(stsp$tr_pchrent),]
+
+
+cl <- makeCluster(8) # manually set to 8 cores
+registerDoParallel(cl)
 # Create neighbor matrix
 # -----------------------------------------------------
     coords <- coordinates(stsp)
@@ -166,8 +182,10 @@ names(stsp) <- c("GEOID", "NAMELSADCO", "STATE_NAME", "LSAD", "ALAND", "AWATER",
     lw_bin <- nb2listw(stsp_nb, style = "W", zero.policy = TRUE)
     
   save(lw_bin, file = paste0(data_dir, r_data_folder, 'lw_bin.RData'))
-
-    kern1 <- knn2nb(knearneigh(coords, k = 1), row.names=IDs)
+    
+    knearneigh1 <- knearneigh(coords, k = 1)
+  
+    kern1 <- knn2nb(knearneigh1) # , row.names=IDs)
     
   save(kern1, file = paste0(data_dir, r_data_folder, 'kern1.RData'))
 
@@ -179,7 +197,7 @@ save(dist, file = paste0(data_dir, r_data_folder, 'dist.RData'))
   
 save(max_1nn, file = paste0(data_dir, r_data_folder, 'max_1nn.RData'))
   
-  dist_nb <- dnearneigh(coords, d1=0, d2 = .1*max_1nn, row.names = IDs)
+  dist_nb <- dnearneigh(coords, d1=0, d2 = .1*max_1nn) # , row.names = IDs)
 
 save(dist_nb, file = paste0(data_dir, r_data_folder, 'dist_nb.RData'))
   
@@ -224,10 +242,8 @@ save(stsp, file = paste0(data_dir, r_data_folder, 'stsp_tr_medrent18_lag.RData')
 
 # Parallelizing ####
 # Set up parallel backend
-cl <- makeCluster(8) # manually set to four cores
-registerDoParallel(cl)
 
-stsp_data <- stsp@data[, c(1, 11:23)]
+stsp_data <- stsp@data # [, c(1, 11:23)]
 stsp_data$GEOID <- as.numeric(stsp$GEOID)
 lag <-  
     left_join(
@@ -284,8 +300,8 @@ stsf <-
     st_centroid() %>%
     st_join(., puma) %>% 
     mutate(dense = case_when(puma_density >= 3000 ~ 1, TRUE ~ 0)) %>% 
-    st_drop_geometry() %>%
-    select(GEOID, puma_density, dense)
+    st_drop_geometry() # %>%
+    # select(GEOID, puma_density, dense)
     # mutate(GEOID = as.numeric(GEOID))
 
 stsf$GEOID <- as.numeric(stsf$GEOID)
@@ -303,6 +319,6 @@ save(lag, file = paste0(data_dir, r_data_folder, 'lag_stsf_joined.RData'))
 # Export Data
 # =====================================================
 save.image(file = paste0(data_dir, r_data_folder, '3_lag_vars_everything.RData'))
-# saveRDS(df2, "~/git/displacement-typologies/data/rentgap.rds")
-# fwrite(lag, "~/git/displacement-typologies/data/outputs/lags/lag.csv")
+
+write_csv(lag, file = paste0(data_dir, "/data/outputs/lags/lag.csv"))
 
