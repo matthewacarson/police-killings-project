@@ -917,6 +917,17 @@ df['aboverm_per_units_pre50_18'] = np.where(df['per_units_pre50_18']>rm_per_unit
 df.to_pickle(pickle_files + '\\df.pkl')
 df.to_csv(pickle_files + '\\df.csv')
 # %%
+# df = pd.read_csv(pickle_files + '\\df.csv', delimiter=',', header=0, index_col=None)
+del df
+# df = pd.read_pickle(pickle_files + '\\df.pkl')
+with open(pickle_files + '\\df.pkl', 'rb') as f:
+    df = pickle.load(f)
+
+# %%
+df.head()
+df.dtypes
+
+# %%
 # Shapefiles
 # --------------------------------------------------------------------------
 
@@ -1002,6 +1013,10 @@ city_shp.to_pickle(pickle_files + '\\city_shp_presence_ph_LIHTC.pkl')
 city_shp.to_csv(pickle_files + '\\city_shp_presence_ph_LIHTC.csv')
 
 # %%
+city_shp = pd.read_pickle(pickle_files + '\\city_shp_presence_ph_LIHTC.pkl')
+city_shp.head()
+city_shp.dtypes
+# %%
 # troubleshooting
 city_shp.head()
 pub_hous.head()
@@ -1016,9 +1031,9 @@ presence_ph_LIHTC.dtypes
 
 city_shp['GEOID'] = city_shp['GEOID'].astype('int64')
 # %%
-census_zillow = census_zillow.merge(city_shp[['GEOID','geometry',
-                                              # 'rail', 'anchor_institution',
-	'presence_ph_LIHTC']], right_on = 'GEOID', left_on = 'FIPS')
+census_zillow = df.merge(city_shp[['GEOID','geometry', 'presence_ph_LIHTC']], right_on = 'GEOID', left_on = 'FIPS')
+
+
 # %%
 census_zillow.query("FIPS == 13121011100")
 # %%
@@ -1027,7 +1042,10 @@ census_zillow.query("FIPS == 13121011100")
 # Export Data
 # ==========================================================================
 # %%
-census_zillow.to_csv(output_path+'databases/database_2018.csv')
+census_zillow.to_csv(output_path+'databases/database_2018-2-18.csv')
+# %%
+with open(output_path+'databases/database_2018-2-18.pkl', 'wb') as f:
+    pickle.dump(census_zillow, f)
 # pq.write_table(output_path+'downloads/'+city_name.replace(" ", "")+'_database.parquet')
 
 # %%

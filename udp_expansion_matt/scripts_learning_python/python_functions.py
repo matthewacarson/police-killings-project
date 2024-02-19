@@ -17,4 +17,5 @@ city_shp.keys()
 city_shp.columns.values.tolist()
 sorted(city_shp)
 
-city
+# check if two variables are the same
+df1.equals(df2)
