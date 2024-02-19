@@ -3,6 +3,7 @@ git_ignore/
 *.pkl
 # *.RData
 *.RDataTmp
+*.Rhistory
 .Rproj.user/
 udp_expansion_matt/data/inputs/Public_Housing_Buildings.csv.gz
 udp_expansion_matt/census_data.csv
@@ -32,3 +33,6 @@ dists.RData
 udp_expansion_matt/data/pickle_files/city_shp_presence_ph_LIHTC.csv
 udp_expansion_matt/data/pickle_files/df.csv
 udp_expansion_matt/data/pickle_files/2_18_2024.spydata
+dists.RData
+udp_expansion_matt/data/R_data/2_18.RData
+udp_expansion_matt/d.RData
