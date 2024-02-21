@@ -11,7 +11,7 @@ source(file = 'setup.R', echo = FALSE)
 
 if (!exists("summary_tables")) {summary_tables <- new.env()}
 
-source('income_quintile_only_calculations.R', echo = FALSE)
+source('income_quintile_only_calculations.R')
 ######################################################### #
 ## killings: majority -BY- quintile ####
 ######################################################### #
@@ -370,7 +370,6 @@ summary_tables$race_and_income_pop_race_denom <-
       rename(Population = Total_popE) |> mutate(Majority = 'All')
   )
 
-
 summary_tables$race_income_summary_race_denom <- 
   left_join(
     x = summary_tables$race_and_income_pop_race_denom,
@@ -382,42 +381,40 @@ summary_tables$race_income_summary_race_denom <-
          Majority = factor(Majority, ordered = TRUE)) |> 
   rename(Quintile = income_quintiles_nolab)
 
-
-
 ################################### #
 # Race of Victim ####
 # PLOT SCRIPT: race_of_victim.R #
 ################################### #
-source('race_of_victim_summary.R', echo = FALSE)
+source('race_of_victim_summary.R')
 
 # delete: no longer needed ####
-delete_these <- c(
-  "majority_pop_table_1",
-  "majority_table_1",
-  "pop_table_1",
-  "fatal_enc_table_1",
-  "race_within_majority_and_income_pop",
-  "race_victim_majority_and_quintile",
-  "quant15_joined",
-  "quant15_table",
-  "quant15_pop",
-  "bins200_table_1",
-  "bins200_pop_table_1",
-  "race_and_income_pop",
-  "race_and_income",
-  "decile_pop_race_denom",
-  "quintile_race_proportion",
-  "race_quint_xtab",
-  "total_pop_by_race",
-  "quiniles_race_victim",
-  "race_quint_proportions",
-  "race_and_income_pop_race_denom",
-  "race_income_luof_race_denom"
-)
-rm(list = delete_these, envir = summary_tables)
+# delete_these <- c(
+  # "majority_pop_table_1",
+#   "majority_table_1",
+#   "pop_table_1",
+#   "fatal_enc_table_1",
+#   "race_within_majority_and_income_pop",
+#   "race_victim_majority_and_quintile",
+#   "quant15_joined",
+#   "quant15_table",
+#   "quant15_pop",
+#   "bins200_table_1",
+#   "bins200_pop_table_1",
+#   "race_and_income_pop",
+#   "race_and_income",
+#   "decile_pop_race_denom",
+#   "quintile_race_proportion",
+#   "race_quint_xtab",
+#   "total_pop_by_race",
+#   "quiniles_race_victim",
+#   "race_quint_proportions",
+#   "race_and_income_pop_race_denom",
+#   "race_income_luof_race_denom"
+# )
+# rm(list = delete_these, envir = summary_tables)
 
 
-writexl::write_xlsx(x = as.list(summary_tables), path = 'summary_tables.xlsx')
+# writexl::write_xlsx(x = as.list(summary_tables), path = 'summary_tables.xlsx')
 
 # for (df in names(summary_tables)) {
 #   write_csv(x = get(df, envir = summary_tables), file = paste0(getwd(), '/summary_tables/', df, '.csv'))
