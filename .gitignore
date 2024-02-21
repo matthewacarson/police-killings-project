@@ -1,4 +1,6 @@
 git_ignore/
+*.stswp
+!Stata/*.stswp
 # *.csv
 *.pkl
 # *.RData
