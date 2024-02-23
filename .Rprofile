@@ -10,7 +10,7 @@ library(sf)
 # # Conflict Preferences
 conflicts_prefer(dplyr::filter)
 conflicts_prefer(dplyr::select)
-conflicted::conflicts_prefer(bit64::`:`)
+# conflicted::conflicts_prefer(bit64::`:`)
 # conflicted::conflicts_prefer(base::`:`)
 # 
 # ## Options ##

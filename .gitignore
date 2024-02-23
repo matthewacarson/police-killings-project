@@ -38,3 +38,6 @@ udp_expansion_matt/data/pickle_files/2_18_2024.spydata
 dists.RData
 udp_expansion_matt/data/R_data/2_18.RData
 udp_expansion_matt/d.RData
+.RDataTmp1
+.RDataTmp2
+*.smcl

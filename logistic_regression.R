@@ -16,7 +16,7 @@ LUOF_counts <-
 
 logit_1 <- 
   glm(
-    formula = as.logical(LUOFs) ~ NH_BlackP,
+    formula = as.logical(LUOFs) ~ IncomeE,
     data = LUOF_counts,
     family = 'binomial'
   )

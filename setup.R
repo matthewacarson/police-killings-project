@@ -181,6 +181,15 @@ load("git_ignore/RData/acs_2020_raw.Rdata", envir = all_tracts)
 ################################################################# #
 
 all_tracts$income_population_quintiles_2020 <- st_drop_geometry(all_tracts$population_income2020)
+
+## save to Stata file .dta (having issues; not using) ####
+haven::write_dta(all_tracts$income_population_quintiles_2020, paste0(getwd(), '/stata/dta/all_tracts_2020_haven.dta'))
+
+foreign::write.dta(all_tracts$income_population_quintiles_2020, file = paste0(getwd(), '/stata/dta/all_tracts_2020_foreign.dta'), version = 12)
+## write to CSV ####
+write_csv(all_tracts$income_population_quintiles_2020, paste0(getwd(), '/stata/dta/all_tracts_2020.csv'), na = "")
+
+# Remove NA values for median income
 all_tracts$income_population_quintiles_2020 <- all_tracts$income_population_quintiles_2020[!is.na(all_tracts$income_population_quintiles_2020$IncomeE),]
 
 ################################################################# #
@@ -467,6 +476,14 @@ all_tracts$income_population_quintiles_2019 <- all_tracts$population_income2019 
 load(
   file = "git_ignore/RData/fatal_enc_initial_clean_geoid.RData",
   envir = fatal_enc)
+
+## write CSV ####
+write_csv(fatal_enc$initial_clean_geoid, paste0(getwd(), '/stata/dta/fatal_enc_clean_geoid.csv'), na = "")
+
+## save to Stata file .dta (having issues; not using) ####
+haven::write_dta(fatal_enc$initial_clean_geoid, paste0(getwd(), '/stata/dta/fatal_enc_clean_geoid_haven.dta'))
+
+foreign::write.dta(fatal_enc$initial_clean_geoid, file = paste0(getwd(), '/stata/dta/fatal_enc_clean_geoid_foreign.dta'), version = 12)
 
 fatal_enc$joined_backup <- 
   left_join(

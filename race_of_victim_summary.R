@@ -3,7 +3,7 @@
 # SCRIPT: total_pop_quintiles_race.R ####
 ############################################### #
 ############################################### #
-
+source('summary_tables.R')
 ######################################################### #
 ## Total population by race 2020 ####
 ######################################################### #
@@ -30,6 +30,8 @@ summary_tables$total_pop_by_race <-
 # BY: race of victim
 ############################################### #
 
+
+# This calcualtes killings by race of victim and income quintile ONLY
 ## plots$race_100 ####
 summary_tables$quintile_race_proportion <- 
   left_join(
@@ -61,7 +63,7 @@ summary_tables$quintile_race_proportion <-
 
 
 ######################################################## #
-## percentiles: killings annual -- victim proportion ####
+## PERCENTILES: killings annual -- victim proportion ####
 # Proportion of racial group victims killed
 # in that income quintile
 # BY: centiles

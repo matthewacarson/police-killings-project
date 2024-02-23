@@ -1,0 +1,1 @@
+insheet using income_population_2020.csv //, comma clear
