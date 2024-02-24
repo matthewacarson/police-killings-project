@@ -1,12 +1,12 @@
 // install packages
-net install mdesc // package for counting missinge values
-search nmissing
-net install dm0085_2
+// net install mdesc // package for counting missinge values
+// search nmissing
+// net install dm0085_2
 // Change working directory
 
-cd "\\Client\C$\Users\madou\OneDrive - UCLA IT Services\1)_PS-Honors\\police_killings_github\\stata\\dta\\"
+// cd "\\Client\C$\Users\madou\OneDrive - UCLA IT Services\1)_PS-Honors\\police_killings_github\\stata\\dta\\"
 
-// cd "\\tsclient\C\Users\madou\OneDrive - UCLA IT Services\1)_PS-Honors\police_killings_github\stata\dta\\"
+cd "\\tsclient\C\Users\madou\OneDrive - UCLA IT Services\1)_PS-Honors\police_killings_github\stata\dta\\"
 
 // read in fatal encounters data
 // stringcols() specifies which columns are strings
@@ -22,8 +22,9 @@ cd "\\Client\C$\Users\madou\OneDrive - UCLA IT Services\1)_PS-Honors\\police_kil
 // save all_tracts_2020, replace
 
 // load income_population_2020
-use all_tracts_2020, clear
-
+// use all_tracts_2020, clear
+use all_tracts_2020_foreign, clear
+// use all_tracts_2020_haven, clear
 // how many missing values
 
 // check which cols have missing values
@@ -64,18 +65,20 @@ replace Majority = "Hispanic/Latino" if Hisp_LatinoP > 0.5
 
 // sorting by GEOID before merge
 sort GEOID
-save all_tracts_2020_modified, replace
-
-
+// save all_tracts_2020_modified, replace
+save all_tracts_2020_modified_foreign, replace
+// save all_tracts_2020_modified_haven, replace
 //////////////////////////////////////
 // Begin working with fatal enc data
 //////////////////////////////////////
 
 // read in fatal encounters data
-use fatal_enc_clean_geoid, clear
+// use fatal_enc_clean_geoid, clear
+use fatal_enc_clean_geoid_foreign, clear
+// use fatal_enc_clean_geoid_haven, clear
 
 // check for missing values
-misstable summarize
+// misstable summarize
 
 // some zip codes are missing -- inspect
 // list if missing(zip)
@@ -84,7 +87,9 @@ misstable summarize
 sort GEOID
 
 // adding census data to the list of police fatal encounters
-merge m:1 GEOID using all_tracts_2020_modified
+merge m:1 GEOID using all_tracts_2020_modified_foreign
+
+// figure out which GEOIDs aren't merging
 keep if _merge == 3
 drop _merge
 // inspecting
@@ -104,10 +109,11 @@ save fatal_encounters_joined, replace
 // Reload all tracts to create binary variable for where fatal
 // encounters occurred
 // reload other data set
-use all_tracts_2020_modified, clear
+use all_tracts_2020_modified_foreign, clear
 
 // identify tracts (GEOID) where a fatal encounter occurred
 merge 1:m GEOID using fatal_encounters_joined
+
 
 // backup
 save all_tracts_binary, replace
@@ -115,6 +121,11 @@ save all_tracts_binary, replace
 // create a binary variable for GEOIDs
 // where a fatal encounter occurred
 gen fatal_enc_binary = _merge == 3
+total fatal_enc_binary
+
+// backup
+save all_tracts_binary, replace
 
 // logistic regression
 logit fatal_enc_binary IncomeE
+predict Income_predict
