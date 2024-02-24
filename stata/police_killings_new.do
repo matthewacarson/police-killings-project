@@ -140,17 +140,20 @@ total fatal_enc_binary
 // backup
 save all_tracts_binary, replace
 
+// convert IncomeE to thousands place
+gen IncomeE_1k = IncomeE / 1000
+
 // logistic regression -- income only
-logit fatal_enc_binary IncomeE
+logit fatal_enc_binary IncomeE_1k
 
 // predictions based on income at 10,000 intervals
-margins, at(IncomeE = (10000(10000)250000)) noatleg
+margins, at(IncomeE_1k = (10(10)250)) noatleg
 
 // plot logit regression IncomeE
 marginsplot, title("Predicted Probability of a LUOF, 2015-2020") ///
               xtitle("Median household income in census tract") ///
               ytitle("Probability of a LUOF") ///
-			  saving("..\LUOF_logit_income_only.png"), replace
+// 			  saving("..\LUOF_logit_income_only.png")
 
 
 // logistic regression NH_BlackP
@@ -161,7 +164,7 @@ margins, at(NH_BlackP = (0(.05)1)) noatleg
 marginsplot, title("Predicted Probability of a LUOF, 2015-2020") ///
               xtitle("Proportion black in the census tract") ///
               ytitle("Probability of a LUOF") ///
-			  saving("..\LUOF_logit_NH_black_only.png"), replace
+// 			  saving("..\LUOF_logit_NH_black_only.png"), replace
 
 // logistic regression NH_WhiteP
 logit fatal_enc_binary NH_WhiteP
@@ -171,7 +174,7 @@ margins, at(NH_WhiteP = (0(.05)1)) noatleg
 marginsplot, title("Predicted Probability of a LUOF, 2015-2020") ///
               xtitle("Proportion white in census tract") ///
               ytitle("Probability of a LUOF") ///
-			  saving("..\LUOF_logit_NH_white_only.png"), replace
+// 			  saving("..\LUOF_logit_NH_white_only.png")
 
 // logistic regression NH_WhiteP
 logit fatal_enc_binary Hisp_LatinoP
@@ -181,10 +184,8 @@ margins, at(Hisp_LatinoP = (0(.05)1)) noatleg
 marginsplot, title("Predicted Probability of a LUOF, 2015-2020") ///
               xtitle("Proportion Hispanic/Latino in census tract") ///
               ytitle("Probability of a LUOF") ///
-			  saving("..\LUOF_logit_latino_hispanic_only.png"), replace
+// 			  saving("..\LUOF_logit_latino_hispanic_only.png"), replace
 
-// convert IncomeE to thousands place
-gen IncomeE_1k = IncomeE / 1000
 
 // Generate interaction terms
 gen IncomeE_1k_NH_BlackP = IncomeE_1k * NH_BlackP
@@ -194,7 +195,7 @@ gen IncomeE_1k_NH_Latino = IncomeE_1k * Hisp_LatinoP
 // backup data
 save all_tracts_2020_interaction_terms, replace
 use all_tracts_2020_interaction_terms, clear
-export delimited all_tracts_2020_interaction_terms
+export delimited all_tracts_2020_interaction_terms, replace
 //////////////////////////
 // logits
 //////////////////////////
