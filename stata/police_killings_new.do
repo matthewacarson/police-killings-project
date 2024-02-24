@@ -203,6 +203,10 @@ graph export "..\LUOF_logit_latino_hispanic_only.png", replace
 // logistic regression IncomeE NH_BlackP
 // Generate interaction term
 gen IncomeE_NH_BlackP = IncomeE * NH_BlackP
+gen IncomeE_NH_WhiteP = IncomeE * NH_WhiteP
+
+// backup data
+save all_tracts_2020_interaction_terms, replace
 
 // Run logistic regression with interaction term
 logit fatal_enc_binary IncomeE NH_BlackP IncomeE_NH_BlackP
@@ -213,13 +217,19 @@ margins, dydx(NH_BlackP) at(IncomeE = (5000(10000)250000)) post
 // Plot the results
 marginsplot
 
-margins, dydx(IncomeE) at(NH_BlackP = (0.01(0.05)1)) post
+margins, dydx(IncomeE) at(NH_BlackP = (0.01(0.01)1)) post
 
 // Plot the results
 marginsplot
 
+// logit whiteP and income
+// Run logistic regression with interaction term
+logit fatal_enc_binary IncomeE NH_WhiteP IncomeE_NH_WhiteP
 
+// Calculate margins for NH_BlackP, varying IncomeE
+margins, dydx(NH_WhiteP) at(IncomeE = (5000(10000)250000)) post
 
+marginsplot
 
 
 
