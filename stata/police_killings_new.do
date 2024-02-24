@@ -149,7 +149,7 @@ logit fatal_enc_binary IncomeE
 // predictions based on income at 10,000 intervals
 margins, at(IncomeE = (10000(10000)250000)) noatleg
 
-// plot logit regression
+// plot logit regression IncomeE
 marginsplot, title("Predicted Probability of a LUOF, 2015-2020") ///
               xtitle("Median Household Income in Census Tract") ///
               ytitle("Probability of a LUOF")
@@ -159,8 +159,64 @@ graph export "..\LUOF_logit_income_only.png", replace
 
 
 
+// logistic regression NH_BlackP
+logit fatal_enc_binary NH_BlackP
 
 
+margins, at(NH_BlackP = (0(.05)1)) noatleg
+
+marginsplot, title("Predicted Probability of a LUOF, 2015-2020") ///
+              xtitle("Proportion Black in the Census Tract") ///
+              ytitle("Probability of a LUOF")
+
+
+graph export "..\LUOF_logit_NH_black_only.png", replace
+
+
+// logistic regression NH_WhiteP
+logit fatal_enc_binary NH_WhiteP
+
+
+margins, at(NH_WhiteP = (0(.05)1)) noatleg
+
+marginsplot, title("Predicted Probability of a LUOF, 2015-2020") ///
+              xtitle("Proportion White in the Census Tract") ///
+              ytitle("Probability of a LUOF")
+
+
+graph export "..\LUOF_logit_NH_white_only.png", replace
+
+
+// logistic regression NH_WhiteP
+logit fatal_enc_binary Hisp_LatinoP
+
+
+margins, at(Hisp_LatinoP = (0(.05)1)) noatleg
+
+marginsplot, title("Predicted Probability of a LUOF, 2015-2020") ///
+              xtitle("Proportion Hispanic/Latino in the Census Tract") ///
+              ytitle("Probability of a LUOF")
+
+
+graph export "..\LUOF_logit_latino_hispanic_only.png", replace
+
+// logistic regression IncomeE NH_BlackP
+// Generate interaction term
+gen IncomeE_NH_BlackP = IncomeE * NH_BlackP
+
+// Run logistic regression with interaction term
+logit fatal_enc_binary IncomeE NH_BlackP IncomeE_NH_BlackP
+
+// Calculate margins for NH_BlackP, varying IncomeE
+margins, dydx(NH_BlackP) at(IncomeE = (5000(10000)250000)) post
+
+// Plot the results
+marginsplot
+
+margins, dydx(IncomeE) at(NH_BlackP = (0.01(0.05)1)) post
+
+// Plot the results
+marginsplot
 
 
 
