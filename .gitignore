@@ -1,4 +1,5 @@
 git_ignore/
+*.spyproject/
 *.stswp
 !Stata/*.stswp
 # *.csv
@@ -41,3 +42,4 @@ udp_expansion_matt/d.RData
 .RDataTmp1
 .RDataTmp2
 *.smcl
+*.stswp

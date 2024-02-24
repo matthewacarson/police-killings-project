@@ -486,7 +486,7 @@ haven::write_dta(fatal_enc$initial_clean_geoid, paste0(getwd(), '/stata/dta/fata
 foreign::write.dta(fatal_enc$initial_clean_geoid, file = paste0(getwd(), '/stata/dta/fatal_enc_clean_geoid_foreign.dta'), version = 12)
 
 fatal_enc$joined_backup <- 
-  left_join(
+  inner_join(
     x = fatal_enc$initial_clean_geoid,
     y = all_tracts$income_population_quintiles_2020,
     by = "GEOID")

@@ -281,9 +281,8 @@ save(lag, file = paste0(data_dir, r_data_folder, 'lag.RData'))
 # save(puma, file = paste0(data_dir, r_data_folder, 'puma.RData'))
 load(file = paste0(data_dir, r_data_folder, 'puma.RData'))
 
-stsf 
-  stsp_backup %>% 
-  st_as_sf()
+stsp_backup %>% 
+st_as_sf()
 
 stsf <- 
   stsp %>% 
