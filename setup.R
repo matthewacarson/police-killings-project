@@ -153,20 +153,20 @@ if (!exists("fatal_enc")) {fatal_enc <- new.env()}
 # ### Add GEOID to the fatal encounters data set
 # 
 # # r Add GEOID to the fatal encounters data set
-# fatal_enc$initial_clean_geoid <- 
-#   st_join(
-#     x = fatal_enc$initial_clean,
-#     y = all_tracts$population_income2020 %>% select(GEOID),
-#     join = st_within)
-# 
+# fatal_enc$initial_clean_geoid <-
+  # st_join(
+    # x = fatal_enc$initial_clean,
+    # y = all_tracts$population_income2020 %>% select(GEOID),
+    # join = st_within)
+ 
 # fatal_enc$initial_clean_geoid <- st_drop_geometry(fatal_enc$initial_clean_geoid)
-# 
-# # Remove duplicated rows (unique ids that appear twice)
-# fatal_enc$initial_clean_geoid <- 
+
+# Remove duplicated rows (unique ids that appear twice)
+# fatal_enc$initial_clean_geoid <-
 #   fatal_enc$initial_clean_geoid[
-#     !duplicated(fatal_enc$initial_clean_geoid$unique_id) | 
+#     !duplicated(fatal_enc$initial_clean_geoid$unique_id) |
 #       duplicated(fatal_enc$initial_clean_geoid, fromLast = TRUE),]
-# 
+
 # fatal_enc$initial_clean_geoid$imputation_probability <-
 #   as.numeric(fatal_enc$initial_clean_geoid$imputation_probability)
 
