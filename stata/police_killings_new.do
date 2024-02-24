@@ -148,3 +148,25 @@ logit fatal_enc_binary IncomeE
 
 // predictions based on income at 10,000 intervals
 margins, at(IncomeE = (10000(10000)250000)) noatleg
+
+// plot logit regression
+marginsplot, title("Predicted Probability of a LUOF, 2015-2020") ///
+              xtitle("Median Household Income in Census Tract") ///
+              ytitle("Probability of a LUOF")
+
+
+graph export "..\LUOF_logit_income_only.png", replace
+
+
+
+
+
+
+
+
+
+
+
+
+
+
