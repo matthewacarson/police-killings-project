@@ -226,6 +226,7 @@ save(lw_dist_idwW, file = paste0(data_dir, r_data_folder, 'lw_dist_idwW.RData'))
 # save(stsp, file = paste0(data_dir, r_data_folder, 'stsp_tr_medrent18_lag.RData'))
 # load(file = paste0(data_dir, r_data_folder, 'stsp_tr_medrent18_lag.RData'))
 save(stsp, file = paste0(data_dir, r_data_folder, 'stsp_lags.Rdata'))
+load(file = paste0(data_dir, r_data_folder, 'stsp_lags.Rdata'))
 ################ #
 # there was an issue with the columns names having an appended '.x' or '.y'
 # Renaming
@@ -258,6 +259,7 @@ lag <-
 # which(apply(X = lag[,300:406], MARGIN = 2, FUN = function(x) all(is.na(x))))
 
 save(lag, file = paste0(data_dir, r_data_folder, 'lag.RData'))
+load(file = paste0(data_dir, r_data_folder, 'lag.RData'))
 # =====================================================
 # PUMA
 # =====================================================
