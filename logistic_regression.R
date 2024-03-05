@@ -4,24 +4,24 @@ LUOF_binary <- all_tracts$income_population_quintiles_2020
 LUOF_binary$LUOF_binary <- all_tracts$income_population_quintiles_2020$GEOID %in% fatal_enc$joined$GEOID
 
 
-  
+LUOF_binary$Income_1k <- LUOF_binary$IncomeE / 1000
 
 
 # Logistic regression
 
 logit_1 <- 
   glm(
-    formula = LUOF_binary ~ IncomeE,
+    formula = LUOF_binary ~ Income_1k,
     data = LUOF_binary,
     family = 'binomial'
   )
 
 
 # Generate a sequence of values from 0.01 through 1
-nh_values <- seq(10000, 250000, 10000)
-
+nh_values <- seq(10, 250, 10)
+nh_values <- c(30, 60, 150, 180)
 # Create a dataframe with NH_BlackP values
-nh_df <- data.frame(IncomeE = nh_values)
+nh_df <- data.frame(Income_1k = nh_values)
 
 # Make predictions using the fitted model
 predictions <- predict(logit_1, newdata = nh_df, type = "response")

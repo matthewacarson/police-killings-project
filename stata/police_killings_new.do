@@ -7,7 +7,7 @@
 
 // cd "\\Client\C$\Users\madou\OneDrive - UCLA IT Services\1)_PS-Honors\\police_killings_github\\stata\\dta\\"
 
-cd "\\tsclient\C\Users\madou\OneDrive - UCLA IT Services\1)_PS-Honors\police_killings_github\stata\dta\\"
+cd "\\tsclient\C\Users\madou\OneDrive - UCLA IT Services\1)_PS-Honors\HP_PC\police_killings_github_HP\stata\dta\\"
 
 // read in fatal encounters data
 // stringcols() specifies which columns are strings
@@ -146,6 +146,12 @@ gen IncomeE_1k = IncomeE / 1000
 // logistic regression -- income only
 logit fatal_enc_binary IncomeE_1k
 
+// Store estimation results
+estimates store my_model
+
+// Export results to CSV using estout
+estout my_model using "..\LUOF_logit_income_only.csv", replace
+
 // predictions based on income at 10,000 intervals
 margins, at(IncomeE_1k = (10(10)250)) noatleg
 
@@ -153,7 +159,12 @@ margins, at(IncomeE_1k = (10(10)250)) noatleg
 marginsplot, title("Predicted Probability of a LUOF, 2015-2020") ///
               xtitle("Median household income in census tract") ///
               ytitle("Probability of a LUOF") ///
-// 			  saving("..\LUOF_logit_income_only.png")
+			  name(income_only, replace) ///
+			  yscale(range(0 0.18)) ///
+			  ylabel(0 "0" 0.02 "0.02" 0.04 "0.04" 0.06 "0.06" 0.08 "0.08" 0.10 "0.10" 0.12 "0.12" 0.14 "0.14" 0.16 "0.16" 0.18 "0.18")
+
+graph export "..\LUOF_logit_income_only.png", width(8000) height(4800) replace
+
 
 
 // logistic regression NH_BlackP
@@ -164,7 +175,10 @@ margins, at(NH_BlackP = (0(.05)1)) noatleg
 marginsplot, title("Predicted Probability of a LUOF, 2015-2020") ///
               xtitle("Proportion black in the census tract") ///
               ytitle("Probability of a LUOF") ///
-// 			  saving("..\LUOF_logit_NH_black_only.png"), replace
+			  name(NH_BlackP, replace) ///
+			  yscale(range(0 0.18)) ///
+			  ylabel(0 "0" 0.02 "0.02" 0.04 "0.04" 0.06 "0.06" 0.08 "0.08" 0.10 "0.10" 0.12 "0.12" 0.14 "0.14" 0.16 "0.16" 0.18 "0.18")
+graph export "..\LUOF_logit_NH_black_only.png", dpi(300) replace
 
 // logistic regression NH_WhiteP
 logit fatal_enc_binary NH_WhiteP
@@ -174,9 +188,10 @@ margins, at(NH_WhiteP = (0(.05)1)) noatleg
 marginsplot, title("Predicted Probability of a LUOF, 2015-2020") ///
               xtitle("Proportion white in census tract") ///
               ytitle("Probability of a LUOF") ///
+			  name(NH_WhiteP, replace) ///
 // 			  saving("..\LUOF_logit_NH_white_only.png")
 
-// logistic regression NH_WhiteP
+// logistic regression Hisp_LatinoP
 logit fatal_enc_binary Hisp_LatinoP
 
 margins, at(Hisp_LatinoP = (0(.05)1)) noatleg
@@ -184,6 +199,9 @@ margins, at(Hisp_LatinoP = (0(.05)1)) noatleg
 marginsplot, title("Predicted Probability of a LUOF, 2015-2020") ///
               xtitle("Proportion Hispanic/Latino in census tract") ///
               ytitle("Probability of a LUOF") ///
+			  name(Hisp_LatinoP, replace) ///
+			  yscale(range(0 0.18)) ///
+			  ylabel(0 "0" 0.02 "0.02" 0.04 "0.04" 0.06 "0.06" 0.08 "0.08" 0.10 "0.10" 0.12 "0.12" 0.14 "0.14" 0.16 "0.16" 0.18 "0.18")
 // 			  saving("..\LUOF_logit_latino_hispanic_only.png"), replace
 
 
@@ -201,13 +219,6 @@ export delimited all_tracts_2020_interaction_terms, replace
 //////////////////////////
 
 // Run logistic regression with interaction term
-logit fatal_enc_binary IncomeE_1k NH_BlackP IncomeE_1k_NH_BlackP
-
-// Calculate margins for NH_BlackP, varying IncomeE
-// margins, dydx(NH_BlackP) at(IncomeE_1k = (5(10)250)) post
-
-// Plot the results
-// marginsplot
 
 logit fatal_enc_binary IncomeE_1k NH_BlackP IncomeE_1k_NH_BlackP
 
@@ -217,7 +228,10 @@ margins, dydx(IncomeE_1k) at(NH_BlackP = (0.00(0.05)1)) post
 marginsplot, title("Average marginal effects of Income (95% CIs)") ///
 			xtitle("Proportion black in census tract") ///
 			ytitle("Effects of $1k income on Pr(LUOF)") ///
-			saving("..\inc_effects_proportion_black.png"), replace
+			name(IncomeE_1k_black, replace) ///
+			yscale(range(0 0.18)) ///
+			ylabel(0 "0" 0.02 "0.02" 0.04 "0.04" 0.06 "0.06" 0.08 "0.08" 0.10 "0.10" 0.12 "0.12" 0.14 "0.14" 0.16 "0.16" 0.18 "0.18")
+// 			saving("..\inc_effects_proportion_black.png"), replace
 
 // // Run logistic regression with interaction term
 // logit fatal_enc_binary IncomeE_1k NH_WhiteP IncomeE_1k_NH_WhiteP
@@ -234,7 +248,10 @@ margins, dydx(IncomeE_1k) at(NH_WhiteP = (0.00(0.05)1)) post
 marginsplot, title("Average marginal effects of Income (95% CIs)") ///
 			xtitle("Proportion white in census tract") ///
 			ytitle("Effects of $1k income on Pr(LUOF)") ///
-			saving("..\inc_effects_proportion_white.png"), replace
+			name(IncomeE_1k_white, replace) ///
+			yscale(range(0 0.18)) ///
+			ylabel(0 "0" 0.02 "0.02" 0.04 "0.04" 0.06 "0.06" 0.08 "0.08" 0.10 "0.10" 0.12 "0.12" 0.14 "0.14" 0.16 "0.16" 0.18 "0.18")
+// 			saving("..\inc_effects_proportion_white.png"), replace
 
 // Latino logit
 logit fatal_enc_binary IncomeE_1k Hisp_LatinoP IncomeE_1k_NH_Latino
@@ -244,6 +261,12 @@ margins, dydx(IncomeE_1k) at(Hisp_LatinoP = (0.00(0.05)1)) post
 marginsplot, title("Average marginal effects of Income (95% CIs)") ///
 			xtitle("Proportion Hispanic/Latino in census tract") ///
 			ytitle("Effects of $1k income on Pr(LUOF)") ///
-			saving("..\inc_effects_proportion_latino.png"), replace
+			name(IncomeE_1k_hispLatino, replace) ///
+			yscale(range(0 0.18)) /// 
+			ylabel(0 "0" 0.02 "0.02" 0.04 "0.04" 0.06 "0.06" 0.08 "0.08" 0.10 "0.10" 0.12 "0.12" 0.14 "0.14" 0.16 "0.16" 0.18 "0.18")
+// 			saving("..\inc_effects_proportion_latino.png"), replace
 
+// Combine plots into quadrants
+graph combine IncomeE_1k_black IncomeE_1k_white IncomeE_1k_hispLatino, xcommon ycommon ///
+name(combined_effects, replace)
 
