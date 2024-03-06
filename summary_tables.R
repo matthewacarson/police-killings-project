@@ -163,7 +163,7 @@ summary_tables$quant15_summary <-
       Killings / Population * 10000000 / 6,
     Majority = factor(Majority, ordered = TRUE)
   ) |> 
-  rename(Quintile = income_15_quant)
+  rename(Quantiles_15 = income_15_quant)
 ############################################### #
 ############################################### #
 # SCRIPT: 200_quantile_plots.R ####
@@ -214,7 +214,7 @@ summary_tables$race_and_income_summary <-
     by = join_by(Majority, Quintile)
   ) |> 
   mutate(
-    Annualized_Per_10_M =
+    Annual_10_M =
       Killings / Population * 10000000 / 6
   ) |> 
   select(
@@ -222,7 +222,7 @@ summary_tables$race_and_income_summary <-
     Quintile,
     Population,
     Killings,
-    Annualized_Per_10_M
+    Annual_10_M
   ) |> add_row(
     summary_tables$quintiles_only |>
       select(-Killings_Per_Yr)
@@ -256,7 +256,7 @@ summary_tables$majority_summary_1 <-
     x = summary_tables$majority_table_1,
     y = summary_tables$majority_pop_table_1,
     by = "Majority"
-  ) |> mutate(Annualized_Per_10_M =
+  ) |> mutate(Annual_10_M =
                 Killings_Per_Yr / Population * 10000000)
 ############################################# #
 ############################################# #

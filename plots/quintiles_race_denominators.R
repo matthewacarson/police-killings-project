@@ -7,15 +7,27 @@
 
 # Run setup file to bring in data to summarize
 source(file = "police-killings-setup.R")
-source(file = 'sumary_tables.R')
+source(file = 'summary_tables.R')
 
 ##################### #
 # GGplot by race ####
 ##################### #
 
+# save to CSV
+race_income_race_denom_out <- 
+  summary_tables$race_income_summary_race_denom |> 
+  select(-Population) |> 
+  mutate(out_value = paste(Killings, round(Annualized_Per_10_M, 2), sep = " | "))
+
+race_income_race_denom_out |> 
+  pivot_wider(id_cols = Quintile,
+              names_from = Majority,
+              values_from = out_value) |> 
+  write_csv(file = "race_income_race_denom_out.csv")
+
 ggplot(
     summary_tables$race_income_summary_race_denom
-    ,aes(x = Majority, y = Annualized_Per_10_M, fill = Income)) +
+    ,aes(x = Majority, y = Annualized_Per_10_M, fill = Quintile)) +
   geom_hline(
     yintercept = seq(0,100, by = 12.5), 
     color = "gray", 

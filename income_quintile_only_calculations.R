@@ -34,5 +34,5 @@ summary_tables$quintiles_only$Majority <- "All"
 
 summary_tables$quintiles_only <- summary_tables$quintiles_only |> 
   mutate(
-    Annualized_Per_10_M =
+    Annual_10_M =
       Killings_Per_Yr / Population * 10000000)

@@ -258,3 +258,15 @@ summary_tables$race_LUOF_counterfactual <-
     # proportion of all persons killed of that race within that income quintile
     prop_of_LUOF_by_race = Proportion_LUOF
   )
+
+# Save to CSV for paper
+write_csv(x =   summary_tables$race_LUOF_counterfactual |> 
+            select(Quintile = quintile, Race = race, Population = prop_of_race_in_quintile, LUOFs = prop_of_LUOF_by_race),
+          file = 'population_vs_LUOF.csv')
+
+
+# Make proportion one column and categoryical variable to indicate which proportion (polulation or LUOF)
+summary_tables$population_vs_LUOF_proportions <- 
+  summary_tables$race_LUOF_counterfactual |> 
+  select(Quintile = quintile, Race = race, Population = prop_of_race_in_quintile, LUOFs = prop_of_LUOF_by_race) |> 
+  pivot_longer(cols = c(LUOFs, Population), names_to = "Type", values_to = "Proportion")

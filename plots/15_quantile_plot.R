@@ -6,7 +6,7 @@
 # library(tidyverse)
 
 # Run setup file to bring in data to summarize
-source(file = "police-killings-setup.R")
+# source(file = "police-killings-setup.R")
 source(file = "summary_tables.R")
 ################################################ #
 # Begin Summary Tables  ########################
@@ -24,8 +24,8 @@ source(file = "summary_tables.R")
 
 # plot$quant15_by_race
   ggplot(
-    summary_tables$quant15_summary |> filter(Income <= 3)
-    ,aes(x = Majority, y = Annualized_Per_10_M, fill = Income)) +
+    summary_tables$quant15_summary |> filter(Quantiles_15 <= 3)
+    ,aes(x = Majority, y = Annualized_Per_10_M, fill = Quantiles_15)) +
   geom_hline(
     yintercept = seq(0,110, by = 10), 
     color = "gray", 
@@ -60,8 +60,8 @@ ggsave(filename = "plots/15_quantile_plot/15_quantile_plot_by_race.png", dpi = '
 ################################################# #
 
 ggplot(
-  summary_tables$quant15_summary |> filter(Income <= 3),
-  aes(x = Income, y = Annualized_Per_10_M, fill = Majority)) +
+  summary_tables$quant15_summary |> filter(Quantiles_15 <= 3),
+  aes(x = Quantiles_15, y = Annualized_Per_10_M, fill = Majority)) +
   geom_hline(
     yintercept = seq(0,110, by = 10), 
     color = "gray", 
@@ -93,3 +93,11 @@ ggsave(filename = "plots/15_quantile_plot/15_quantile_plot_by_tert.png",
        width = 10.4,
        height = 4.81)
 
+# Save table to CSV for paper
+
+write_csv(
+  x = summary_tables$quant15_summary |> 
+    select(-Population) |> 
+    filter(Quantiles_15 %in% 1:3),
+  file = 'summary_tertiles.csv'
+)

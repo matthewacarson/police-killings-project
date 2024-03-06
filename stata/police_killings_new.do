@@ -140,6 +140,12 @@ total fatal_enc_binary
 // backup
 save all_tracts_binary, replace
 
+
+///////////////////////
+// load all_tracts_binary
+/////////////////////////
+use all_tracts_binary, clear
+
 // convert IncomeE to thousands place
 gen IncomeE_1k = IncomeE / 1000
 
@@ -149,8 +155,9 @@ logit fatal_enc_binary IncomeE_1k
 // Store estimation results
 estimates store my_model
 
-// Export results to CSV using estout
-estout my_model using "..\LUOF_logit_income_only.csv", replace
+// Export results to Excel using putexcel
+putexcel set logit_results, replace // specify Excel file name 
+putexcel A1 = etable // upper-lefthand corner of where data should go
 
 // predictions based on income at 10,000 intervals
 margins, at(IncomeE_1k = (10(10)250)) noatleg
@@ -163,12 +170,16 @@ marginsplot, title("Predicted Probability of a LUOF, 2015-2020") ///
 			  yscale(range(0 0.18)) ///
 			  ylabel(0 "0" 0.02 "0.02" 0.04 "0.04" 0.06 "0.06" 0.08 "0.08" 0.10 "0.10" 0.12 "0.12" 0.14 "0.14" 0.16 "0.16" 0.18 "0.18")
 
-graph export "..\LUOF_logit_income_only.png", width(8000) height(4800) replace
+graph export "..\LUOF_logit_income_only.png", width(7680) height(4608) replace
 
 
 
 // logistic regression NH_BlackP
 logit fatal_enc_binary NH_BlackP
+
+// Store estimation results
+estimates store my_model
+putexcel A10 = etable
 
 margins, at(NH_BlackP = (0(.05)1)) noatleg
 
@@ -178,10 +189,15 @@ marginsplot, title("Predicted Probability of a LUOF, 2015-2020") ///
 			  name(NH_BlackP, replace) ///
 			  yscale(range(0 0.18)) ///
 			  ylabel(0 "0" 0.02 "0.02" 0.04 "0.04" 0.06 "0.06" 0.08 "0.08" 0.10 "0.10" 0.12 "0.12" 0.14 "0.14" 0.16 "0.16" 0.18 "0.18")
-graph export "..\LUOF_logit_NH_black_only.png", dpi(300) replace
+
+graph export "..\LUOF_logit_NH_black_only.png", width(7680) height(4608) replace
 
 // logistic regression NH_WhiteP
 logit fatal_enc_binary NH_WhiteP
+
+// Store estimation results
+estimates store my_model
+putexcel A20 = etable
 
 margins, at(NH_WhiteP = (0(.05)1)) noatleg
 
@@ -189,10 +205,17 @@ marginsplot, title("Predicted Probability of a LUOF, 2015-2020") ///
               xtitle("Proportion white in census tract") ///
               ytitle("Probability of a LUOF") ///
 			  name(NH_WhiteP, replace) ///
-// 			  saving("..\LUOF_logit_NH_white_only.png")
+			  yscale(range(0 0.18)) ///
+			  ylabel(0 "0" 0.02 "0.02" 0.04 "0.04" 0.06 "0.06" 0.08 "0.08" 0.10 "0.10" 0.12 "0.12" 0.14 "0.14" 0.16 "0.16" 0.18 "0.18")
+
+graph export "..\LUOF_logit_NH_white_only.png", width(7680) height(4608) replace
 
 // logistic regression Hisp_LatinoP
 logit fatal_enc_binary Hisp_LatinoP
+
+// Store estimation results
+estimates store my_model
+putexcel A30 = etable
 
 margins, at(Hisp_LatinoP = (0(.05)1)) noatleg
 
@@ -202,25 +225,46 @@ marginsplot, title("Predicted Probability of a LUOF, 2015-2020") ///
 			  name(Hisp_LatinoP, replace) ///
 			  yscale(range(0 0.18)) ///
 			  ylabel(0 "0" 0.02 "0.02" 0.04 "0.04" 0.06 "0.06" 0.08 "0.08" 0.10 "0.10" 0.12 "0.12" 0.14 "0.14" 0.16 "0.16" 0.18 "0.18")
-// 			  saving("..\LUOF_logit_latino_hispanic_only.png"), replace
 
+graph export "..\LUOF_logit_Hisp_Latino_only.png", width(7680) height(4608) replace
+
+// Combine plots into quadrants
+graph combine NH_BlackP Hisp_LatinoP NH_WhiteP, xcommon ycommon ///
+name(bivariate, replace)
+
+graph export "..\LUOF_logit_bivariate.png", width(7680) height(4608) replace
+
+///////////////////////////
+// Create interaction terms
+///////////////////////////
+
+// check for missing values
+count if missing(IncomeE_1k)
 
 // Generate interaction terms
 gen IncomeE_1k_NH_BlackP = IncomeE_1k * NH_BlackP
+list IncomeE_1k_NH_BlackP in 1/10
 gen IncomeE_1k_NH_WhiteP = IncomeE_1k * NH_WhiteP
+list IncomeE_1k_NH_WhiteP in 1/10
 gen IncomeE_1k_NH_Latino = IncomeE_1k * Hisp_LatinoP
+list IncomeE_1k_NH_Latino in 1/10
 
 // backup data
 save all_tracts_2020_interaction_terms, replace
-use all_tracts_2020_interaction_terms, clear
-export delimited all_tracts_2020_interaction_terms, replace
+// export delimited all_tracts_2020_interaction_terms, replace
+// use all_tracts_2020_interaction_terms, clear
+
 //////////////////////////
-// logits
+// logits: INTERACTIONS
 //////////////////////////
 
 // Run logistic regression with interaction term
 
 logit fatal_enc_binary IncomeE_1k NH_BlackP IncomeE_1k_NH_BlackP
+
+// Store estimation results
+estimates store my_model
+putexcel A40 = etable
 
 margins, dydx(IncomeE_1k) at(NH_BlackP = (0.00(0.05)1)) post
 
@@ -229,9 +273,9 @@ marginsplot, title("Average marginal effects of Income (95% CIs)") ///
 			xtitle("Proportion black in census tract") ///
 			ytitle("Effects of $1k income on Pr(LUOF)") ///
 			name(IncomeE_1k_black, replace) ///
-			yscale(range(0 0.18)) ///
-			ylabel(0 "0" 0.02 "0.02" 0.04 "0.04" 0.06 "0.06" 0.08 "0.08" 0.10 "0.10" 0.12 "0.12" 0.14 "0.14" 0.16 "0.16" 0.18 "0.18")
-// 			saving("..\inc_effects_proportion_black.png"), replace
+			ylabel(-.0013 -.0012 -.0011 -.001 -.0009 -.0008 -.0007 -.0006 -.0005 -.0004)
+
+graph export "..\LUOF_logit_IncomeE_1k_NH_BlackP.png", width(7680) height(4608) replace
 
 // // Run logistic regression with interaction term
 // logit fatal_enc_binary IncomeE_1k NH_WhiteP IncomeE_1k_NH_WhiteP
@@ -243,18 +287,30 @@ marginsplot, title("Average marginal effects of Income (95% CIs)") ///
 
 logit fatal_enc_binary IncomeE_1k NH_WhiteP IncomeE_1k_NH_WhiteP
 
+// Store estimation results
+estimates store my_model
+putexcel A50 = etable
+
 margins, dydx(IncomeE_1k) at(NH_WhiteP = (0.00(0.05)1)) post
 
 marginsplot, title("Average marginal effects of Income (95% CIs)") ///
 			xtitle("Proportion white in census tract") ///
 			ytitle("Effects of $1k income on Pr(LUOF)") ///
 			name(IncomeE_1k_white, replace) ///
-			yscale(range(0 0.18)) ///
-			ylabel(0 "0" 0.02 "0.02" 0.04 "0.04" 0.06 "0.06" 0.08 "0.08" 0.10 "0.10" 0.12 "0.12" 0.14 "0.14" 0.16 "0.16" 0.18 "0.18")
-// 			saving("..\inc_effects_proportion_white.png"), replace
+			ylabel(-.0013 -.0012 -.0011 -.001 -.0009 -.0008 -.0007 -.0006 -.0005 -.0004)
 
+			
+graph export "..\LUOF_logit_IncomeE_1k_NH_WhiteP.png", width(7680) height(4608) replace
+			
 // Latino logit
 logit fatal_enc_binary IncomeE_1k Hisp_LatinoP IncomeE_1k_NH_Latino
+
+// Store estimation results
+estimates store my_model
+putexcel A60 = etable
+
+// Close/save Excel file
+putexcel save
 
 margins, dydx(IncomeE_1k) at(Hisp_LatinoP = (0.00(0.05)1)) post
 
@@ -262,11 +318,12 @@ marginsplot, title("Average marginal effects of Income (95% CIs)") ///
 			xtitle("Proportion Hispanic/Latino in census tract") ///
 			ytitle("Effects of $1k income on Pr(LUOF)") ///
 			name(IncomeE_1k_hispLatino, replace) ///
-			yscale(range(0 0.18)) /// 
-			ylabel(0 "0" 0.02 "0.02" 0.04 "0.04" 0.06 "0.06" 0.08 "0.08" 0.10 "0.10" 0.12 "0.12" 0.14 "0.14" 0.16 "0.16" 0.18 "0.18")
-// 			saving("..\inc_effects_proportion_latino.png"), replace
+			ylabel(-.0013 -.0012 -.0011 -.001 -.0009 -.0008 -.0007 -.0006 -.0005 -.0004)
 
+graph export "..\LUOF_logit_IncomeE_1k_NH_Latino.png", width(7680) height(4608) replace
+			
 // Combine plots into quadrants
 graph combine IncomeE_1k_black IncomeE_1k_white IncomeE_1k_hispLatino, xcommon ycommon ///
 name(combined_effects, replace)
 
+graph export "..\LUOF_logit_combined_effects.png", width(7680) height(4608) replace

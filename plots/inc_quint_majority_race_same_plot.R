@@ -6,18 +6,18 @@
 # library(tidyverse)
 
 # Run setup file to bring in data to summarize
-source(file = "police-killings-setup.R")
+# source(file = "police-killings-setup.R")
 source(file = "summary_tables.R")
 
 ############################## #
 ## Create quintile bar plot ####
 ############################## #
 # This needs to be assigned to an object for cowplot
-income_quintiles_only <-
-  summary_tables$summary_1 |> 
+# income_quintiles_only <-
+summary_tables$quintiles_only |> 
   ggplot(
     data = _, 
-    aes(x = Annualized_Per_10_M, y = Income)
+    aes(x = Annual_10_M, y = Quintile)
   ) +
   geom_bar(
     stat = "identity", fill = "skyblue", color = 'black'
@@ -30,7 +30,7 @@ income_quintiles_only <-
   ) + 
   # coord_flip() +
   geom_text(
-    aes(label = round(Annualized_Per_10_M, 1)),
+    aes(label = round(Annual_10_M, 1)),
     position = position_dodge(width = 0.9),
     hjust = -0.5, color = "black"
   ) + theme_light() +
@@ -51,15 +51,18 @@ income_quintiles_only <-
 # plot.title = element_text(size = 30),
 # plot.subtitle = element_text(size = 20)
 
+# Output plot
+write_csv(x = summary_tables$quintiles_only |> select(Quintile, Killings, Annual_10_M), file = "summary_quintiles_only.csv")
 
 ####################### #
 # Majority Race Plot ####
 ####################### #
 
-majority_race_only <- summary_tables$majority_summary_1 |> 
+# majority_race_only <- 
+  summary_tables$majority_summary_1 |> 
   ggplot(
     data = _, 
-    aes(x = Annualized_Per_10_M, y = Majority)
+    aes(x = Annual_10_M, y = Majority)
   ) +
   geom_bar(
     stat = "identity", fill = "skyblue", color = 'black'
@@ -72,7 +75,7 @@ majority_race_only <- summary_tables$majority_summary_1 |>
     subtitle = "Years: [2015-2020]"
   ) + 
   geom_text(
-    aes(label = round(Annualized_Per_10_M, 1)),
+    aes(label = round(Annual_10_M, 1)),
     position = position_dodge(width = 0.9),
     hjust = -0.5, color = "black"
   ) + theme_light() +
@@ -83,6 +86,11 @@ majority_race_only <- summary_tables$majority_summary_1 |>
   scale_y_discrete(labels = c("Black", "Latino", "White"))
 # coord_flip()
 # scale_x_continuous(breaks = seq(0,70,10))
+
+write_csv(
+  x = summary_tables$majority_summary_1 |> select(-Killings_Per_Yr, -Population),
+  file = 'majority_summary_1.csv'
+)
 
 ##################### #
 ## Combining plots ####
@@ -119,7 +127,7 @@ ggsave(
 summary_tables$summary_1 |> 
   ggplot(
     data = _, 
-    aes(x = Annualized_Per_10_M, y = Income)
+    aes(x = Annual_10_M, y = Income)
   ) +
   geom_bar(
     stat = "identity", fill = "skyblue", color = 'black'
@@ -132,7 +140,7 @@ summary_tables$summary_1 |>
   ) + 
   # coord_flip() +
   geom_text(
-    aes(label = round(Annualized_Per_10_M, 1)),
+    aes(label = round(Annual_10_M, 1)),
     position = position_dodge(width = 0.9),
     hjust = -0.3, color = "black", size = 5
   ) + theme_light() +
@@ -172,7 +180,7 @@ ggsave(
 summary_tables$majority_summary_1 |> 
   ggplot(
     data = _, 
-    aes(x = Annualized_Per_10_M, y = Majority)
+    aes(x = Annual_10_M, y = Majority)
   ) +
   geom_bar(
     stat = "identity", fill = "skyblue", color = 'black'
@@ -185,7 +193,7 @@ summary_tables$majority_summary_1 |>
     subtitle = "Years: [2015-2020]"
   ) + 
   geom_text(
-    aes(label = round(Annualized_Per_10_M, 1)),
+    aes(label = round(Annual_10_M, 1)),
     position = position_dodge(width = 0.9),
     hjust = -0.3, color = "black", size = 5
   ) + theme_light() +
