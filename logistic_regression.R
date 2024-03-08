@@ -1,71 +1,61 @@
 # count number of killings in tracts
 source('summary_tables.R')
-LUOF_binary <- all_tracts$income_population_quintiles_2020
-LUOF_binary$LUOF_binary <- all_tracts$income_population_quintiles_2020$GEOID %in% fatal_enc$joined$GEOID
+# Distribution of counts at the tract level
+
+table(table(fatal_enc$joined$GEOID))
+
+# 1     2     3     4    5    9 
+# 5796  479   54    6    2    1 
+table(table(fatal_enc$joined$GEOID)) |> sum()
+
+# [1] 6338
+
+nrow(
+  all_tracts$income_population_quintiles_2020) - 
+  table(table(fatal_enc$joined$GEOID)) |> sum()
+
+# [1] 76569
+
+summary(as.numeric(table(fatal_enc$joined$GEOID)))
+
+sd(as.numeric(table(fatal_enc$joined$GEOID)))
 
 
-LUOF_binary$Income_1k <- LUOF_binary$IncomeE / 1000
 
+logit_1 <- all_tracts$income_population_quintiles_2020 |> 
+  glm(formula = luof_boolean ~ Income_10k, data = _, family = 'binomial')
 
-# Logistic regression
-
-logit_1 <- 
-  glm(
-    formula = LUOF_binary ~ Income_1k,
-    data = LUOF_binary,
-    family = 'binomial'
-  )
-
-
-# Generate a sequence of values from 0.01 through 1
-nh_values <- seq(10, 250, 10)
-nh_values <- c(30, 60, 150, 180)
-# Create a dataframe with NH_BlackP values
-nh_df <- data.frame(Income_1k = nh_values)
-
-# Make predictions using the fitted model
-predictions <- predict(logit_1, newdata = nh_df, type = "response")
-
-# Plot the predicted probabilities against NH_BlackP values
-plot(nh_values, predictions, 
-     # ylim = c(0, 1),
-     type = "l", 
-     xlab = "NH_BlackP", 
-     ylab = "Predicted Probability", 
-     main = "Predicted Probability vs NH_BlackP")
-
-
-logit_2 <- 
-  glm(
-    formula = as.logical(LUOFs) ~ IncomeE,
-    data = LUOF_counts,
-    family = 'binomial'
-  )
-
-
-# Generate a sequence of values from 0.01 through 1
-nh_values <- seq(1000, 250000, by = 1000)
-
-# Create a dataframe with NH_BlackP values
-nh_df <- data.frame(IncomeE = nh_values)
+pred_df <- data.frame(Income_10k = seq(1, 20, .1))
 
 # Make predictions using the fitted model
-predictions <- predict(logit_2, newdata = nh_df, type = "response")
+pred_df$Predictions <- predict(logit_1, newdata = pred_df['Income_10k'], type = "response")
 
 # Plot the predicted probabilities against NH_BlackP values
-plot(nh_values, predictions, 
-     # ylim = c(0, 1),
-     xlim = c(2500, 25000),
-     type = "l", 
-     xlab = "IncomeE", 
-     ylab = "Predicted Probability", 
-     main = "Predicted Probability vs IncomeE")
+# with(pred_df, plot(Income_10k, Predictions, type =  'l'))
 
 
-logit_3 <- 
-  glm(
-    formula = as.logical(LUOFs) ~ IncomeE + NH_BlackP,
-    data = LUOF_counts,
-    family = 'binomial'
-  )
+
+library(car)
+
+# Create partial residual plots
+crPlot(logit_1, variable = 'Income_10k')
+
+# Create functional form plots
+library(effects)
+plot(allEffects(model))
+
+
+# Extract predicted log odds
+all_tracts$income_population_quintiles_2020$predicted_log_odds <- predict(logit_1, type = "link")
+
+# Plot predicted log odds against each independent variable
+plot(all_tracts$income_population_quintiles_2020$Income_10k, predicted_log_odds, 
+     xlab = "Independent Variable 1", ylab = "Predicted Log Odds",
+     main = "Predicted Log Odds vs. Independent Variable 1",
+     type = 'l')
+
+ggplot(data = all_tracts$income_population_quintiles_2020,
+       aes(x = Income_10k, y = predicted_log_odds)) +
+  # ggplot2::geom_point() +
+  geom_smooth(method = 'lm', formula = y ~ x)
 

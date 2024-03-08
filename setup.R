@@ -192,6 +192,13 @@ write_csv(all_tracts$income_population_quintiles_2020, paste0(getwd(), '/stata/d
 # Remove NA values for median income
 all_tracts$income_population_quintiles_2020 <- all_tracts$income_population_quintiles_2020[!is.na(all_tracts$income_population_quintiles_2020$IncomeE),]
 
+
+################################################################# #
+## Make a column of 10k income (income / 10,000) ####
+################################################################# #
+
+all_tracts$income_population_quintiles_2020$Income_10k <- all_tracts$income_population_quintiles_2020$IncomeE / 10000
+
 ################################################################# #
 ## Add quantile data to all_tracts ####
 ################################################################# #
@@ -514,6 +521,31 @@ fatal_enc$joined <-
       )
   )
 
+################################################################# #
+## Adding binary LUOF variable (did or did not occur) ####
+################################################################# #
+
+
+all_tracts$income_population_quintiles_2020$luof_boolean <- as.numeric(all_tracts$income_population_quintiles_2020$GEOID %in% fatal_enc$joined$GEOID)
+
+
+################################################################# #
+## Adding LUOF counts to all_tracts  ####
+################################################################# #
+
+
+LUOF_counts <- as.numeric(table(fatal_enc$joined$GEOID)[match(all_tracts$income_population_quintiles_2020$GEOID, names(table(fatal_enc$joined$GEOID)))])
+
+LUOF_counts[is.na(LUOF_counts)] <- 0
+
+all_tracts$income_population_quintiles_2020$luof_count <- LUOF_counts
+
+
+################################################################# #
+## Save to CSV ####
+################################################################# #
+
+write_csv(x = all_tracts$income_population_quintiles_2020, file = 'C:\\Users\\madou\\Downloads\\all_tracts.csv', na = "")
 
 
 
