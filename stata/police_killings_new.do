@@ -38,7 +38,7 @@ misstable summarize
 // mdesc // IncomeE
 
 drop if missing(IncomeE)
-
+drop IncomeM Total_popM Hisp_LatinoM NH_BlackM NH_AsianM NH_WhiteM
 // income quintiles
 xtile income_quintile=IncomeE, n(5)
 
@@ -101,6 +101,7 @@ duplicates report unique_id
 // rename 'race_imputed' variable
 replace race_imputed = "White" if race_imputed == "European-American/White"
 replace race_imputed = "Black" if race_imputed == "African-American/Black"
+// replace race_imputed = "Other/Unknown" if !inlist(race_imputed, "White", "Black", "Hispanic/Latino")
 replace race_imputed = "Other/Unknown" if race_imputed != "White" & race_imputed != "Black" & race_imputed != "Hispanic/Latino"
 
 // backup
@@ -155,9 +156,26 @@ logit fatal_enc_binary IncomeE_1k
 // Store estimation results
 estimates store my_model
 
+estimates restore my_model
+ereturn list
+
+// Predict probabilities
+predict pred_probs, pr
+
+// Display the first few rows of predicted probabilities
+list pred_probs in 1/10
+
+// Calculate residuals
+gen residuals = fatal_enc_binary - pred_probs
+
+// Display the first few rows of residuals
+list residuals in 1/10
+
+summarize residuals
+
 // Export results to Excel using putexcel
-putexcel set logit_results, replace // specify Excel file name 
-putexcel A1 = etable // upper-lefthand corner of where data should go
+// putexcel set logit_results, replace // specify Excel file name 
+// putexcel A1 = etable // upper-lefthand corner of where data should go
 
 // predictions based on income at 10,000 intervals
 margins, at(IncomeE_1k = (10(10)250)) noatleg
