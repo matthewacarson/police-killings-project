@@ -545,7 +545,13 @@ all_tracts$income_population_quintiles_2020$luof_count <- LUOF_counts
 ## Save to CSV ####
 ################################################################# #
 
-write_csv(x = all_tracts$income_population_quintiles_2020, file = 'C:\\Users\\madou\\Downloads\\all_tracts.csv', na = "")
+write_csv(
+  x = all_tracts$income_population_quintiles_2020 |> 
+    select(GEOID, IncomeE, Total_popE, NH_WhiteE, NH_BlackE, Hisp_LatinoE,
+           Income_10k, income_quintiles_nolab, income_decile, income_bins_100,
+           income_bins_200, NH_WhiteP, NH_BlackP, Hisp_LatinoP, Majority,
+           luof_boolean, luof_count), 
+  file = "C:\\Users\\madou\\OneDrive\\Documents\\1_PS-Honors\\all_tracts.csv", na = "")
 
 
 

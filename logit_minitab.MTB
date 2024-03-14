@@ -1,0 +1,25 @@
+Fitline 'luof_boolean' 'Income_10k';
+Confidence 95.0.
+
+Gzlm;
+Nodefault;
+REvent 1;
+Response 'luof_boolean';
+Continuous 'Income_10k';
+Terms C7;
+Constant;
+Binomial;
+Logit;
+TOdds;
+Increment 1;
+Unstandardized;
+TExpand;
+Tmethod;
+Trinfo;
+Tdeviance;
+Tsummary;
+Tcoefficients;
+Tequation;
+Tgoodness;
+Thosmer;
+Thosmer;
