@@ -194,10 +194,13 @@ all_tracts$income_population_quintiles_2020 <- all_tracts$income_population_quin
 
 
 ################################################################# #
+## Make a column of 1k income (income / 1,000) ####
 ## Make a column of 10k income (income / 10,000) ####
 ################################################################# #
 
-all_tracts$income_population_quintiles_2020$Income_10k <- all_tracts$income_population_quintiles_2020$IncomeE / 10000
+all_tracts$income_population_quintiles_2020$Income_1k <- all_tracts$income_population_quintiles_2020$IncomeE / 1e3
+
+all_tracts$income_population_quintiles_2020$Income_10k <- all_tracts$income_population_quintiles_2020$IncomeE / 10e3
 
 ################################################################# #
 ## Add quantile data to all_tracts ####
@@ -546,12 +549,30 @@ all_tracts$income_population_quintiles_2020$luof_count <- LUOF_counts
 ################################################################# #
 
 write_csv(
-  x = all_tracts$income_population_quintiles_2020 |> 
-    select(GEOID, IncomeE, Total_popE, NH_WhiteE, NH_BlackE, Hisp_LatinoE,
-           Income_10k, income_quintiles_nolab, income_decile, income_bins_100,
-           income_bins_200, NH_WhiteP, NH_BlackP, Hisp_LatinoP, Majority,
-           luof_boolean, luof_count), 
-  file = "C:\\Users\\madou\\OneDrive\\Documents\\1_PS-Honors\\all_tracts.csv", na = "")
+  x = all_tracts$income_population_quintiles_2020 |>
+    select(
+      GEOID,
+      IncomeE,
+      Total_popE,
+      NH_WhiteE,
+      NH_BlackE,
+      Hisp_LatinoE,
+      Income_1k,
+      Income_10k,
+      income_quintiles_nolab,
+      income_decile,
+      income_bins_100,
+      income_bins_200,
+      NH_WhiteP,
+      NH_BlackP,
+      Hisp_LatinoP,
+      Majority,
+      luof_boolean,
+      luof_count
+    ),
+  file = "C:\\Users\\madou\\OneDrive - UCLA IT Services\\1)_PS-Honors\\HP_PC\\police_killings_github_HP\\all_tracts.csv",
+na = ""
+)
 
 
 
