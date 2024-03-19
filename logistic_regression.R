@@ -28,32 +28,58 @@ summary(as.numeric(table(fatal_enc$joined$GEOID)))
 
 var(as.numeric(table(fatal_enc$joined$GEOID)))
 
-logit_1 <- all_tracts$income_population_quintiles_2020 |> 
+
+
+logit_income_only <- all_tracts$income_population_quintiles_2020 |> 
   glm(formula = luof_boolean ~ Income_1k, data = _, family = 'binomial')
+
+# reshape data
+
+income_population_longer <-
+  all_tracts$income_population_quintiles_2020 |>
+  select(GEOID,
+         Income_1k,
+         NH_BlackP,
+         NH_WhiteP,
+         Hisp_LatinoP,
+         luof_boolean) |>
+  pivot_longer(
+    cols = c(NH_BlackP, NH_WhiteP, Hisp_LatinoP),
+    names_to = 'Race',
+    values_to = 'Proportion'
+  ) |>
+  mutate(Race = factor(Race, labels = c('NH_WhiteP', 'Hisp_LatinoP', 'NH_BlackP')))
+
+logit_race <- income_population_longer |>
+  glm(formula = luof_boolean ~ Race * Proportion,
+      data = _,
+      family = 'binomial')
+
+
 
 # Open a PNG graphics device for each plot and save it to a separate file
 # png("plot1.png", width = 10.4, height = 6.08, units = 'in', res = 320)
-# plot(logit_1, which = 1)
+# plot(logit_income_only, which = 1)
 # dev.off()
 # 
 # png("plot2.png", width = 10.4, height = 6.08, units = 'in', res = 320)
-# plot(logit_1, which = 2)
+# plot(logit_income_only, which = 2)
 # dev.off()
 # 
 # png("plot3.png", width = 10.4, height = 6.08, units = 'in', res = 320)
-# plot(logit_1, which = 3)
+# plot(logit_income_only, which = 3)
 # dev.off()
 # 
 # png("plot4.png", width = 10.4, height = 6.08, units = 'in', res = 320)
-# plot(logit_1, which = 4)
+# plot(logit_income_only, which = 4)
 # dev.off()
 # 
 # png("plot5.png", width = 10.4, height = 6.08, units = 'in', res = 320)
-# plot(logit_1, which = 5)
+# plot(logit_income_only, which = 5)
 # dev.off()
 # 
 # png("plot6.png", width = 10.4, height = 6.08, units = 'in', res = 320)
-# plot(logit_1, which = 6)
+# plot(logit_income_only, which = 6)
 # dev.off()
 
 
@@ -82,9 +108,9 @@ observed_prop_by_inc_percent <- left_join(
 pred_df <- data.frame(Income_1k = c(seq(6, 14, by = 4), observed_prop_by_inc_percent$Income_1k, 220))
 
 # Make predictions using the fitted model
-pred_df$Predictions <- predict(logit_1, newdata = pred_df['Income_1k'], type = "response")
+pred_df$Predictions <- predict(logit_income_only, newdata = pred_df['Income_1k'], type = "response")
 
-observed_prop_by_inc_percent$Predictions <- predict(logit_1, newdata = observed_prop_by_inc_percent['Income_1k'], type = "response")
+observed_prop_by_inc_percent$Predictions <- predict(logit_income_only, newdata = observed_prop_by_inc_percent['Income_1k'], type = "response")
 
 # residuals
 observed_prop_by_inc_percent$residuals <- observed_prop_by_inc_percent$Predictions - observed_prop_by_inc_percent$proportion_observed
@@ -183,9 +209,9 @@ dev.off()
 # pred_df_200 <- data.frame(Income_1k = c(seq(6, 14, by = 4), observed_prop_by_inc_percent_200$Income_1k, 220))
 # 
 # # Make predictions using the fitted model
-# pred_df_200$Predictions <- predict(logit_1, newdata = pred_df_200['Income_1k'], type = "response")
+# pred_df_200$Predictions <- predict(logit_income_only, newdata = pred_df_200['Income_1k'], type = "response")
 # 
-# observed_prop_by_inc_percent_200$Predictions <- predict(logit_1, newdata = observed_prop_by_inc_percent_200['Income_1k'], type = "response")
+# observed_prop_by_inc_percent_200$Predictions <- predict(logit_income_only, newdata = observed_prop_by_inc_percent_200['Income_1k'], type = "response")
 # 
 # # residuals
 # observed_prop_by_inc_percent_200$residuals <- observed_prop_by_inc_percent_200$Predictions - observed_prop_by_inc_percent_200$proportion_observed
@@ -244,10 +270,31 @@ dev.off()
 # 
 # # Create partial residual plots
 # 
-# car::crPlot(logit_1, variable = 'Income_1k')
+# car::crPlot(logit_income_only, variable = 'Income_1k')
 # 
 # # Create functional form plots
 # 
 # library(effects)
-# plot(allEffects(logit_1))
+# plot(allEffects(logit_income_only))
 
+
+
+
+
+# plotting fitted values against income
+
+
+all_tracts$income_population_quintiles_2020$fitted_values <- 
+  log(logit_income_only$fitted.values / (1 - logit_income_only$fitted.values))
+
+with(all_tracts$income_population_quintiles_2020[sample(1:82907, 500),],
+  plot(
+    x = Income_1k,
+    y = fitted_values,
+    type = 'l'
+  )
+)
+lm_1 <- lm(fitted_values ~ Income_1k, 
+           data = all_tracts$income_population_quintiles_2020)
+abline(lm_1, col = 'red')
+           
