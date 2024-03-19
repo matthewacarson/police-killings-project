@@ -44,3 +44,4 @@ udp_expansion_matt/d.RData
 *.smcl
 *.stswp
 git_exclude/
+*.png
