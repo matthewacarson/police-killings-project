@@ -49,3 +49,4 @@ plt.title('Predicted vs. Observed Probabilities by Income Percentile')
 plt.legend()
 plt.show()
 
+1e3
