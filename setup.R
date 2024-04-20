@@ -483,17 +483,15 @@ all_tracts$income_population_quintiles_2019 <- all_tracts$population_income2019 
 #################################################### #
 ##### Joining with all_tracts data from above ####
 #################################################### #
-load(
-  file = "git_ignore/RData/fatal_enc_initial_clean_geoid.RData",
-  envir = fatal_enc)
+load(file = "git_ignore/RData/fatal_enc_initial_clean_geoid.RData", envir = fatal_enc)
 
 ## write CSV ####
-write_csv(fatal_enc$initial_clean_geoid, paste0(getwd(), '/stata/dta/fatal_enc_clean_geoid.csv'), na = "")
+# write_csv(fatal_enc$initial_clean_geoid, paste0(getwd(), '/stata/dta/fatal_enc_clean_geoid.csv'), na = "")
 
 ## save to Stata file .dta (having issues; not using) ####
-haven::write_dta(fatal_enc$initial_clean_geoid, paste0(getwd(), '/stata/dta/fatal_enc_clean_geoid_haven.dta'))
+# haven::write_dta(fatal_enc$initial_clean_geoid, paste0(getwd(), '/stata/dta/fatal_enc_clean_geoid_haven.dta'))
 
-foreign::write.dta(fatal_enc$initial_clean_geoid, file = paste0(getwd(), '/stata/dta/fatal_enc_clean_geoid_foreign.dta'), version = 12)
+# foreign::write.dta(fatal_enc$initial_clean_geoid, file = paste0(getwd(), '/stata/dta/fatal_enc_clean_geoid_foreign.dta'), version = 12)
 
 fatal_enc$joined_backup <- 
   inner_join(
@@ -524,6 +522,38 @@ fatal_enc$joined <-
       )
   )
 
+
+fatal_enc_smaller <- fatal_enc$joined |> 
+  select(
+    GEOID,
+    unique_id,
+    race_imputed,
+    imputation_probability,
+    date,
+    city,
+    state,
+    zip,
+    county,
+    highest_force,
+    armed,
+    Total_popE,
+    NH_WhiteE,
+    NH_BlackE,
+    Hisp_LatinoE,
+    IncomeE,
+    income_quartile,
+    income_quintile = income_quintiles_nolab,
+    income_percentile = income_bins_100,
+    income_bins_200,
+    NH_WhiteP,
+    NH_BlackP,
+    Hisp_LatinoP,
+    Majority
+  )
+
+write_csv(fatal_enc_smaller, file = 'fatal_enc_joined_w_census_data.csv', na = '')
+write_csv(fatal_enc_smaller, file = 'C:/Users/madou/urweek_policing/fatal_enc.csv', na = "")
+
 ################################################################# #
 ## Adding binary LUOF variable (did or did not occur) ####
 ################################################################# #
@@ -547,33 +577,37 @@ all_tracts$income_population_quintiles_2020$luof_count <- LUOF_counts
 ################################################################# #
 ## Save to CSV ####
 ################################################################# #
+all_tracts_smaller <- all_tracts$income_population_quintiles_2020 |>
+  select(
+    GEOID,
+    IncomeE,
+    Total_popE,
+    NH_WhiteE,
+    NH_BlackE,
+    Hisp_LatinoE,
+    income_quintile = income_quintiles_nolab,
+    income_decile,
+    income_percentile = income_bins_100,
+    income_bins_200,
+    NH_WhiteP,
+    NH_BlackP,
+    Hisp_LatinoP,
+    Majority,
+    luof_boolean,
+    luof_count
+  )
+
 
 write_csv(
-  x = all_tracts$income_population_quintiles_2020 |>
-    select(
-      GEOID,
-      IncomeE,
-      Total_popE,
-      NH_WhiteE,
-      NH_BlackE,
-      Hisp_LatinoE,
-      Income_1k,
-      Income_10k,
-      income_quintiles_nolab,
-      income_decile,
-      income_bins_100,
-      income_bins_200,
-      NH_WhiteP,
-      NH_BlackP,
-      Hisp_LatinoP,
-      Majority,
-      luof_boolean,
-      luof_count
-    ),
+  x = all_tracts_smaller,
   file = "C:\\Users\\madou\\OneDrive - UCLA IT Services\\1)_PS-Honors\\HP_PC\\police_killings_github_HP\\all_tracts.csv",
 na = ""
 )
 
-
+write_csv(
+  x = all_tracts_smaller,
+  file = "C:/Users/madou/urweek_policing/all_tracts.csv",
+  na = ""
+)
 
 
