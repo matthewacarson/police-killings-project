@@ -146,12 +146,13 @@ save all_tracts_binary, replace
 // load all_tracts_binary
 /////////////////////////
 use all_tracts_binary, clear
+drop _merge IncomeE_1k _est_my_model pred_prob residuals LUOF_binary
 
 // convert IncomeE to thousands place
-gen IncomeE_1k = IncomeE / 1000
+gen IncomeE_10k = IncomeE / 10000
 
 // logistic regression -- income only
-logit fatal_enc_binary IncomeE_1k
+logit fatal_enc_binary IncomeE_10k
 
 // Store estimation results
 estimates store my_model
@@ -160,13 +161,15 @@ estimates restore my_model
 ereturn list
 
 // Predict probabilities
-predict pred_probs, pr
+capture drop pred_prob
+predict pred_prob, pr
 
 // Display the first few rows of predicted probabilities
-list pred_probs in 1/10
+list pred_prob in 1/10
+sum pred_prob
 
 // Calculate residuals
-gen residuals = fatal_enc_binary - pred_probs
+replace residuals = fatal_enc_binary - pred_prob
 
 // Display the first few rows of residuals
 list residuals in 1/10
@@ -176,17 +179,23 @@ summarize residuals
 // Export results to Excel using putexcel
 // putexcel set logit_results, replace // specify Excel file name 
 // putexcel A1 = etable // upper-lefthand corner of where data should go
+// backup
+export delimited using logit_10k.csv, replace
 
 // predictions based on income at 10,000 intervals
-margins, at(IncomeE_1k = (10(10)250)) noatleg
+margins, at(IncomeE_10k = (1(1)25)) noatleg
+
 
 // plot logit regression IncomeE
 marginsplot, title("Predicted Probability of a LUOF, 2015-2020") ///
-              xtitle("Median household income in census tract") ///
+              xtitle("Median household income (10 thousand dollars)") ///
               ytitle("Probability of a LUOF") ///
 			  name(income_only, replace) ///
 			  yscale(range(0 0.18)) ///
-			  ylabel(0 "0" 0.02 "0.02" 0.04 "0.04" 0.06 "0.06" 0.08 "0.08" 0.10 "0.10" 0.12 "0.12" 0.14 "0.14" 0.16 "0.16" 0.18 "0.18")
+			  xlabel(0(2.5)25) ///
+			  ylabel(0(0.02)0.18) ///
+			  noci ///
+			  plotopts(msize(0))
 
 graph export "..\LUOF_logit_income_only.png", width(7680) height(4608) replace
 
@@ -206,7 +215,11 @@ marginsplot, title("Predicted Probability of a LUOF, 2015-2020") ///
               ytitle("Probability of a LUOF") ///
 			  name(NH_BlackP, replace) ///
 			  yscale(range(0 0.18)) ///
-			  ylabel(0 "0" 0.02 "0.02" 0.04 "0.04" 0.06 "0.06" 0.08 "0.08" 0.10 "0.10" 0.12 "0.12" 0.14 "0.14" 0.16 "0.16" 0.18 "0.18")
+			  ylabel(0(0.02)0.18) ///
+			  noci ///
+			  plotopts(msize(0))			  
+			  
+// ylabel(0 "0" 0.02 "0.02" 0.04 "0.04" 0.06 "0.06" 0.08 "0.08" 0.10 "0.10" 0.12 "0.12" 0.14 "0.14" 0.16 "0.16" 0.18 "0.18")
 
 graph export "..\LUOF_logit_NH_black_only.png", width(7680) height(4608) replace
 
@@ -224,7 +237,9 @@ marginsplot, title("Predicted Probability of a LUOF, 2015-2020") ///
               ytitle("Probability of a LUOF") ///
 			  name(NH_WhiteP, replace) ///
 			  yscale(range(0 0.18)) ///
-			  ylabel(0 "0" 0.02 "0.02" 0.04 "0.04" 0.06 "0.06" 0.08 "0.08" 0.10 "0.10" 0.12 "0.12" 0.14 "0.14" 0.16 "0.16" 0.18 "0.18")
+			  ylabel(0(0.02)0.18) ///
+			  noci ///
+			  plotopts(msize(0))
 
 graph export "..\LUOF_logit_NH_white_only.png", width(7680) height(4608) replace
 
@@ -242,7 +257,9 @@ marginsplot, title("Predicted Probability of a LUOF, 2015-2020") ///
               ytitle("Probability of a LUOF") ///
 			  name(Hisp_LatinoP, replace) ///
 			  yscale(range(0 0.18)) ///
-			  ylabel(0 "0" 0.02 "0.02" 0.04 "0.04" 0.06 "0.06" 0.08 "0.08" 0.10 "0.10" 0.12 "0.12" 0.14 "0.14" 0.16 "0.16" 0.18 "0.18")
+			  ylabel(0(0.02)0.18) ///
+			  noci ///
+			  plotopts(msize(0))
 
 graph export "..\LUOF_logit_Hisp_Latino_only.png", width(7680) height(4608) replace
 
@@ -257,15 +274,15 @@ graph export "..\LUOF_logit_bivariate.png", width(7680) height(4608) replace
 ///////////////////////////
 
 // check for missing values
-count if missing(IncomeE_1k)
+count if missing(IncomeE_10k)
 
 // Generate interaction terms
-gen IncomeE_1k_NH_BlackP = IncomeE_1k * NH_BlackP
-list IncomeE_1k_NH_BlackP in 1/10
-gen IncomeE_1k_NH_WhiteP = IncomeE_1k * NH_WhiteP
-list IncomeE_1k_NH_WhiteP in 1/10
-gen IncomeE_1k_NH_Latino = IncomeE_1k * Hisp_LatinoP
-list IncomeE_1k_NH_Latino in 1/10
+gen IncomeE_10k_NH_BlackP = IncomeE_10k * NH_BlackP
+list IncomeE_10k_NH_BlackP in 1/10
+gen IncomeE_10k_NH_WhiteP = IncomeE_10k * NH_WhiteP
+list IncomeE_10k_NH_WhiteP in 1/10
+gen IncomeE_10k_NH_Latino = IncomeE_10k * Hisp_LatinoP
+list IncomeE_10k_NH_Latino in 1/10
 
 // backup data
 save all_tracts_2020_interaction_terms, replace
