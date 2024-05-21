@@ -6,8 +6,7 @@
 # library(tidyverse)
 
 # Run setup file to bring in data to summarize
-source(file = "police-killings-setup.R")
-source(file = "summay_tables.R")
+source(file = "summary_tables.R")
 
 ############################################## #
 ## geom_point plot - 200 quantiles ##########
@@ -15,17 +14,17 @@ source(file = "summay_tables.R")
 
 ggplot(
   summary_tables$bins200_summary_1, 
-  aes(x = Income, y = Annualized_Per_10_M)) +
+  aes(x = quantile_200, y = Annualized_Per_10_M)) +
   geom_point() +  
   geom_smooth(
     method = "loess", formula = y ~ x, color = "blue", se = TRUE) + 
   labs(
-    x = "Median Household Income in Census Tracts\n200 Quantiles", 
+    x = "Median Household Income (thousands) in Census Tracts\n200 Quantiles", 
     y = "Per 10 Million Population (Annualized)", 
-    title = "Lethal Uses of Force"
+    title = "Lethal Uses of Force by Census Tract Income Quantiles"
   ) + scale_x_continuous(breaks = seq(0, 200 , by = 10)) + 
   scale_y_continuous(breaks = seq(0, 110, 10)) +
-  theme_light() +
+  theme_bw()
   theme(
     axis.text.x = element_text(color = 'black', vjust = 0.5),
     axis.text.y = element_text(color = 'black')
@@ -34,6 +33,12 @@ ggsave(
   filename = 'plots/200_quantile_plots/all_200.png', 
   dpi = 'retina', 
   bg = 'white',
+  width = 10.4,
+  height = 4.81)
+
+ggsave(
+  filename = 'plots/200_quantile_plots/all_200.pdf', 
+  dpi = 'retina', 
   width = 10.4,
   height = 4.81)
 
