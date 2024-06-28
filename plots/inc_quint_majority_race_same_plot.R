@@ -13,7 +13,7 @@ source(file = "summary_tables.R")
 ## Create quintile bar plot ####
 ############################## #
 # This needs to be assigned to an object for cowplot
-# income_quintiles_only <-
+income_quintiles_only <-
 summary_tables$quintiles_only |> 
   ggplot(
     data = _, 
@@ -52,13 +52,13 @@ summary_tables$quintiles_only |>
 # plot.subtitle = element_text(size = 20)
 
 # Output plot
-write_csv(x = summary_tables$quintiles_only |> select(Quintile, Killings, Annual_10_M), file = "summary_quintiles_only.csv")
+# write_csv(x = summary_tables$quintiles_only |> select(Quintile, Killings, Annual_10_M), file = "summary_quintiles_only.csv")
 
 ####################### #
 # Majority Race Plot ####
 ####################### #
 
-# majority_race_only <- 
+majority_race_only <-
   summary_tables$majority_summary_1 |> 
   ggplot(
     data = _, 
@@ -87,10 +87,10 @@ write_csv(x = summary_tables$quintiles_only |> select(Quintile, Killings, Annual
 # coord_flip()
 # scale_x_continuous(breaks = seq(0,70,10))
 
-write_csv(
-  x = summary_tables$majority_summary_1 |> select(-Killings_Per_Yr, -Population),
-  file = 'majority_summary_1.csv'
-)
+# write_csv(
+  # x = summary_tables$majority_summary_1 |> select(-Killings_Per_Yr, -Population),
+  # file = 'majority_summary_1.csv'
+# )
 
 ##################### #
 ## Combining plots ####
@@ -111,9 +111,9 @@ plot_grid(
 ggsave(
   filename = 'plots/inc_quint_majority_race_same_plot/combined.png',
   dpi = 'retina',
-  bg = 'white',
+  # bg = 'white',
   width = 10.4,
-  height = 4.81)
+  height = 4.81*1.5)
 
 ################################################################# #
 # Alternatively, this produces the income quintiles only with the 

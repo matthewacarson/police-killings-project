@@ -273,6 +273,95 @@ name(bivariate, replace)
 
 graph export "..\LUOF_logit_bivariate.png", width(7680) height(4608) replace
 
+/////////////////
+/// two way attempt
+//////////////////
+
+// Logistic regression NH_BlackP
+logit fatal_enc_binary NH_BlackP
+margins, at(NH_BlackP = (0(.05)1)) noatleg
+
+// Logistic regression NH_WhiteP
+logit fatal_enc_binary NH_WhiteP
+margins, at(NH_WhiteP = (0(.05)1)) noatleg
+
+// Logistic regression Hisp_LatinoP
+logit fatal_enc_binary Hisp_LatinoP
+margins, at(Hisp_LatinoP = (0(.05)1)) noatleg
+
+
+marginsplot, title("Predicted Probability of a LUOF, 2015-2020") ///
+            xtitle("Proportion black in the census tract") ///
+            ytitle("Probability of a LUOF") ///
+            name(NH_BlackP, replace) ///
+            yscale(range(0 0.18)) ///
+            xlabel(0(0.1)1) ///
+            ylabel(0(0.04)0.18) ///
+            noci ///
+            plotopts(msize(0))
+
+graph export "..\LUOF_logit_NH_black_only.png", width(7680) height(4608) replace
+
+marginsplot, title("Predicted Probability of a LUOF, 2015-2020") ///
+            xtitle("Proportion white in census tract") ///
+            ytitle("Probability of a LUOF") ///
+            name(NH_WhiteP, replace) ///
+            yscale(range(0 0.18)) ///
+            xlabel(0(0.1)1) ///
+            ylabel(0(0.04)0.18) ///
+            noci ///
+            plotopts(msize(0))
+
+graph export "..\LUOF_logit_NH_white_only.png", width(7680) height(4608) replace
+
+marginsplot, title("Predicted Probability of a LUOF, 2015-2020") ///
+            xtitle("Proportion Hispanic/Latino in census tract") ///
+            ytitle("Probability of a LUOF") ///
+            name(Hisp_LatinoP, replace) ///
+            yscale(range(0 0.18)) ///
+            xlabel(0(0.1)1) ///
+            ylabel(0(0.04)0.18) ///
+            noci ///
+            plotopts(msize(0))
+
+graph export "..\LUOF_logit_Hisp_Latino_only.png", width(7680) height(4608) replace
+
+
+
+// Begin the twoway graph
+twoway ///
+
+// Plot 1: NH_BlackP
+(line NH_BlackP  predicted ///
+   , lc(black) lw(medthick) legend(order(1 "Black"))) ///
+
+// Plot 2: NH_WhiteP
+(line NH_WhiteP  predicted ///
+   , lc(blue) lw(medthick) legend(order(2 "White"))) ///
+
+// Plot 3: Hisp_LatinoP
+(line Hisp_LatinoP  predicted ///
+   , lc(red) lw(medthick) legend(order(3 "Hispanic/Latino"))) ///
+
+, ///
+// General graph settings
+title("Predicted Probability of a LUOF, 2015-2020") ///
+xtitle("Proportion in census tract") ///
+ytitle("Probability of a LUOF") ///
+legend(position(9) ring(0)) ///
+yscale(range(0 0.18)) ///
+xlabel(0(0.1)1) ///
+ylabel(0(0.04)0.18) ///
+noci ///
+plotopts(msize(0))
+
+// Export the combined graph
+graph export "..\LUOF_logit_combined.png", width(7680) height(4608) replace
+
+
+
+
+
 ///////////////////////////
 // Create interaction terms
 ///////////////////////////
